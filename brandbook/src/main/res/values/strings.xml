@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">IPill</string>
+    <string name="common__error_something_went_wrong">Something went wrong</string>
+    <string name="common__error_unauthorized">Unauthorized</string>
+    <string name="common__error">Error</string>
+    <string name="common__attention">Attention</string>
+    <string name="common__loading">Loading</string>
+    <string name="common__continue">Continue</string>
+    <string name="common__cancel">Cancel</string>
+    <string name="common__close">Close</string>
+    <string name="common__retry">Retry</string>
+    <string name="common__no_connection">No internet connection</string>
+</resources>
