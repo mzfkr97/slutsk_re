@@ -27,7 +27,7 @@ import com.romanzhurid.brandbook.theme.AppTheme
 import com.romanzhurid.common.ProgressState
 import com.romanzhurid.common.uistate.CollectEventEffect
 import com.romanzhurid.common.uistate.collectUiState
-import com.romanzhurid.home.navigation.HomeFeatureHost
+import com.romanzhurid.onboarding.navigation.OnboardingFeatureHost
 import com.romanzhurid.navigation.AppNavDisplay
 import com.romanzhurid.navigation.AppRoute
 import com.romanzhurid.navigation.Route
@@ -95,8 +95,8 @@ fun MainScreen(
         lateinit var entryProvider: (Route) -> NavEntry<Route>
 
         entryProvider = entryProvider {
-            entry<AppRoute.Home> { route ->
-                HomeFeatureHost(route)
+            entry<AppRoute.Onboarding> { route ->
+                OnboardingFeatureHost(route)
             }
         }
         entryProvider

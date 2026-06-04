@@ -1,4 +1,4 @@
-package com.romanzhurid.home.navigation
+package com.romanzhurid.onboarding.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -10,36 +10,36 @@ import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDe
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import com.romanzhurid.common.uistate.collectUiState
-import com.romanzhurid.home.di.HomeComponentDependenciesProvider
-import com.romanzhurid.home.di.HomeComponentHolder
-import com.romanzhurid.home.home.HomeScreen
-import com.romanzhurid.home.home.HomeViewModel
+import com.romanzhurid.onboarding.di.OnboardingComponentDependenciesProvider
+import com.romanzhurid.onboarding.di.OnboardingComponentHolder
+import com.romanzhurid.onboarding.onboarding.OnboardingScreen
+import com.romanzhurid.onboarding.onboarding.OnboardingViewModel
 import com.romanzhurid.navigation.AppNavDisplay
 import com.romanzhurid.navigation.AppRoute
 import com.romanzhurid.navigation.composition.LocalAppNavigator
 import com.romanzhurid.navigation.composition.LocalBackHandler
 
 @Composable
-fun HomeFeatureHost(route: AppRoute.Home) {
+fun OnboardingFeatureHost(route: AppRoute.Onboarding) {
     val context = LocalContext.current.applicationContext
     val appNavigator = LocalAppNavigator.current
     val parentBack = LocalBackHandler.current
 
     val component = remember(route.instanceId) {
-        HomeComponentHolder.get(
+        OnboardingComponentHolder.get(
             instanceId = route.instanceId,
-            dependencies = (context as HomeComponentDependenciesProvider)
-                .homeComponentDependencies
+            dependencies = (context as OnboardingComponentDependenciesProvider)
+                .onboardingComponentDependencies
         )
     }
 
     DisposableEffect(route.instanceId) {
         onDispose {
-            HomeComponentHolder.clear(route.instanceId)
+            OnboardingComponentHolder.clear(route.instanceId)
         }
     }
 
-    val featureViewModel = viewModel<HomeFeatureHostViewModel>()
+    val featureViewModel = viewModel<OnboardingFeatureHostViewModel>()
     val uiState by featureViewModel.collectUiState()
     val onBack: () -> Unit = {
         if (featureViewModel.handleBack().not()) {
@@ -54,11 +54,11 @@ fun HomeFeatureHost(route: AppRoute.Home) {
         ),
         onBack = onBack,
         entryProvider = entryProvider {
-            entry<HomeFeatureRoute.Home> {
-                val viewModel = viewModel<HomeViewModel>(
-                    factory = component.getHomeViewModelFactory()
+            entry<OnboardingFeatureRoute.Onboarding> {
+                val viewModel = viewModel<OnboardingViewModel>(
+                    factory = component.getOnboardingViewModelFactory()
                 )
-                HomeScreen(
+                OnboardingScreen(
                     viewModel = viewModel,
                     openFeatureRoute = featureViewModel::navigate,
                     openAppRoute = appNavigator::navigate,

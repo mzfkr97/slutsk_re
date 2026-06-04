@@ -43,7 +43,7 @@ dependencies {
     implementation(project(":brandbook"))
 
     implementation(project(":features:common"))
-    implementation(project(":features:home"))
+    implementation(project(":features:onboarding"))
 
     implementation(project(":core:domain"))
     implementation(project(":core:data"))

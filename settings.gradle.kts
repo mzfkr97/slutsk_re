@@ -25,7 +25,7 @@ dependencyResolutionManagement {
 rootProject.name = "SlutskRe"
 include(":app")
 include(":brandbook")
-include(":features:home")
+include(":features:onboarding")
 include(":features:common")
 include(":core:data")
 include(":core:domain")

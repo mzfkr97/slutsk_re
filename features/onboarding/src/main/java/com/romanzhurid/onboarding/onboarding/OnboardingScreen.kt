@@ -1,4 +1,4 @@
-package com.romanzhurid.home.home
+package com.romanzhurid.onboarding.onboarding
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,15 +19,15 @@ import com.romanzhurid.brandbook.theme.AppTheme
 import com.romanzhurid.common.uistate.CollectEventEffect
 import com.romanzhurid.common.uistate.collectUiState
 import com.romanzhurid.navigation.AppRoute
-import com.romanzhurid.home.navigation.HomeFeatureRoute
-import com.romanzhurid.home.home.HomeViewModel.Event
-import com.romanzhurid.home.home.HomeViewModel.UiState
+import com.romanzhurid.onboarding.navigation.OnboardingFeatureRoute
+import com.romanzhurid.onboarding.onboarding.OnboardingViewModel.Event
+import com.romanzhurid.onboarding.onboarding.OnboardingViewModel.UiState
 
 @Composable
-fun HomeScreen(
-    viewModel: HomeViewModel,
+fun OnboardingScreen(
+    viewModel: OnboardingViewModel,
     openAppRoute: (AppRoute) -> Unit,
-    openFeatureRoute: (HomeFeatureRoute) -> Unit,
+    openFeatureRoute: (OnboardingFeatureRoute) -> Unit,
     onBack: () -> Unit,
 ) {
 
@@ -44,7 +44,7 @@ fun HomeScreen(
         }
     }
 
-    HomeScreenContent(
+    OnboardingScreenContent(
         uiState = uiState,
         onNextActionChangedClicked = viewModel::isNextActionChangedClicked,
         onClick = viewModel::onSignInClick,
@@ -53,7 +53,7 @@ fun HomeScreen(
 }
 
 @Composable
-private fun HomeScreenContent(
+private fun OnboardingScreenContent(
     uiState: UiState,
     onNextActionChangedClicked: () -> Unit,
     onClick: () -> Unit,
@@ -62,7 +62,7 @@ private fun HomeScreenContent(
     Scaffold(
         topBar = {
             AppToolbar(
-                title = "Home",
+                title = "Onboarding",
                 onBack = onBack,
             )
         },
@@ -96,7 +96,7 @@ private fun HomeScreenContent(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(AppTheme.dimensions.medium),
         ) {
-            Text("HomeScreen")
+            Text("OnboardingScreen")
         }
     }
 }

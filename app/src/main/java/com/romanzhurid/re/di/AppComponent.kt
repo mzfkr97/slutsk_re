@@ -4,7 +4,7 @@ import android.content.Context
 import com.romanzhurid.common.di.CommonFeatureModule
 import com.romanzhurid.common.di.CommonToolsModule
 import com.romanzhurid.data.di.CoreDataModule
-import com.romanzhurid.home.di.HomeComponentDependencies
+import com.romanzhurid.onboarding.di.OnboardingComponentDependencies
 import com.romanzhurid.re.activity.AppActivity
 import dagger.BindsInstance
 import dagger.Component
@@ -20,7 +20,7 @@ import javax.inject.Singleton
     ]
 )
 interface AppComponent :
-    HomeComponentDependencies  {
+    OnboardingComponentDependencies  {
 
     fun inject(activity: AppActivity)
 

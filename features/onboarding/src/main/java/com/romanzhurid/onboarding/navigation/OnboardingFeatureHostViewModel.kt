@@ -1,25 +1,25 @@
-package com.romanzhurid.home.navigation
+package com.romanzhurid.onboarding.navigation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.romanzhurid.common.uistate.UiStateDelegate
 import com.romanzhurid.common.uistate.UiStateDelegateImpl
-import com.romanzhurid.home.navigation.HomeFeatureHostViewModel.UiState
+import com.romanzhurid.onboarding.navigation.OnboardingFeatureHostViewModel.UiState
 import com.romanzhurid.navigation.navigator.NavigationStore
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
-class HomeFeatureHostViewModel:
+class OnboardingFeatureHostViewModel:
     ViewModel(),
     UiStateDelegate<UiState, Unit> by UiStateDelegateImpl(
         UiState()
     ) {
 
     data class UiState(
-        val backStack: List<HomeFeatureRoute> = emptyList(),
+        val backStack: List<OnboardingFeatureRoute> = emptyList(),
     )
-    private val navigationStore = NavigationStore<HomeFeatureRoute>(
-        initialStack = listOf(HomeFeatureRoute.Home)
+    private val navigationStore = NavigationStore<OnboardingFeatureRoute>(
+        initialStack = listOf(OnboardingFeatureRoute.Onboarding)
     )
 
     init {
@@ -34,9 +34,9 @@ class HomeFeatureHostViewModel:
             .launchIn(viewModelScope)
     }
 
-    fun navigate(route: HomeFeatureRoute) = navigationStore.navigate(route)
+    fun navigate(route: OnboardingFeatureRoute) = navigationStore.navigate(route)
 
-    fun clearAndPush(route: HomeFeatureRoute) = navigationStore.clearAndPush(route)
+    fun clearAndPush(route: OnboardingFeatureRoute) = navigationStore.clearAndPush(route)
 
     fun handleBack(): Boolean = navigationStore.back()
 }

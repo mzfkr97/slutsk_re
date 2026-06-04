@@ -12,7 +12,7 @@ sealed interface AppRoute : Route {
     val instanceId: String
 
     @Serializable
-    data class Home(
+    data class Onboarding(
         override val instanceId: String = UUID.randomUUID().toString(),
     ) : AppRoute
 }

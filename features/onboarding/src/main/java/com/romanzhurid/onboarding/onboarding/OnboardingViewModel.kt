@@ -1,4 +1,4 @@
-package com.romanzhurid.home.home
+package com.romanzhurid.onboarding.onboarding
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,14 +7,14 @@ import com.romanzhurid.common.progressdelegate.ProgressDelegate
 import com.romanzhurid.common.uistate.UiStateDelegate
 import com.romanzhurid.common.uistate.UiStateDelegateImpl
 import com.romanzhurid.domain.AppSettings
-import com.romanzhurid.home.home.HomeViewModel.Event
-import com.romanzhurid.home.home.HomeViewModel.UiState
+import com.romanzhurid.onboarding.onboarding.OnboardingViewModel.Event
+import com.romanzhurid.onboarding.onboarding.OnboardingViewModel.UiState
 import com.romanzhurid.navigation.AppRoute
-import com.romanzhurid.home.navigation.HomeFeatureRoute
+import com.romanzhurid.onboarding.navigation.OnboardingFeatureRoute
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class HomeViewModel(
+class OnboardingViewModel(
     private val appSettings: AppSettings,
     progressDelegate: ProgressDelegate,
 ) : ViewModel(),
@@ -34,8 +34,8 @@ class HomeViewModel(
     )
 
     sealed interface Event {
-        data class OnNavigate(val destination: HomeFeatureRoute) :Event
-        data class OnOpenFeature(val destination: AppRoute) :Event
+        data class OnNavigate(val destination: OnboardingFeatureRoute) : Event
+        data class OnOpenFeature(val destination: AppRoute) : Event
     }
 
     //TODO Test impl

@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.romanzhurid.home"
+    namespace = "com.romanzhurid.onboarding"
     compileSdk {
         version = release(36) {
             minorApiLevel = 1
