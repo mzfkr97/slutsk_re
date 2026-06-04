@@ -1,7 +1,6 @@
 package com.romanzhurid.home.di
 
 import com.romanzhurid.domain.AppSettings
-import com.romanzhurid.navigation.featurehost.NavigationChannelProvider
 import com.romanzhurid.common.DispatcherProvider
 import com.romanzhurid.common.ExceptionsEmitter
 import com.romanzhurid.common.ProgressEmitter
@@ -15,5 +14,4 @@ interface HomeComponentDependencies {
     val dispatcherProvider: DispatcherProvider
     val progressDelegate: ProgressDelegate
     val appSettings: AppSettings
-    val navigationChannelProvider: NavigationChannelProvider
 }

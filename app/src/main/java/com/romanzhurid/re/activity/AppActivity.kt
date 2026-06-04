@@ -11,11 +11,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import com.romanzhurid.brandbook.components.errorbottomsheet.ErrorBottomSheet
@@ -27,6 +30,8 @@ import com.romanzhurid.common.uistate.collectUiState
 import com.romanzhurid.home.navigation.HomeFeatureHost
 import com.romanzhurid.navigation.AppNavDisplay
 import com.romanzhurid.navigation.AppRoute
+import com.romanzhurid.navigation.Route
+import com.romanzhurid.navigation.composition.LocalAppNavigator
 import com.romanzhurid.re.activity.MainActivityViewModel.*
 import com.romanzhurid.re.application.App
 import com.romanzhurid.re.ext.setSlideDownExitAnimation
@@ -61,13 +66,16 @@ class AppActivity : ComponentActivity() {
                     }
                 }
             }
-
-            AppTheme {
-                MainScreen(
-                    uiState = uiState,
-                    resetErrorState = viewModel::resetErrorState,
-                    activityBack = viewModel::activityBack,
-                )
+            CompositionLocalProvider(
+                LocalAppNavigator provides viewModel.getNavigator()
+            ) {
+                AppTheme {
+                    MainScreen(
+                        uiState = uiState,
+                        resetErrorState = viewModel::resetErrorState,
+                        activityBack = viewModel::activityBack,
+                    )
+                }
             }
         }
     }
@@ -83,6 +91,17 @@ fun MainScreen(
     resetErrorState: () -> Unit,
     activityBack: () -> Unit,
 ) {
+    val appEntryProvider = remember(Unit) {
+        lateinit var entryProvider: (Route) -> NavEntry<Route>
+
+        entryProvider = entryProvider {
+            entry<AppRoute.Home> { route ->
+                HomeFeatureHost(route)
+            }
+        }
+        entryProvider
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
         Scaffold(
             contentWindowInsets = WindowInsets(0, 0, 0, 0),
@@ -105,11 +124,7 @@ fun MainScreen(
                         rememberViewModelStoreNavEntryDecorator()
                     ),
                     onBack = activityBack,
-                    entryProvider = entryProvider {
-                        entry<AppRoute.Home> { route ->
-                            HomeFeatureHost(route)
-                        }
-                    }
+                    entryProvider = appEntryProvider
                 )
             }
         }

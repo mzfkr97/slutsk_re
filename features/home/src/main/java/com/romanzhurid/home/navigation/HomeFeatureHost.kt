@@ -16,10 +16,14 @@ import com.romanzhurid.home.home.HomeScreen
 import com.romanzhurid.home.home.HomeViewModel
 import com.romanzhurid.navigation.AppNavDisplay
 import com.romanzhurid.navigation.AppRoute
+import com.romanzhurid.navigation.composition.LocalAppNavigator
+import com.romanzhurid.navigation.composition.LocalBackHandler
 
 @Composable
 fun HomeFeatureHost(route: AppRoute.Home) {
     val context = LocalContext.current.applicationContext
+    val appNavigator = LocalAppNavigator.current
+    val parentBack = LocalBackHandler.current
 
     val component = remember(route.instanceId) {
         HomeComponentHolder.get(
@@ -35,20 +39,20 @@ fun HomeFeatureHost(route: AppRoute.Home) {
         }
     }
 
-    val factory = component.getHomeFeatureHostViewModelFactory()
-
-    val featureViewModel = viewModel<HomeFeatureHostViewModel>(
-        factory = factory,
-    )
+    val featureViewModel = viewModel<HomeFeatureHostViewModel>()
     val uiState by featureViewModel.collectUiState()
-
+    val onBack: () -> Unit = {
+        if (featureViewModel.handleBack().not()) {
+            parentBack()
+        }
+    }
     AppNavDisplay(
         backStack = uiState.backStack,
         entryDecorators = listOf(
             rememberSaveableStateHolderNavEntryDecorator(),
             rememberViewModelStoreNavEntryDecorator()
         ),
-        onBack = featureViewModel::onBack,
+        onBack = onBack,
         entryProvider = entryProvider {
             entry<HomeFeatureRoute.Home> {
                 val viewModel = viewModel<HomeViewModel>(
@@ -56,9 +60,9 @@ fun HomeFeatureHost(route: AppRoute.Home) {
                 )
                 HomeScreen(
                     viewModel = viewModel,
-                    openFeatureRoute = featureViewModel::openFeatureRoute,
-                    openAppRoute = featureViewModel::openAppRoute,
-                    onBack = featureViewModel::onBack,
+                    openFeatureRoute = featureViewModel::navigate,
+                    openAppRoute = appNavigator::navigate,
+                    onBack = onBack,
                 )
             }
         }

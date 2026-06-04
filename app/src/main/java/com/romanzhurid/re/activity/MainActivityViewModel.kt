@@ -12,28 +12,22 @@ import com.romanzhurid.common.uistate.UiStateDelegate
 import com.romanzhurid.common.uistate.UiStateDelegateImpl
 import com.romanzhurid.domain.AppSettings
 import com.romanzhurid.navigation.AppRoute
-import com.romanzhurid.navigation.BackStackStrategy
-import com.romanzhurid.navigation.featurehost.NavIntent
-import com.romanzhurid.navigation.featurehost.NavigationChannelProvider
-import com.romanzhurid.navigation.featurehost.NavigationDelegate
-import com.romanzhurid.navigation.featurehost.NavigationDelegateImpl
+import com.romanzhurid.navigation.navigator.AppNavigator
+import com.romanzhurid.navigation.navigator.AppNavigatorImpl
+import com.romanzhurid.navigation.navigator.NavigationStore
 import com.romanzhurid.re.activity.MainActivityViewModel.Event
 import com.romanzhurid.re.activity.MainActivityViewModel.UiState
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
 
 class MainActivityViewModel(
     private val appSettings: AppSettings,
     private val progressFlow: ProgressFlow,
     private val exceptionsFlow: ExceptionsFlow,
-    private val navigationChannelProvider: NavigationChannelProvider,
     res: ResourceProvider,
 ) : ViewModel(),
-    NavigationDelegate<AppRoute> by NavigationDelegateImpl(
-        navigationChannelProvider = navigationChannelProvider,
-        initialRouteProvider = { emptyList()}
-    ),
     UiStateDelegate<UiState, Event> by UiStateDelegateImpl(UiState()),
     ResourceProvider by res {
 
@@ -47,21 +41,41 @@ class MainActivityViewModel(
         data object Finish : Event
     }
 
+    private val navigationStore = NavigationStore<AppRoute>(
+        initialStack = emptyList()
+    )
+
+    private val appNavigator: AppNavigator = AppNavigatorImpl(navigationStore)
+
+    val backStack: StateFlow<List<AppRoute>> = navigationStore.backStack
+
+    fun getNavigator(): AppNavigator = appNavigator
+
     init {
-        replaceBackStack(resolveBackStack())
+        initNavigation()
         observeNavigation()
         observeProgress()
         observeExceptions()
-        observeNavigationChannel()
+    }
+
+    private fun initNavigation() {
+        viewModelScope.launch {
+            val startStack = resolveBackStack()
+
+            if (startStack.isNotEmpty()) {
+                appNavigator.clearAndPush(startStack.first())
+                startStack.drop(1).forEach(appNavigator::navigate)
+            }
+        }
     }
 
     private fun resolveBackStack(): List<AppRoute> {
         return when {
             appSettings.isFirstAppStart -> {
-                listOf(AppRoute.Home(backStackStrategy = BackStackStrategy.CLEAR))
+                listOf(AppRoute.Home())
             }
             else -> {
-                listOf(AppRoute.Home(backStackStrategy = BackStackStrategy.CLEAR))
+                listOf(AppRoute.Home())
             }
         }
     }
@@ -70,23 +84,6 @@ class MainActivityViewModel(
         backStack
             .onEach { stack ->
                 updateUiState { it.copy(backStack = stack) }
-            }
-            .launchIn(viewModelScope)
-    }
-
-    private fun observeNavigationChannel() {
-        navigationChannelProvider
-            .navigationChannel
-            .receiveAsFlow()
-            .onEach { destination ->
-                when (destination) {
-                    is NavIntent.OpenFeature -> {
-                        openFeatureRoute(destination.appRoute)
-                    }
-                    NavIntent.Back -> {
-                        activityBack()
-                    }
-                }
             }
             .launchIn(viewModelScope)
     }
@@ -128,7 +125,7 @@ class MainActivityViewModel(
     }
 
     fun activityBack() {
-        if (handleBack().not()) {
+        if (appNavigator.back().not()) {
             viewModelScope.sendEvent(Event.Finish)
         }
     }

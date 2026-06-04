@@ -1,6 +1,5 @@
 package com.romanzhurid.home.di
 
-import com.romanzhurid.home.navigation.HomeFeatureHostViewModelFactory
 import com.romanzhurid.home.home.HomeViewModelFactory
 import dagger.Component
 
@@ -9,8 +8,6 @@ import dagger.Component
     dependencies = [HomeComponentDependencies::class]
 )
 interface HomeComponent {
-
-    fun getHomeFeatureHostViewModelFactory(): HomeFeatureHostViewModelFactory
     fun getHomeViewModelFactory(): HomeViewModelFactory
 
     companion object {
