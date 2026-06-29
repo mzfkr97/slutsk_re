@@ -4,6 +4,9 @@ import android.content.Context
 import com.romanzhurid.common.di.CommonFeatureModule
 import com.romanzhurid.common.di.CommonToolsModule
 import com.romanzhurid.data.di.CoreDataModule
+import com.romanzhurid.home.di.HomeComponentDependencies
+import com.romanzhurid.currencies.di.CurrencyComponentDependencies
+import com.romanzhurid.domain.currencies.interactor.CurrenciesInteractor
 import com.romanzhurid.onboarding.di.OnboardingComponentDependencies
 import com.romanzhurid.re.activity.AppActivity
 import dagger.BindsInstance
@@ -20,7 +23,9 @@ import javax.inject.Singleton
     ]
 )
 interface AppComponent :
-    OnboardingComponentDependencies  {
+    OnboardingComponentDependencies,
+    HomeComponentDependencies,
+    CurrencyComponentDependencies {
 
     fun inject(activity: AppActivity)
 

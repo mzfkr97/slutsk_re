@@ -6,12 +6,14 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 import com.romanzhurid.data.BuildConfig
 import com.romanzhurid.domain.AppSettings
+import com.romanzhurid.data.di.module.CurrencyDataModule
+import com.romanzhurid.data.di.module.DatabaseModule
 import com.romanzhurid.data.settings.AppSettingsImpl
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
-@Module
+@Module(includes = [RetrofitModule::class, CurrencyDataModule::class, DatabaseModule::class])
 class CoreDataModule {
 
     @Singleton

@@ -1,13 +1,12 @@
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.android.built.in1.kotlin)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.detekt.plugin)
 }
 
 android {
-    namespace = "com.romanzhurid.re"
+    namespace = "com.romanzhurid.currencies"
     compileSdk {
         version = release(36) {
             minorApiLevel = 1
@@ -15,19 +14,9 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.romanzhurid.re"
         minSdk = 30
-        targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -35,40 +24,42 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
     }
 }
 
 dependencies {
-    implementation(project(":navigation"))
     implementation(project(":brandbook"))
-
     implementation(project(":features:common"))
-    implementation(project(":features:onboarding"))
-    implementation(project(":features:home"))
-    implementation(project(":features:currencies"))
-
+    implementation(project(":navigation"))
     implementation(project(":core:domain"))
-    implementation(project(":core:data"))
 
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.core.splashscreen)
-
+    implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
+
     implementation(platform(libs.androidx.compose.bom))
+
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.foundation)
 
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+    implementation(libs.androidx.compose.material.icons.extended)
+    implementation(libs.material.pullrefresh)
 
     implementation(libs.dagger)
     ksp(libs.dagger.compiler)
 
     implementation(libs.bundles.androidx.nav3)
+    implementation(libs.kotlinx.serialization.json)
 
-    debugImplementation(libs.androidx.compose.ui.tooling)
-    detektPlugins(libs.detekt.formatting)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
 }

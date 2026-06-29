@@ -14,6 +14,7 @@
         android:supportsRtl="true"
         android:name=".application.App"
         android:theme="@style/Theme.SlutskRe"
+        android:usesCleartextTraffic="true"
         >
         <activity
             android:name=".activity.AppActivity"

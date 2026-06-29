@@ -29,6 +29,8 @@ import com.romanzhurid.common.ProgressState
 import com.romanzhurid.common.uistate.CollectEventEffect
 import com.romanzhurid.common.uistate.collectUiState
 import com.romanzhurid.onboarding.navigation.OnboardingFeatureHost
+import com.romanzhurid.home.navigation.HomeFeatureHost
+import com.romanzhurid.currencies.navigation.CurrencyFeatureHost
 import com.romanzhurid.navigation.AppNavDisplay
 import com.romanzhurid.navigation.AppRoute
 import com.romanzhurid.navigation.Route
@@ -95,11 +97,8 @@ fun MainScreen(
     val appEntryProvider = remember {
         entryProvider<Route> {
             entry<AppRoute.Onboarding> { OnboardingFeatureHost(it) }
-            entry<AppRoute.Home> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("Home Screen Placeholder")
-                }
-            }
+            entry<AppRoute.Home> { HomeFeatureHost(it) }
+            entry<AppRoute.Currencies> { CurrencyFeatureHost(it) }
         }
     }
 

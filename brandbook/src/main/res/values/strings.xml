@@ -22,4 +22,23 @@
     <string name="onboarding__next">Next</string>
     <string name="onboarding__get_started">Get Started</string>
     <string name="onboarding__skip">Skip</string>
+
+    <!-- Home -->
+    <string name="home__title">Home</string>
+    <!-- Screen titles -->
+    <string name="currencies_screen_title">Курсы валют</string>
+
+    <!-- Update time -->
+    <string name="currencies_last_update_prefix">Последнее обновление: </string>
+    <string name="currencies_loading">Загрузка...</string>
+    <string name="currencies_update_just_now">Только что</string>
+    <string name="currencies_update_minutes_ago">%d мин назад</string>
+    <string name="currencies_update_hours_ago">%d ч назад</string>
+    <string name="currencies_update_time_unknown">Неизвестно</string>
+
+    <!-- Currency info labels -->
+    <string name="currency_info_code">Код валюты</string>
+    <string name="currency_info_units">Единиц</string>
+    <string name="currency_info_rate">Официальный курс</string>
+
 </resources>

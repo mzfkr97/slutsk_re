@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.android.built.in1.kotlin)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -20,6 +21,14 @@ android {
 
         buildConfigField("String", "PREF_PACKAGE_NAME", "\"app_prefs\"")
         buildConfigField("String", "PREF_IS_FIRST_APP_START", "\"pref_is_first_app_start\"")
+        buildConfigField("String", "YANDEX_BASE_API", "\"https://api.rasp.yandex.net/\"")
+        buildConfigField("String", "YANDEX_MAP_API_KEY", "\"d1b6393c-5711-4d92-af7a-feefe51fa57a\"")
+        buildConfigField("String", "CINEMA_URL", "\"https://api.megamag.by\"")
+        buildConfigField("String", "BASE_URL_WHEATHER", "\"http://api.openweathermap.org/data/2.5/\"")
+        buildConfigField("String", "KEY_WEATHER_API", "\"7893b0fde7d34a64a7706039929369ce\"")
+        buildConfigField("String", "CURRENCY_URL", "\"https://www.nbrb.by/\"")
+        buildConfigField("String", "BELARUSBANK_URL", "\"http://belarusbank.by/\"")
+        buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:8080/\"")
     }
 
     buildFeatures {
@@ -48,8 +57,9 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.security.crypto)
 
-    implementation(libs.retrofit)
-    implementation(libs.okhttp.logging.interceptor)
+    api(libs.retrofit)
+    api(libs.retrofit.kotlinx.serialization.converter)
+    api(libs.okhttp.logging.interceptor)
 
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
@@ -58,5 +68,5 @@ dependencies {
     implementation(libs.dagger)
     ksp(libs.dagger.compiler)
 
-    implementation(libs.kotlinx.serialization.json)
+    api(libs.kotlinx.serialization.json)
 }

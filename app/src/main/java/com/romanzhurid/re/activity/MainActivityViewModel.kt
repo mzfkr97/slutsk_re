@@ -1,5 +1,6 @@
 package com.romanzhurid.re.activity
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.romanzhurid.brandbook.R
@@ -106,6 +107,7 @@ class MainActivityViewModel(
             title = getString(R.string.common__error),
             message = error.message ?: getString(R.string.common__error_something_went_wrong)
         )
+        Log.d("TAG", "handleException: $errorState")
         updateUiState {
             it.copy(
                 errorState = errorState
