@@ -12,9 +12,7 @@ interface NavigationDelegate<R> {
     fun back(): Boolean
 }
 
-class NavigationDelegateImpl<R : AppRoute>(
-    initialStack: List<R>
-) : NavigationDelegate<R> {
+class NavigationDelegateImpl<R : AppRoute>(initialStack: List<R>) : NavigationDelegate<R> {
 
     private val navigationStore = NavigationStore(
         initialStack = initialStack
