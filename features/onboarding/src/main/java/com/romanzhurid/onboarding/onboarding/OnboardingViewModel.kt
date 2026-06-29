@@ -2,18 +2,15 @@ package com.romanzhurid.onboarding.onboarding
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.romanzhurid.brandbook.R
 import com.romanzhurid.common.progressdelegate.ProgressDelegate
 import com.romanzhurid.common.uistate.UiStateDelegate
 import com.romanzhurid.common.uistate.UiStateDelegateImpl
 import com.romanzhurid.domain.AppSettings
+import com.romanzhurid.navigation.AppRoute
+import com.romanzhurid.onboarding.model.IntroPage
 import com.romanzhurid.onboarding.onboarding.OnboardingViewModel.Event
 import com.romanzhurid.onboarding.onboarding.OnboardingViewModel.UiState
-import com.romanzhurid.navigation.AppRoute
-import com.romanzhurid.onboarding.navigation.OnboardingFeatureRoute
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.seconds
 
 class OnboardingViewModel(
     private val appSettings: AppSettings,
@@ -22,39 +19,19 @@ class OnboardingViewModel(
     UiStateDelegate<UiState, Event> by UiStateDelegateImpl(UiState()),
     ProgressDelegate by progressDelegate {
 
-    private val exceptionHandler = viewModelScope.exceptionHandler() {
-        updateUiState { state ->
-            state.copy(
-                isNextActionEnabled = false,
-            )
-        }
-    }
-
     data class UiState(
+        val pages: List<IntroPage> = IntroPage.getPages(),
         val isNextActionEnabled: Boolean = false
     )
 
     sealed interface Event {
-        data class OnNavigate(val destination: OnboardingFeatureRoute) : Event
-        data class OnOpenFeature(val destination: AppRoute) : Event
+        data class OnClearAndPush(val destination: AppRoute) : Event
     }
 
-    //TODO Test impl
-    fun isNextActionChangedClicked() {
-        updateUiState { state ->
-            state.copy(
-                isNextActionEnabled = stateValue.isNextActionEnabled.not(),
-            )
-        }
-    }
-
-    fun onSignInClick() {
-        viewModelScope.launch(exceptionHandler) {
-            showProgress(R.string.common__continue)
-
-            delay(1.seconds)
-
-            throw IllegalStateException("Exception onSignInClick")
+    fun onFinishIntro() {
+        viewModelScope.launch {
+            appSettings.isFirstAppStart = false
+            sendEvent(Event.OnClearAndPush(AppRoute.Home()))
         }
     }
 }

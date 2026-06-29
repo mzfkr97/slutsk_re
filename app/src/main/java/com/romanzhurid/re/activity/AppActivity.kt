@@ -10,15 +10,16 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
-import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import com.romanzhurid.brandbook.components.errorbottomsheet.ErrorBottomSheet
@@ -91,15 +92,15 @@ fun MainScreen(
     resetErrorState: () -> Unit,
     activityBack: () -> Unit,
 ) {
-    val appEntryProvider = remember(Unit) {
-        lateinit var entryProvider: (Route) -> NavEntry<Route>
-
-        entryProvider = entryProvider {
-            entry<AppRoute.Onboarding> { route ->
-                OnboardingFeatureHost(route)
+    val appEntryProvider = remember {
+        entryProvider<Route> {
+            entry<AppRoute.Onboarding> { OnboardingFeatureHost(it) }
+            entry<AppRoute.Home> {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text("Home Screen Placeholder")
+                }
             }
         }
-        entryProvider
     }
 
     Box(modifier = Modifier.fillMaxSize()) {

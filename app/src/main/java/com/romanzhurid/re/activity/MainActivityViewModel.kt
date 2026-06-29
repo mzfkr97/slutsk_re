@@ -70,13 +70,10 @@ class MainActivityViewModel(
     }
 
     private fun resolveBackStack(): List<AppRoute> {
-        return when {
-            appSettings.isFirstAppStart -> {
-                listOf(AppRoute.Onboarding())
-            }
-            else -> {
-                listOf(AppRoute.Onboarding())
-            }
+        return if (appSettings.isFirstAppStart) {
+            listOf(AppRoute.Onboarding())
+        } else {
+            listOf(AppRoute.Home())
         }
     }
 
