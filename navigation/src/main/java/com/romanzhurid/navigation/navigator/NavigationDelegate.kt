@@ -8,6 +8,7 @@ interface NavigationDelegate<R> {
 
     fun navigate(route: R)
     fun clearAndPush(route: R)
+    fun clearAndPush(route: List<R>)
     fun back(): Boolean
 }
 
@@ -27,6 +28,10 @@ class NavigationDelegateImpl<R : AppRoute>(
     }
 
     override fun clearAndPush(route: R) {
+        navigationStore.clearAndPush(route)
+    }
+
+    override fun clearAndPush(route: List<R>) {
         navigationStore.clearAndPush(route)
     }
 

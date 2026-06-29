@@ -7,6 +7,9 @@ import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavEntryDecorator
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import com.romanzhurid.navigation.animation.popTransitionSpec
+import com.romanzhurid.navigation.animation.predictiveTransitionSpec
+import com.romanzhurid.navigation.animation.transitionSpec
 import com.romanzhurid.navigation.composition.LocalBackHandler
 
 @Composable

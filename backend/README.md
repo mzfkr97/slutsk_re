@@ -31,9 +31,28 @@
 
 ## API Endpoints
 
+### Получение расписания
 - `GET /` — Проверка статуса сервера.
-- `GET /schedule` — Получение текущего расписания автобусов.
-- `GET /schedule/{id}` — Получение информации о конкретном рейсе.
+- `GET /schedule` — Получение всех расписаний автобусов.
+- `GET /schedule/{id}` — Получение информации о конкретном рейсе по ID.
+- `GET /schedule/bus/{number}` — Получение расписаний для конкретного номера автобуса.
+- `GET /schedule/station/{stationName}` — Получение расписаний для конкретной станции.
+
+### Примеры запросов
+
+```bash
+# Все расписания
+curl http://localhost:8080/schedule
+
+# По ID
+curl http://localhost:8080/schedule/1
+
+# По номеру автобуса
+curl http://localhost:8080/schedule/bus/2
+
+# По названию станции
+curl http://localhost:8080/schedule/station/Мясокомбинат
+```
 
 ## Разработка
 
@@ -59,4 +78,39 @@ java -jar backend-all.jar
 ```
 
 ## База данных
+
+### Структура backend модуля
+
+**Основные компоненты:**
+- `DatabaseFactory.kt` — инициализация и конфигурация БД
+- `Application.kt` — главное приложение Ktor
+- `models/BusSchedule.kt` — модель данных
+- `routing/` — обработка API маршрутов
+
+### Работа с базой данных
+
 Файл базы данных SQLite `app_database.db` должен находиться в корневой директории модуля при локальном запуске или рядом с JAR-файлом на сервере.
+
+#### Просмотр содержимого БД
+
+1. **Через терминал:**
+```bash
+cd backend
+sqlite3 app_database.db
+```
+
+2. **Основные команды SQLite:**
+```sql
+.tables           -- список таблиц
+.schema           -- структура всех таблиц
+.mode column      -- красивый вывод
+SELECT * FROM table_name;  -- содержимое таблицы
+.quit             -- выход
+```
+
+3. **Примеры:**
+```bash
+sqlite3 backend/app_database.db ".tables"
+sqlite3 backend/app_database.db ".schema"
+sqlite3 backend/app_database.db "SELECT * FROM bus_schedule LIMIT 10;"
+```

@@ -28,6 +28,10 @@ class NavigationStore<T : Route>(initialStack: List<T>) {
         _backStack.update { listOf(route) }
     }
 
+    fun clearAndPush(route: List<T>) {
+        _backStack.update { route }
+    }
+
     fun back(): Boolean {
         val current = _backStack.value
         return if (current.size > 1) {

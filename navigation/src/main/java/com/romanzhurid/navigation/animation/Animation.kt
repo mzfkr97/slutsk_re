@@ -1,4 +1,4 @@
-package com.romanzhurid.navigation
+package com.romanzhurid.navigation.animation
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.ContentTransform

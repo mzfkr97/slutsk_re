@@ -24,7 +24,7 @@ import com.romanzhurid.onboarding.onboarding.OnboardingViewModel.Event
 import com.romanzhurid.onboarding.onboarding.OnboardingViewModel.UiState
 
 @Composable
-fun OnboardingScreen(
+internal fun OnboardingScreen(
     viewModel: OnboardingViewModel,
     openAppRoute: (AppRoute) -> Unit,
     openFeatureRoute: (OnboardingFeatureRoute) -> Unit,
