@@ -13,6 +13,7 @@ import com.romanzhurid.navigation.AppRoute
 import com.romanzhurid.onboarding.navigation.OnboardingFeatureRoute
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 
 class OnboardingViewModel(
     private val appSettings: AppSettings,
@@ -51,7 +52,7 @@ class OnboardingViewModel(
         viewModelScope.launch(exceptionHandler) {
             showProgress(R.string.common__continue)
 
-            delay(1000)
+            delay(1.seconds)
 
             throw IllegalStateException("Exception onSignInClick")
         }

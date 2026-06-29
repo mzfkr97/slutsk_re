@@ -19,6 +19,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "PREF_PACKAGE_NAME", "\"app_prefs\"")
+        buildConfigField("String", "PREF_IS_FIRST_APP_START", "\"pref_is_first_app_start\"")
     }
 
     buildFeatures {
