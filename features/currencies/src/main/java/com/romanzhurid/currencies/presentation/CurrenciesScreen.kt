@@ -37,13 +37,14 @@ import com.romanzhurid.brandbook.theme.AppTheme
 import com.romanzhurid.common.uistate.collectUiState
 import com.romanzhurid.currencies.model.CurrencyItem
 import androidx.compose.foundation.lazy.items
+import com.romanzhurid.navigation.composition.LocalBackHandler
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CurrenciesScreen(
     viewModel: CurrenciesViewModel,
-    onBack: () -> Boolean
 ) {
+    val onBack = LocalBackHandler.current
     val uiState by viewModel.collectUiState()
     val isRefreshing = uiState.isLoading
     val pullRefreshState = rememberPullRefreshState(
