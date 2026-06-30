@@ -2,6 +2,8 @@ package com.romanzhurid.currencies.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -15,6 +17,7 @@ import com.romanzhurid.currencies.presentation.CurrenciesViewModel
 import com.romanzhurid.navigation.AppNavDisplay
 import com.romanzhurid.navigation.AppRoute
 import com.romanzhurid.navigation.composition.LocalBackHandler
+import com.romanzhurid.navigation.navigator.NavigatorImpl
 
 @Composable
 fun CurrencyFeatureHost(route: AppRoute.Currencies) {
@@ -35,15 +38,28 @@ fun CurrencyFeatureHost(route: AppRoute.Currencies) {
         }
     }
 
-    val featureViewModel = viewModel<CurrencyFeatureHostViewModel>()
-    val onBack: () -> Unit = {
-        if (featureViewModel.back().not()) {
-            parentBack()
+    val navigator = remember(route.instanceId) {
+        NavigatorImpl<CurrencyFeatureRoute>(
+            initialStack = listOf(CurrencyFeatureRoute.Currencies)
+        )
+    }
+
+    val backStack by remember(route.instanceId) {
+        derivedStateOf { navigator.backStack.toList() }
+    }
+
+    val onBack = remember(navigator, parentBack) {
+        {
+            if (navigator.back()) {
+                true
+            } else {
+                parentBack()
+            }
         }
     }
 
     AppNavDisplay(
-        backStackFlow = featureViewModel.backStack,
+        backStack = backStack,
         entryDecorators = listOf(
             rememberSaveableStateHolderNavEntryDecorator(),
             rememberViewModelStoreNavEntryDecorator()

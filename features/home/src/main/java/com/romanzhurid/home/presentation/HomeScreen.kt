@@ -12,11 +12,11 @@ import androidx.compose.ui.res.stringResource
 import com.romanzhurid.brandbook.components.toolbar.AppToolbar
 import com.romanzhurid.brandbook.R
 import com.romanzhurid.navigation.AppRoute
-import com.romanzhurid.navigation.composition.LocalAppNavigator
+import com.romanzhurid.navigation.composition.LocalNavigator
 
 @Composable
 fun HomeScreen() {
-    val navigator = LocalAppNavigator.current
+    val navigator = LocalNavigator.current
     Scaffold(
         topBar = {
             AppToolbar(

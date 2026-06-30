@@ -1,8 +1,10 @@
 package com.romanzhurid.navigation.composition
 
 import androidx.compose.runtime.staticCompositionLocalOf
-import com.romanzhurid.navigation.navigator.AppNavigator
+import com.romanzhurid.navigation.AppRoute
+import com.romanzhurid.navigation.navigator.Navigator
 
-val LocalAppNavigator = staticCompositionLocalOf<AppNavigator> {
-    error("No AppNavigator provided")
+val LocalNavigator = staticCompositionLocalOf<Navigator<AppRoute>> {
+    error("Navigator not provided")
 }
+

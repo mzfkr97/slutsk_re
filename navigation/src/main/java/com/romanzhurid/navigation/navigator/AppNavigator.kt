@@ -1,29 +1,64 @@
 package com.romanzhurid.navigation.navigator
 
-import com.romanzhurid.navigation.AppRoute
+import androidx.compose.runtime.mutableStateListOf
 
-interface AppNavigator {
-    fun navigate(route: AppRoute)
-    fun replace(route: AppRoute)
-    fun clearAndPush(route: AppRoute)
+interface Navigator<R> {
+    val backStack: List<R>
+    fun navigate(route: R)
+    fun replace(route: R)
+    fun setStack(routes: List<R>)
     fun back(): Boolean
 }
 
-class AppNavigatorImpl(private val store: NavigationStore<AppRoute>) : AppNavigator {
+val Navigator<*>.isReady: Boolean
+    get() = backStack.isNotEmpty()
 
-    override fun navigate(route: AppRoute) {
-        store.navigate(route)
+class NavigatorImpl<R>(
+    initialStack: List<R>
+) : Navigator<R> {
+
+    private val _backStack = mutableStateListOf<R>().apply {
+        addAll(initialStack)
     }
 
-    override fun replace(route: AppRoute) {
-        store.replace(route)
+    private var lastNavigationTime = 0L
+
+    override val backStack: List<R>
+        get() = _backStack
+
+    override fun navigate(route: R) {
+        if (isDuplicate(route)) return
+
+        _backStack.add(route)
+        lastNavigationTime = System.currentTimeMillis()
     }
 
-    override fun clearAndPush(route: AppRoute) {
-        store.clearAndPush(route)
+    private fun isDuplicate(route: R): Boolean {
+        val now = System.currentTimeMillis()
+
+        val tooFast = now - lastNavigationTime < 300
+        val sameRoute = _backStack.lastOrNull() == route
+
+        return tooFast && sameRoute
+    }
+
+    override fun replace(route: R) {
+        if (_backStack.isEmpty()) {
+            _backStack.add(route)
+        } else {
+            _backStack[_backStack.lastIndex] = route
+        }
+    }
+
+    override fun setStack(routes: List<R>) {
+        _backStack.clear()
+        _backStack.addAll(routes)
     }
 
     override fun back(): Boolean {
-        return store.back()
+        if (_backStack.size <= 1) return false
+
+        _backStack.removeAt(_backStack.lastIndex)
+        return true
     }
 }

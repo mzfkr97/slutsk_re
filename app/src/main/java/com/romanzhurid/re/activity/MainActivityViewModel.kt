@@ -13,15 +13,10 @@ import com.romanzhurid.common.uistate.UiStateDelegate
 import com.romanzhurid.common.uistate.UiStateDelegateImpl
 import com.romanzhurid.domain.AppSettings
 import com.romanzhurid.navigation.AppRoute
-import com.romanzhurid.navigation.navigator.AppNavigator
-import com.romanzhurid.navigation.navigator.AppNavigatorImpl
-import com.romanzhurid.navigation.navigator.NavigationStore
 import com.romanzhurid.re.activity.MainActivityViewModel.Event
 import com.romanzhurid.re.activity.MainActivityViewModel.UiState
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 
 class MainActivityViewModel(
     private val appSettings: AppSettings,
@@ -42,48 +37,21 @@ class MainActivityViewModel(
         data object Finish : Event
     }
 
-    private val navigationStore = NavigationStore<AppRoute>(
-        initialStack = emptyList()
-    )
-
-    private val appNavigator: AppNavigator = AppNavigatorImpl(navigationStore)
-
-    val backStack: StateFlow<List<AppRoute>> = navigationStore.backStack
-
-    fun getNavigator(): AppNavigator = appNavigator
-
     init {
-        initNavigation()
-        observeNavigation()
         observeProgress()
         observeExceptions()
     }
 
-    private fun initNavigation() {
-        viewModelScope.launch {
-            val startStack = resolveBackStack()
-
-            if (startStack.isNotEmpty()) {
-                appNavigator.clearAndPush(startStack.first())
-                startStack.drop(1).forEach(appNavigator::navigate)
-            }
-        }
+    fun finish() {
+        viewModelScope.sendEvent(Event.Finish)
     }
 
-    private fun resolveBackStack(): List<AppRoute> {
+    fun resolveBackStack(): List<AppRoute> {
         return if (appSettings.isFirstAppStart) {
             listOf(AppRoute.Onboarding())
         } else {
             listOf(AppRoute.Home())
         }
-    }
-
-    private fun observeNavigation() {
-        backStack
-            .onEach { stack ->
-                updateUiState { it.copy(backStack = stack) }
-            }
-            .launchIn(viewModelScope)
     }
 
     private fun observeProgress() {
@@ -120,12 +88,6 @@ class MainActivityViewModel(
             it.copy(
                 errorState = null
             )
-        }
-    }
-
-    fun activityBack() {
-        if (appNavigator.back().not()) {
-            viewModelScope.sendEvent(Event.Finish)
         }
     }
 }

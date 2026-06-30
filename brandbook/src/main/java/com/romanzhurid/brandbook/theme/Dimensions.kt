@@ -9,7 +9,7 @@ internal val LocalDimensions = staticCompositionLocalOf { Dimensions() }
 
 @Stable
 data class Dimensions(
-    val noDp: Dp = 0.dp,
+    val none: Dp = 0.dp,
     val micro: Dp = 1.dp,
     val xMicro: Dp = 2.dp,
     val xxMicro: Dp = 4.dp,

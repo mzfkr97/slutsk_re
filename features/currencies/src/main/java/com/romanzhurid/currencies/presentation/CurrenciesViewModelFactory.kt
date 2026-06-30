@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.romanzhurid.common.DispatcherProvider
 import com.romanzhurid.common.ResourceProvider
 import com.romanzhurid.common.progressdelegate.ProgressDelegate
+import com.romanzhurid.currencies.mapper.CurrencyUiMapper
 import com.romanzhurid.domain.currencies.interactor.CurrenciesInteractor
 import javax.inject.Inject
 
@@ -13,6 +14,7 @@ class CurrenciesViewModelFactory @Inject constructor(
     private val res: ResourceProvider,
     private val dispatcherProvider: DispatcherProvider,
     private val progressDelegate: ProgressDelegate,
+    private val currencyUiMapper: CurrencyUiMapper,
 ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
@@ -21,7 +23,8 @@ class CurrenciesViewModelFactory @Inject constructor(
             currenciesInteractor = currenciesInteractor,
             res = res,
             dispatcherProvider = dispatcherProvider,
-            progressDelegate = progressDelegate
+            progressDelegate = progressDelegate,
+            currencyUiMapper = currencyUiMapper
         ) as T
     }
 }

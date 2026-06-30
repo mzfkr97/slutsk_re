@@ -2,8 +2,7 @@ package com.romanzhurid.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavEntryDecorator
@@ -13,41 +12,27 @@ import com.romanzhurid.navigation.animation.popTransitionSpec
 import com.romanzhurid.navigation.animation.predictiveTransitionSpec
 import com.romanzhurid.navigation.animation.transitionSpec
 import com.romanzhurid.navigation.composition.LocalBackHandler
-import kotlinx.coroutines.flow.StateFlow
-
-@Composable
-fun <T : Any> AppNavDisplay(
-    modifier: Modifier = Modifier,
-    backStackFlow: StateFlow<List<T>>,
-    onBack: () -> Unit,
-    entryDecorators: List<NavEntryDecorator<T>> =
-        listOf(rememberSaveableStateHolderNavEntryDecorator()),
-    entryProvider: (key: T) -> NavEntry<T>,
-) {
-    val backStack by backStackFlow.collectAsState()
-    AppNavDisplay(
-        modifier = modifier,
-        backStack = backStack,
-        onBack = onBack,
-        entryDecorators = entryDecorators,
-        entryProvider = entryProvider
-    )
-}
 
 @Composable
 fun <T : Any> AppNavDisplay(
     modifier: Modifier = Modifier,
     backStack: List<T>,
-    onBack: () -> Unit,
+    onBack: () -> Boolean,
     entryDecorators: List<NavEntryDecorator<T>> =
         listOf(rememberSaveableStateHolderNavEntryDecorator()),
     entryProvider: (key: T) -> NavEntry<T>,
 ) {
-    CompositionLocalProvider(LocalBackHandler provides onBack) {
+    val backHandler = remember(onBack) { onBack }
+
+    CompositionLocalProvider(
+        LocalBackHandler provides backHandler
+    ) {
         NavDisplay(
-            backStack = backStack,
             modifier = modifier,
-            onBack = onBack,
+            backStack = backStack,
+            onBack = {
+                backHandler()
+            },
             entryDecorators = entryDecorators,
             transitionSpec = transitionSpec(),
             popTransitionSpec = popTransitionSpec(),

@@ -27,6 +27,8 @@
     <string name="home__title">Home</string>
     <!-- Screen titles -->
     <string name="currencies_screen_title">Курсы валют</string>
+    <string name="currencies_screen_favorite">Избранное</string>
+    <string name="currencies_screen_non_favorite">Все курсы</string>
 
     <!-- Update time -->
     <string name="currencies_last_update_prefix">Последнее обновление: </string>

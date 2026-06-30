@@ -34,7 +34,7 @@ fun AppToolbar(
     title: String,
     subtitle: String? = null,
     showBackBtn: Boolean = true,
-    onBack: (() -> Unit)? = null,
+    onBack: (() -> Boolean)? = null,
 ) {
     Box(
         modifier = Modifier
@@ -45,7 +45,7 @@ fun AppToolbar(
     ) {
         if (showBackBtn && onBack != null) {
             IconButton(
-                onClick = onBack,
+                onClick = { onBack() },
                 modifier = Modifier.align(Alignment.CenterStart)
             ) {
                 Icon(

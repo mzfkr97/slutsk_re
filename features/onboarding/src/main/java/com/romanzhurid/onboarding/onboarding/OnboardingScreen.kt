@@ -42,7 +42,7 @@ import kotlinx.coroutines.launch
 @Composable
 internal fun OnboardingScreen(
     viewModel: OnboardingViewModel,
-    clearAndPushAppRoute: (AppRoute) -> Unit,
+    onFinished: (AppRoute) -> Unit,
 ) {
 
     val uiState by viewModel.collectUiState()
@@ -50,7 +50,7 @@ internal fun OnboardingScreen(
     viewModel.CollectEventEffect { event ->
         when (event) {
             is Event.OnClearAndPush -> {
-                clearAndPushAppRoute(event.destination)
+                onFinished(event.destination)
             }
         }
     }
