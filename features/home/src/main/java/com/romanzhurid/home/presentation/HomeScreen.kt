@@ -21,7 +21,7 @@ fun HomeScreen() {
     Scaffold(
         topBar = {
             AppToolbar(
-                title = stringResource(R.string.home__title),
+                title = R.string.home__title,
                 showBackBtn = false
             )
         }
