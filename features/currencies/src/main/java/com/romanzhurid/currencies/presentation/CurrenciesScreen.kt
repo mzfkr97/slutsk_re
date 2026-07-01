@@ -33,6 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.romanzhurid.brandbook.R
 import com.romanzhurid.brandbook.components.button.FavoriteButton
+import com.romanzhurid.brandbook.components.card.AppCard
 import com.romanzhurid.brandbook.components.toolbar.AppToolbarWithSearch
 import com.romanzhurid.brandbook.ext.DefaultPadding
 import com.romanzhurid.brandbook.ext.highlightText
@@ -152,18 +153,7 @@ fun CurrencyCard(
         AppTheme.colorScheme.outlineVariant
     }
 
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(AppTheme.dimensions.medium),
-        colors = CardDefaults.cardColors(
-            containerColor = AppTheme.colorScheme.surface
-        ),
-        elevation = CardDefaults.cardElevation(AppTheme.dimensions.xMicro),
-        border = BorderStroke(
-            width = AppTheme.dimensions.micro,
-            color = borderColor
-        )
-    ) {
+    AppCard(borderColor = borderColor) {
         Column(
             modifier = Modifier.padding(AppTheme.dimensions.medium),
             verticalArrangement = Arrangement.spacedBy(AppTheme.dimensions.small)
