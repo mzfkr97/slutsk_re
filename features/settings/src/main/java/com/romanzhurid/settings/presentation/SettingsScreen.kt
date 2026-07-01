@@ -3,11 +3,13 @@ package com.romanzhurid.settings.presentation
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -60,7 +62,8 @@ fun SettingsScreen(
                 )
                 Checkbox(
                     checked = uiState.isDarkTheme,
-                    onCheckedChange = { viewModel.onThemeChanged(it) }
+                    onCheckedChange = { viewModel.onThemeChanged(it) },
+                    interactionSource = remember { MutableInteractionSource() },
                 )
             }
         }
