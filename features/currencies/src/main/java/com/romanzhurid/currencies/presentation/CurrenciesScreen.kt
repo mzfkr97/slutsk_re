@@ -32,11 +32,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.romanzhurid.brandbook.R
 import com.romanzhurid.brandbook.components.button.FavoriteButton
-import com.romanzhurid.brandbook.components.toolbar.AppToolbar
 import com.romanzhurid.brandbook.theme.AppTheme
 import com.romanzhurid.common.uistate.collectUiState
 import com.romanzhurid.currencies.model.CurrencyItem
 import androidx.compose.foundation.lazy.items
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
+import com.romanzhurid.brandbook.components.toolbar.AppToolbarWithSearch
 import com.romanzhurid.navigation.composition.LocalBackHandler
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -53,9 +57,13 @@ fun CurrenciesScreen(
     )
     Scaffold(
         topBar = {
-            AppToolbar(
+            AppToolbarWithSearch(
                 title = stringResource(R.string.currencies_screen_title),
-                onBack = onBack
+                query = uiState.searchQuery,
+                onQueryChange = {
+                    viewModel.searchItem(it)
+                },
+                onBack = { onBack.invoke() }
             )
         }
     ) { paddingValues ->
@@ -100,6 +108,7 @@ fun CurrenciesScreen(
                                     )
                                     .animateItem(),
                                 currency = item,
+                                query = uiState.searchQuery,
                                 onToggleFavorite = {
                                     viewModel.onToggleFavorite(item.id)
                                 }
@@ -123,11 +132,11 @@ fun CurrenciesScreen(
 fun SectionHeader(title: String) {
     Text(
         text = title,
-        style = MaterialTheme.typography.labelMedium,
-        color = MaterialTheme.colorScheme.primary,
+        style = AppTheme.typography.labelMedium,
+        color = AppTheme.colorScheme.primary,
         modifier = Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.primaryContainer)
+            .background(AppTheme.colorScheme.primaryContainer)
             .padding(
                 horizontal = AppTheme.dimensions.medium,
                 vertical = AppTheme.dimensions.small
@@ -136,9 +145,42 @@ fun SectionHeader(title: String) {
 }
 
 @Composable
+fun highlightText(
+    text: String,
+    query: String
+): AnnotatedString {
+    if (query.isBlank()) return AnnotatedString(text)
+
+    val lowerText = text.lowercase()
+    val lowerQuery = query.lowercase()
+
+    val startIndex = lowerText.indexOf(lowerQuery)
+
+    if (startIndex == -1) return AnnotatedString(text)
+
+    val endIndex = startIndex + query.length
+
+    return buildAnnotatedString {
+        append(text.substring(0, startIndex))
+
+        withStyle(
+            style = SpanStyle(
+                color = AppTheme.colorScheme.primary,
+                fontWeight = FontWeight.Bold
+            )
+        ) {
+            append(text.substring(startIndex, endIndex))
+        }
+
+        append(text.substring(endIndex))
+    }
+}
+
+@Composable
 fun CurrencyCard(
     modifier: Modifier,
     currency: CurrencyItem.CurrencyUi,
+    query: String,
     onToggleFavorite: () -> Unit
 ) {
     val borderColor = if (currency.isFavorite) {
@@ -166,11 +208,11 @@ fun CurrencyCard(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = currency.name,
+                        text = highlightText(currency.name, query),
                         style = AppTheme.typography.titleMedium
                     )
                     Text(
-                        text = currency.abbreviation,
+                        text = highlightText(currency.abbreviation, query),
                         style = AppTheme.typography.labelMedium,
                         color = AppTheme.colorScheme.onSurfaceVariant
                     )
@@ -191,15 +233,15 @@ fun CurrencyCard(
 @Composable
 private fun RateBadge(formattedRate: String, isFavorite: Boolean) {
     val color = if (isFavorite) {
-        MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
+        AppTheme.colorScheme.primary.copy(alpha = 0.12f)
     } else {
-        MaterialTheme.colorScheme.surfaceVariant
+        AppTheme.colorScheme.surfaceVariant
     }
 
     val textColor = if (isFavorite) {
-        MaterialTheme.colorScheme.primary
+        AppTheme.colorScheme.primary
     } else {
-        MaterialTheme.colorScheme.onSurfaceVariant
+        AppTheme.colorScheme.onSurfaceVariant
     }
 
     Box(
@@ -215,7 +257,7 @@ private fun RateBadge(formattedRate: String, isFavorite: Boolean) {
     ) {
         Text(
             text = formattedRate,
-            style = MaterialTheme.typography.labelLarge,
+            style = AppTheme.typography.labelLarge,
             fontWeight = FontWeight.SemiBold,
             color = textColor
         )

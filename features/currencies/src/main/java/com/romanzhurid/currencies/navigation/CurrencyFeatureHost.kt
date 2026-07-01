@@ -30,9 +30,7 @@ fun CurrencyFeatureHost(route: AppRoute.Currencies) {
                 val viewModel = viewModel<CurrenciesViewModel>(
                     factory = component.getCurrenciesViewModelFactory()
                 )
-                CurrenciesScreen(
-                    viewModel = viewModel,
-                )
+                CurrenciesScreen(viewModel)
             }
         }
     }

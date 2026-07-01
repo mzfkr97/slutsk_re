@@ -29,7 +29,9 @@ class CurrenciesViewModel(
     ProgressDelegate by progressDelegate {
 
     data class UiState(
+        val allCurrencies: List<CurrencyItem.CurrencyUi> = emptyList(),
         val currencies: List<CurrencyItem> = emptyList(),
+        val searchQuery: String = EMPTY_STRING,
         val lastUpdateTimeMs: String = EMPTY_STRING,
         val isLoading: Boolean = false
     )
@@ -43,6 +45,23 @@ class CurrenciesViewModel(
         loadCurrencies()
     }
 
+    fun searchItem(query: String) {
+        viewModelScope.launch(exceptionHandler) {
+
+            val newList = buildListWithHeaders(
+                query = query,
+                all = stateValue.allCurrencies
+            )
+
+            updateUiState {
+                it.copy(
+                    searchQuery = query,
+                    currencies = newList
+                )
+            }
+        }
+    }
+
     private fun observeCurrencies() {
         viewModelScope.launch(exceptionHandler) {
             currenciesInteractor
@@ -53,12 +72,63 @@ class CurrenciesViewModel(
                     }
                 }
                 .collect { mapped ->
+                    val onlyCurrencies = mapped.filterIsInstance<CurrencyItem.CurrencyUi>()
+
                     updateUiState {
                         it.copy(
-                            currencies = mapped,
+                            allCurrencies = onlyCurrencies,
+                            currencies = buildListWithHeaders(
+                                query = it.searchQuery,
+                                all = onlyCurrencies
+                            )
                         )
                     }
                 }
+        }
+    }
+
+    private fun buildListWithHeaders(
+        query: String,
+        all: List<CurrencyItem.CurrencyUi>
+    ): List<CurrencyItem> {
+
+        val favorites = all.filter { it.isFavorite }
+        val nonFavorites = all.filterNot { it.isFavorite }
+
+        return buildList {
+            if (favorites.isNotEmpty()) {
+                add(CurrencyItem.Header("Favorites"))
+                addAll(sortByQuery(favorites, query))
+            }
+            if (nonFavorites.isNotEmpty()) {
+                add(CurrencyItem.Header("All currencies"))
+                addAll(sortByQuery(nonFavorites, query))
+            }
+        }
+    }
+
+    private fun sortByQuery(
+        list: List<CurrencyItem.CurrencyUi>,
+        query: String
+    ): List<CurrencyItem.CurrencyUi> {
+
+        if (query.isBlank()) return list
+
+        return list.sortedWith(
+            compareByDescending { rank(it, query) }
+        )
+    }
+
+    private fun rank(item: CurrencyItem.CurrencyUi, query: String): Int {
+        val q = query.lowercase()
+        val name = item.name.lowercase()
+        val code = item.abbreviation.lowercase()
+
+        return when {
+            code.startsWith(q) -> 3
+            name.startsWith(q) -> 2
+            code.contains(q) || name.contains(q) -> 1
+            else -> 0
         }
     }
 
