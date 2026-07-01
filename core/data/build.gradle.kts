@@ -21,6 +21,7 @@ android {
 
         buildConfigField("String", "PREF_PACKAGE_NAME", "\"app_prefs\"")
         buildConfigField("String", "PREF_IS_FIRST_APP_START", "\"pref_is_first_app_start\"")
+        buildConfigField("String", "PREF_IS_DARK_THEME", "\"pref_is_dark_theme\"")
         buildConfigField("String", "YANDEX_BASE_API", "\"https://api.rasp.yandex.net/\"")
         buildConfigField("String", "YANDEX_MAP_API_KEY", "\"d1b6393c-5711-4d92-af7a-feefe51fa57a\"")
         buildConfigField("String", "CINEMA_URL", "\"https://api.megamag.by\"")

@@ -30,7 +30,8 @@ class MainActivityViewModel(
     data class UiState(
         val backStack: List<AppRoute>? = null,
         val progressState: ProgressState = ProgressState.Hide,
-        val errorState: ErrorState? = null
+        val errorState: ErrorState? = null,
+        val isDarkTheme: Boolean = false
     )
 
     sealed interface Event {
@@ -40,6 +41,15 @@ class MainActivityViewModel(
     init {
         observeProgress()
         observeExceptions()
+        observeTheme()
+    }
+
+    private fun observeTheme() {
+        appSettings.isDarkThemeFlow
+            .onEach { isDark ->
+                updateUiState { it.copy(isDarkTheme = isDark) }
+            }
+            .launchIn(viewModelScope)
     }
 
     fun finish() {

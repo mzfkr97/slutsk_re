@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.romanzhurid.currencies"
+    namespace = "com.romanzhurid.settings"
     compileSdk {
         version = release(36) {
             minorApiLevel = 1
@@ -53,7 +53,6 @@ dependencies {
     implementation(libs.androidx.compose.foundation)
 
     implementation(libs.androidx.compose.material.icons.extended)
-    implementation(libs.androidx.compose.material)
 
     implementation(libs.dagger)
     ksp(libs.dagger.compiler)

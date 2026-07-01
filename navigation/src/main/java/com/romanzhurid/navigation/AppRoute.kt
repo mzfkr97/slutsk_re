@@ -24,4 +24,9 @@ sealed interface AppRoute : Route {
     data class Currencies(
         override val instanceId: String = "currencies",
     ) : AppRoute
+
+    @Serializable
+    data class Settings(
+        override val instanceId: String = "settings",
+    ) : AppRoute
 }

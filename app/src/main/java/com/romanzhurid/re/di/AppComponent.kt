@@ -9,6 +9,7 @@ import com.romanzhurid.currencies.di.CurrencyComponentDependencies
 import com.romanzhurid.domain.currencies.interactor.CurrenciesInteractor
 import com.romanzhurid.onboarding.di.OnboardingComponentDependencies
 import com.romanzhurid.re.activity.AppActivity
+import com.romanzhurid.settings.di.SettingsComponentDependencies
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
@@ -25,7 +26,8 @@ import javax.inject.Singleton
 interface AppComponent :
     OnboardingComponentDependencies,
     HomeComponentDependencies,
-    CurrencyComponentDependencies {
+    CurrencyComponentDependencies,
+    SettingsComponentDependencies{
 
     fun inject(activity: AppActivity)
 

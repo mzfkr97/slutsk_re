@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
@@ -32,37 +33,32 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.romanzhurid.brandbook.R
 import com.romanzhurid.brandbook.components.button.FavoriteButton
+import com.romanzhurid.brandbook.components.toolbar.AppToolbarWithSearch
+import com.romanzhurid.brandbook.ext.DefaultPadding
+import com.romanzhurid.brandbook.ext.highlightText
 import com.romanzhurid.brandbook.theme.AppTheme
 import com.romanzhurid.common.uistate.collectUiState
 import com.romanzhurid.currencies.model.CurrencyItem
-import androidx.compose.foundation.lazy.items
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.withStyle
-import com.romanzhurid.brandbook.components.toolbar.AppToolbarWithSearch
+import com.romanzhurid.currencies.model.CurrencyItem.CurrencyUi
 import com.romanzhurid.navigation.composition.LocalBackHandler
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun CurrenciesScreen(
-    viewModel: CurrenciesViewModel,
-) {
+fun CurrenciesScreen(viewModel: CurrenciesViewModel) {
     val onBack = LocalBackHandler.current
     val uiState by viewModel.collectUiState()
     val isRefreshing = uiState.isLoading
+
     val pullRefreshState = rememberPullRefreshState(
         refreshing = isRefreshing,
-        onRefresh = { viewModel.loadCurrencies() }
+        onRefresh = viewModel::loadCurrencies
     )
     Scaffold(
         topBar = {
             AppToolbarWithSearch(
-                title = stringResource(R.string.currencies_screen_title),
+                title = stringResource(R.string.currencies__screen_title),
                 query = uiState.searchQuery,
-                onQueryChange = {
-                    viewModel.searchItem(it)
-                },
+                onQueryChange = viewModel::searchItem,
                 onBack = { onBack.invoke() }
             )
         }
@@ -84,13 +80,13 @@ fun CurrenciesScreen(
                     key = { item ->
                         when (item) {
                             is CurrencyItem.Header -> "header_${item.title}"
-                            is CurrencyItem.CurrencyUi -> "currency_${item.id}"
+                            is CurrencyUi -> "currency_${item.id}"
                         }
                     },
                     contentType = { item ->
                         when (item) {
                             is CurrencyItem.Header -> "header"
-                            is CurrencyItem.CurrencyUi -> "currency"
+                            is CurrencyUi -> "currency"
                         }
                     },
                 ) { item ->
@@ -98,8 +94,7 @@ fun CurrenciesScreen(
                         is CurrencyItem.Header -> {
                             SectionHeader(item.title)
                         }
-
-                        is CurrencyItem.CurrencyUi -> {
+                        is CurrencyUi -> {
                             CurrencyCard(
                                 modifier = Modifier
                                     .padding(
@@ -145,41 +140,9 @@ fun SectionHeader(title: String) {
 }
 
 @Composable
-fun highlightText(
-    text: String,
-    query: String
-): AnnotatedString {
-    if (query.isBlank()) return AnnotatedString(text)
-
-    val lowerText = text.lowercase()
-    val lowerQuery = query.lowercase()
-
-    val startIndex = lowerText.indexOf(lowerQuery)
-
-    if (startIndex == -1) return AnnotatedString(text)
-
-    val endIndex = startIndex + query.length
-
-    return buildAnnotatedString {
-        append(text.substring(0, startIndex))
-
-        withStyle(
-            style = SpanStyle(
-                color = AppTheme.colorScheme.primary,
-                fontWeight = FontWeight.Bold
-            )
-        ) {
-            append(text.substring(startIndex, endIndex))
-        }
-
-        append(text.substring(endIndex))
-    }
-}
-
-@Composable
 fun CurrencyCard(
     modifier: Modifier,
-    currency: CurrencyItem.CurrencyUi,
+    currency: CurrencyUi,
     query: String,
     onToggleFavorite: () -> Unit
 ) {
@@ -208,18 +171,29 @@ fun CurrencyCard(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = highlightText(currency.name, query),
+                        text = highlightText(
+                            text = currency.name,
+                            query = query
+                        ),
                         style = AppTheme.typography.titleMedium
                     )
                     Text(
-                        text = highlightText(currency.abbreviation, query),
+                        text = highlightText(
+                            text = currency.abbreviation,
+                            query = query
+                        ),
                         style = AppTheme.typography.labelMedium,
                         color = AppTheme.colorScheme.onSurfaceVariant
                     )
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    RateBadge(currency.officialRate, currency.isFavorite)
-                    Spacer(Modifier.width(AppTheme.dimensions.small))
+                    RateBadge(
+                        formattedRate = currency.officialRate,
+                        isFavorite = currency.isFavorite
+                    )
+
+                    DefaultPadding()
+
                     FavoriteButton(
                         isFavorite = currency.isFavorite,
                         onClick = onToggleFavorite
@@ -231,8 +205,11 @@ fun CurrencyCard(
 }
 
 @Composable
-private fun RateBadge(formattedRate: String, isFavorite: Boolean) {
-    val color = if (isFavorite) {
+private fun RateBadge(
+    formattedRate: String,
+    isFavorite: Boolean
+) {
+    val backgroundColor = if (isFavorite) {
         AppTheme.colorScheme.primary.copy(alpha = 0.12f)
     } else {
         AppTheme.colorScheme.surfaceVariant
@@ -247,7 +224,7 @@ private fun RateBadge(formattedRate: String, isFavorite: Boolean) {
     Box(
         modifier = Modifier
             .background(
-                color = color,
+                color = backgroundColor,
                 shape = RoundedCornerShape(AppTheme.dimensions.small)
             )
             .padding(

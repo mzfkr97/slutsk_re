@@ -34,7 +34,7 @@ fun AppToolbar(
     title: String,
     subtitle: String? = null,
     showBackBtn: Boolean = true,
-    onBack: (() -> Boolean)? = null,
+    onBack: (() -> Unit)? = null,
 ) {
     Box(
         modifier = Modifier

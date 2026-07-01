@@ -22,25 +22,33 @@
     <string name="onboarding__next">Next</string>
     <string name="onboarding__get_started">Get Started</string>
     <string name="onboarding__skip">Skip</string>
+    <string name="currencies__screen_favorites_header">Избранное</string>
+    <string name="currencies__screen_all_currencies_header">Все курсы</string>
+
 
     <!-- Home -->
     <string name="home__title">Home</string>
     <!-- Screen titles -->
-    <string name="currencies_screen_title">Курсы валют</string>
-    <string name="currencies_screen_favorite">Избранное</string>
-    <string name="currencies_screen_non_favorite">Все курсы</string>
+    <string name="currencies__screen_title">Курсы валют</string>
+    <string name="currencies__screen_favorite">Избранное</string>
+    <string name="currencies__screen_non_favorite">Все курсы</string>
 
     <!-- Update time -->
-    <string name="currencies_last_update_prefix">Последнее обновление: </string>
-    <string name="currencies_loading">Загрузка...</string>
-    <string name="currencies_update_just_now">Только что</string>
-    <string name="currencies_update_minutes_ago">%d мин назад</string>
-    <string name="currencies_update_hours_ago">%d ч назад</string>
-    <string name="currencies_update_time_unknown">Неизвестно</string>
+    <string name="currencies__last_update_prefix">Последнее обновление: </string>
+    <string name="currencies__loading">Загрузка...</string>
+    <string name="currencies__update_just_now">Только что</string>
+    <string name="currencies__update_minutes_ago">%d мин назад</string>
+    <string name="currencies__update_hours_ago">%d ч назад</string>
+    <string name="currencies__update_time_unknown">Неизвестно</string>
 
     <!-- Currency info labels -->
     <string name="currency_info_code">Код валюты</string>
     <string name="currency_info_units">Единиц</string>
     <string name="currency_info_rate">Официальный курс</string>
+
+
+    <!-- Settings -->
+    <string name="settings__screen_title">Настройки</string>
+    <string name="settings__dark_theme">Темная тема</string>
 
 </resources>

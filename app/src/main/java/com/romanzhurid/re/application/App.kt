@@ -9,12 +9,15 @@ import com.romanzhurid.re.di.AppComponent
 import com.romanzhurid.onboarding.di.OnboardingComponentDependencies
 import com.romanzhurid.onboarding.di.OnboardingComponentDependenciesProvider
 import com.romanzhurid.re.di.DaggerAppComponent
+import com.romanzhurid.settings.di.SettingsComponentDependencies
+import com.romanzhurid.settings.di.SettingsComponentDependenciesProvider
 
 class App :
     Application(),
     OnboardingComponentDependenciesProvider,
     HomeComponentDependenciesProvider,
-    CurrencyComponentDependenciesProvider {
+    CurrencyComponentDependenciesProvider,
+    SettingsComponentDependenciesProvider {
 
     lateinit var appComponent: AppComponent
         private set
@@ -34,5 +37,8 @@ class App :
         get() = appComponent
 
     override val currencyComponentDependencies: CurrencyComponentDependencies
+        get() = appComponent
+
+    override val settingsComponentDependencies: SettingsComponentDependencies
         get() = appComponent
 }

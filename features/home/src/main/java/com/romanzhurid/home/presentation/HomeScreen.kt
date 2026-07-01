@@ -9,8 +9,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.romanzhurid.brandbook.components.toolbar.AppToolbar
 import com.romanzhurid.brandbook.R
+import com.romanzhurid.brandbook.components.toolbar.AppToolbar
+import com.romanzhurid.brandbook.ext.DefaultPadding
 import com.romanzhurid.navigation.AppRoute
 import com.romanzhurid.navigation.composition.LocalNavigator
 
@@ -32,6 +33,12 @@ fun HomeScreen() {
         ) {
             Button(onClick = { navigator.navigate(AppRoute.Currencies()) }) {
                 Text(text = "Go to Currencies")
+            }
+
+            DefaultPadding()
+
+            Button(onClick = { navigator.navigate(AppRoute.Settings()) }) {
+                Text(text = "Go to Settings")
             }
         }
     }

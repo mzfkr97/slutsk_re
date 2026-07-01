@@ -14,11 +14,11 @@ class CurrencyUiMapper @Inject constructor(private val res: ResourceProvider) {
 
         return buildList {
             if (favorites.isNotEmpty()) {
-                add(CurrencyItem.Header(res.getString(R.string.currencies_screen_favorite)))
+                add(CurrencyItem.Header(res.getString(R.string.currencies__screen_favorites_header)))
                 addAll(favorites.map(::map))
             }
             if (others.isNotEmpty()) {
-                add(CurrencyItem.Header(res.getString(R.string.currencies_screen_non_favorite)))
+                add(CurrencyItem.Header(res.getString(R.string.currencies__screen_all_currencies_header)))
                 addAll(others.map(::map))
             }
         }

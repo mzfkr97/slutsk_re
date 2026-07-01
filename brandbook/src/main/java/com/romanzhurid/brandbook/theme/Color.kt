@@ -5,7 +5,6 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
 val Primary = Color(0xFF2665B2)
-val PrimaryDark = Color(0xFF2E7AD6)
 val Background = Color(0xFFFFFFFF)
 val Surface = Color(0xFFFFFFFF)
 val OnPrimary = Color(0xFFFFFFFF)
@@ -35,7 +34,6 @@ val OnErrorContainer = Color(0xFF842029)
 
 val SurfaceContainer = Color(0xFFF5F5F5)
 
-// Схема
 val AppLightColorScheme = lightColorScheme(
     primary = Primary,
     onPrimary = OnPrimary,

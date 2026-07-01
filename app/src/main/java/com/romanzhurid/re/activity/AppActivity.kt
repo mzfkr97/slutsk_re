@@ -27,6 +27,7 @@ import com.romanzhurid.common.uistate.collectUiState
 import com.romanzhurid.onboarding.navigation.OnboardingFeatureHost
 import com.romanzhurid.home.navigation.HomeFeatureHost
 import com.romanzhurid.currencies.navigation.CurrencyFeatureHost
+import com.romanzhurid.settings.navigation.SettingsFeatureHost
 import com.romanzhurid.navigation.AppNavDisplay
 import com.romanzhurid.navigation.AppRoute
 import com.romanzhurid.navigation.Route
@@ -74,7 +75,7 @@ class AppActivity : ComponentActivity() {
             CompositionLocalProvider(
                 LocalNavigator provides navigator
             ) {
-                AppTheme {
+                AppTheme(isSystemDarkTheme = uiState.isDarkTheme) {
                     MainScreen(
                         uiState = uiState,
                         resetErrorState = viewModel::resetErrorState,
@@ -110,6 +111,7 @@ fun MainScreen(
             entry<AppRoute.Onboarding> { OnboardingFeatureHost(it) }
             entry<AppRoute.Home> { HomeFeatureHost(it) }
             entry<AppRoute.Currencies> { CurrencyFeatureHost(it) }
+            entry<AppRoute.Settings> { SettingsFeatureHost(it) }
         }
     }
 
