@@ -6,7 +6,6 @@ import com.romanzhurid.common.ExceptionsFlow
 import com.romanzhurid.common.ProgressFlow
 import com.romanzhurid.common.ResourceProvider
 import com.romanzhurid.domain.AppSettings
-import com.romanzhurid.navigation.featurehost.NavigationChannelProvider
 import javax.inject.Inject
 
 class MainActivityViewModelFactory @Inject constructor(
@@ -14,7 +13,6 @@ class MainActivityViewModelFactory @Inject constructor(
     private val progressFlow: ProgressFlow,
     private val exceptionsFlow: ExceptionsFlow,
     private val res: ResourceProvider,
-    private val navigationChannelProvider: NavigationChannelProvider
 ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
@@ -24,7 +22,6 @@ class MainActivityViewModelFactory @Inject constructor(
             progressFlow = progressFlow,
             exceptionsFlow = exceptionsFlow,
             res = res,
-            navigationChannelProvider = navigationChannelProvider,
         ) as T
     }
 }

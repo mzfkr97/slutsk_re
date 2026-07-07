@@ -5,8 +5,11 @@ import com.romanzhurid.common.di.CommonFeatureModule
 import com.romanzhurid.common.di.CommonToolsModule
 import com.romanzhurid.data.di.CoreDataModule
 import com.romanzhurid.home.di.HomeComponentDependencies
-import com.romanzhurid.navigation.di.NavigationModule
+import com.romanzhurid.currencies.di.CurrencyComponentDependencies
+import com.romanzhurid.domain.currencies.interactor.CurrenciesInteractor
+import com.romanzhurid.onboarding.di.OnboardingComponentDependencies
 import com.romanzhurid.re.activity.AppActivity
+import com.romanzhurid.settings.di.SettingsComponentDependencies
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
@@ -18,11 +21,13 @@ import javax.inject.Singleton
         CommonFeatureModule::class,
         CommonToolsModule::class,
         CoreDataModule::class,
-        NavigationModule::class
     ]
 )
 interface AppComponent :
-    HomeComponentDependencies  {
+    OnboardingComponentDependencies,
+    HomeComponentDependencies,
+    CurrencyComponentDependencies,
+    SettingsComponentDependencies{
 
     fun inject(activity: AppActivity)
 

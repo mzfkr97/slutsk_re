@@ -14,6 +14,7 @@
         android:supportsRtl="true"
         android:name=".application.App"
         android:theme="@style/Theme.SlutskRe"
+        android:usesCleartextTraffic="true"
         >
         <activity
             android:name=".activity.AppActivity"
@@ -23,7 +24,6 @@
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

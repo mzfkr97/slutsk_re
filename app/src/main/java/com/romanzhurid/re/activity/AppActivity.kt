@@ -5,15 +5,16 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
@@ -22,11 +23,17 @@ import com.romanzhurid.brandbook.components.errorbottomsheet.ErrorBottomSheet
 import com.romanzhurid.brandbook.components.progress.ProgressItem
 import com.romanzhurid.brandbook.theme.AppTheme
 import com.romanzhurid.common.ProgressState
-import com.romanzhurid.common.uistate.CollectEventEffect
 import com.romanzhurid.common.uistate.collectUiState
+import com.romanzhurid.onboarding.navigation.OnboardingFeatureHost
 import com.romanzhurid.home.navigation.HomeFeatureHost
+import com.romanzhurid.currencies.navigation.CurrencyFeatureHost
+import com.romanzhurid.settings.navigation.SettingsFeatureHost
 import com.romanzhurid.navigation.AppNavDisplay
 import com.romanzhurid.navigation.AppRoute
+import com.romanzhurid.navigation.Route
+import com.romanzhurid.navigation.composition.LocalNavigator
+import com.romanzhurid.navigation.navigator.NavigatorImpl
+import com.romanzhurid.navigation.navigator.isReady
 import com.romanzhurid.re.activity.MainActivityViewModel.*
 import com.romanzhurid.re.application.App
 import com.romanzhurid.re.ext.setSlideDownExitAnimation
@@ -44,36 +51,47 @@ class AppActivity : ComponentActivity() {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
 
-        splashScreen.setKeepOnScreenCondition {
-            viewModel.stateValue.backStack == null
-        }
-
-        splashScreen.setSlideDownExitAnimation()
-
         enableEdgeToEdge()
 
         setContent {
+            val navigator = remember {
+                NavigatorImpl<AppRoute>(initialStack = emptyList())
+            }
+
             val uiState by viewModel.collectUiState()
-            viewModel.CollectEventEffect { event ->
-                when (event) {
-                    Event.Finish -> {
-                        onExit()
-                    }
+
+            splashScreen.setKeepOnScreenCondition {
+                navigator.isReady.not()
+            }
+
+            splashScreen.setSlideDownExitAnimation()
+
+            LaunchedEffect(navigator) {
+                if (navigator.backStack.isEmpty()) {
+                    navigator.setStack(viewModel.resolveBackStack())
                 }
             }
 
-            AppTheme {
-                MainScreen(
-                    uiState = uiState,
-                    resetErrorState = viewModel::resetErrorState,
-                    activityBack = viewModel::activityBack,
-                )
+            CompositionLocalProvider(
+                LocalNavigator provides navigator
+            ) {
+                AppTheme(isSystemDarkTheme = uiState.isDarkTheme) {
+                    MainScreen(
+                        uiState = uiState,
+                        resetErrorState = viewModel::resetErrorState,
+                        activityBack = {
+                            if (navigator.back()) {
+                                true
+                            } else {
+                                viewModel.finish()
+                                true
+                            }
+                        },
+                        navigator = navigator
+                    )
+                }
             }
         }
-    }
-
-    private fun onExit() {
-        finish()
     }
 }
 
@@ -81,43 +99,42 @@ class AppActivity : ComponentActivity() {
 fun MainScreen(
     uiState: UiState,
     resetErrorState: () -> Unit,
-    activityBack: () -> Unit,
+    activityBack: () -> Boolean,
+    navigator: NavigatorImpl<AppRoute>,
 ) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        Scaffold(
-            contentWindowInsets = WindowInsets(0, 0, 0, 0),
-            modifier = Modifier
-                .fillMaxSize()
-                .then(
-                    if (uiState.progressState is ProgressState.Show) {
-                        Modifier.blur(AppTheme.dimensions.small)
-                    } else {
-                        Modifier
-                    }
-                )
-        ) { innerPadding ->
-            uiState.backStack?.let { backStack ->
-                AppNavDisplay(
-                    modifier = Modifier.padding(innerPadding),
-                    backStack = backStack,
-                    entryDecorators = listOf(
-                        rememberSaveableStateHolderNavEntryDecorator(),
-                        rememberViewModelStoreNavEntryDecorator()
-                    ),
-                    onBack = activityBack,
-                    entryProvider = entryProvider {
-                        entry<AppRoute.Home> { route ->
-                            HomeFeatureHost(route)
-                        }
-                    }
-                )
-            }
+    val backStack by remember {
+        derivedStateOf { navigator.backStack.toList() }
+    }
+
+    val appEntryProvider = remember {
+        entryProvider<Route> {
+            entry<AppRoute.Onboarding> { OnboardingFeatureHost(it) }
+            entry<AppRoute.Home> { HomeFeatureHost(it) }
+            entry<AppRoute.Currencies> { CurrencyFeatureHost(it) }
+            entry<AppRoute.Settings> { SettingsFeatureHost(it) }
         }
     }
 
-    if (uiState.errorState != null) {
+    Scaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+    ) { padding ->
+        if (backStack.isNotEmpty()) {
+            AppNavDisplay(
+                modifier = Modifier.padding(padding),
+                backStack = backStack,
+                entryProvider = appEntryProvider,
+                onBack = activityBack,
+                entryDecorators = listOf(
+                    rememberSaveableStateHolderNavEntryDecorator(),
+                    rememberViewModelStoreNavEntryDecorator()
+                )
+            )
+        }
+    }
+
+    uiState.errorState?.let {
         ErrorBottomSheet(
-            errorState = uiState.errorState,
+            errorState = it,
             onClick = resetErrorState,
             onDismiss = resetErrorState
         )
@@ -126,7 +143,7 @@ fun MainScreen(
     (uiState.progressState as? ProgressState.Show)?.let { loading ->
         ProgressItem(
             resId = loading.resId,
-            onCancel = (loading.onCancel)
+            onCancel = loading.onCancel
         )
     }
 }

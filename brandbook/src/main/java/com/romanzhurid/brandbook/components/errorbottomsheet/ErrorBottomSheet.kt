@@ -86,7 +86,6 @@ fun ErrorBottomSheet(
             verticalArrangement = Arrangement.spacedBy(AppTheme.dimensions.medium)
         ) {
 
-            // ✅ Анимация иконки
             AnimatedVisibility(visible = true,
                 enter = fadeIn() + slideInVertically { it / 2 }) {
                 Icon(

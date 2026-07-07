@@ -44,6 +44,7 @@ dependencies {
     implementation(libs.androidx.compose.material3)
 
     implementation(libs.bundles.androidx.nav3)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
 
     implementation(libs.dagger)
     ksp(libs.dagger.compiler)

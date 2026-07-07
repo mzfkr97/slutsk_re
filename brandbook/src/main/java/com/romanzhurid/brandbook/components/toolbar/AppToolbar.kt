@@ -24,14 +24,14 @@ import com.romanzhurid.brandbook.theme.AppTheme
 fun AppToolbarPreview() {
     AppTheme {
         AppToolbar(
-            title = stringResource(R.string.common__attention),
+            title = R.string.common__attention,
         )
     }
 }
 
 @Composable
 fun AppToolbar(
-    title: String,
+    title: Int,
     subtitle: String? = null,
     showBackBtn: Boolean = true,
     onBack: (() -> Unit)? = null,
@@ -45,7 +45,7 @@ fun AppToolbar(
     ) {
         if (showBackBtn && onBack != null) {
             IconButton(
-                onClick = onBack,
+                onClick = { onBack() },
                 modifier = Modifier.align(Alignment.CenterStart)
             ) {
                 Icon(
@@ -60,7 +60,7 @@ fun AppToolbar(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = title,
+                text = stringResource(title),
                 style = AppTheme.typography.titleLarge
             )
             subtitle?.let {
