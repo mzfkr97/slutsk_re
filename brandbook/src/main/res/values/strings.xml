@@ -11,6 +11,7 @@
     <string name="common__close">Close</string>
     <string name="common__retry">Retry</string>
     <string name="common__no_connection">No internet connection</string>
+    <string name="common__no_items">No items</string>
 
     <!-- Onboarding -->
     <string name="onboarding__welcome_title">Welcome to SlutskRe</string>

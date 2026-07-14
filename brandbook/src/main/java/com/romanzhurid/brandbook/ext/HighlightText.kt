@@ -12,7 +12,7 @@ import androidx.compose.ui.text.withStyle
 import com.romanzhurid.brandbook.theme.AppTheme
 
 @Composable
-fun DefaultPadding() {
+fun DefaultSpacer() {
     Spacer(modifier = Modifier.height(AppTheme.dimensions.small))
 }
 

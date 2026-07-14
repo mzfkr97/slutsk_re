@@ -8,10 +8,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.romanzhurid.brandbook.R
 import com.romanzhurid.brandbook.components.checkbox.AppCheckBox
 import com.romanzhurid.brandbook.components.toolbar.AppToolbar
+import com.romanzhurid.brandbook.theme.AppTheme
 import com.romanzhurid.common.uistate.collectUiState
 
 @Composable
@@ -20,6 +20,7 @@ fun SettingsScreen(
     onBackClick: () -> Unit
 ) {
     val uiState by viewModel.collectUiState()
+
     Scaffold(
         topBar = {
             AppToolbar(
@@ -32,7 +33,7 @@ fun SettingsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(16.dp),
+                .padding(AppTheme.dimensions.small),
             contentAlignment = Alignment.TopCenter
         ) {
             AppCheckBox(

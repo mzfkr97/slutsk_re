@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import com.romanzhurid.brandbook.R
 import com.romanzhurid.brandbook.components.card.AppCard
 import com.romanzhurid.brandbook.components.toolbar.AppToolbar
-import com.romanzhurid.brandbook.ext.DefaultPadding
+import com.romanzhurid.brandbook.ext.DefaultSpacer
 import com.romanzhurid.brandbook.theme.AppTheme
 import com.romanzhurid.navigation.AppRoute
 import com.romanzhurid.navigation.composition.LocalNavigator
@@ -38,17 +38,39 @@ fun HomeScreen() {
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            AppCard(borderColor = AppTheme.colorScheme.primary) {
 
+            HeaderCard {
+                navigator.navigate(AppRoute.Currencies())
             }
 
-            AppCard(borderColor = AppTheme.colorScheme.primary) {
-                Button(onClick = { navigator.navigate(AppRoute.Currencies()) }) {
-                    Text(text = "Go to Currencies")
-                }
-            }
+            DefaultSpacer()
 
-            DefaultPadding()
+            StationsCard()
+        }
+    }
+}
+
+@Composable
+private fun HeaderCard(onCurrencyClicked : () -> Unit ) {
+    AppCard(borderColor = AppTheme.colorScheme.primary) {
+        Button(onClick = { onCurrencyClicked() }) {
+            Text(text = "Go to Currencies")
+        }
+    }
+}
+
+@Composable
+private fun StationsCard() {
+    AppCard(
+        borderColor = AppTheme.colorScheme.primary,
+        modifier = Modifier
+            .padding(AppTheme.dimensions.medium)
+    ) {
+        Column() {
+
+        }
+        Button(onClick = {}) {
+            Text(text = "StationsCard")
         }
     }
 }

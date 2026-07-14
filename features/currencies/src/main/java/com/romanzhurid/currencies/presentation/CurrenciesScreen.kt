@@ -1,17 +1,14 @@
 package com.romanzhurid.currencies.presentation
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -20,8 +17,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -34,8 +29,9 @@ import androidx.compose.ui.text.font.FontWeight
 import com.romanzhurid.brandbook.R
 import com.romanzhurid.brandbook.components.button.FavoriteButton
 import com.romanzhurid.brandbook.components.card.AppCard
+import com.romanzhurid.brandbook.components.card.NoContent
 import com.romanzhurid.brandbook.components.toolbar.AppToolbarWithSearch
-import com.romanzhurid.brandbook.ext.DefaultPadding
+import com.romanzhurid.brandbook.ext.DefaultSpacer
 import com.romanzhurid.brandbook.ext.highlightText
 import com.romanzhurid.brandbook.theme.AppTheme
 import com.romanzhurid.common.uistate.collectUiState
@@ -45,13 +41,13 @@ import com.romanzhurid.navigation.composition.LocalBackHandler
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun CurrenciesScreen(viewModel: CurrenciesViewModel) {
+internal fun CurrenciesScreen(viewModel: CurrenciesViewModel) {
     val onBack = LocalBackHandler.current
     val uiState by viewModel.collectUiState()
     val isRefreshing = uiState.isLoading
 
     val pullRefreshState = rememberPullRefreshState(
-        refreshing = isRefreshing,
+        refreshing = uiState.isLoading,
         onRefresh = viewModel::loadCurrencies
     )
     Scaffold(
@@ -59,6 +55,7 @@ fun CurrenciesScreen(viewModel: CurrenciesViewModel) {
             AppToolbarWithSearch(
                 title = stringResource(R.string.currencies__screen_title),
                 query = uiState.searchQuery,
+                isSearchAvailable = uiState.currencies.isNotEmpty(),
                 onQueryChange = viewModel::searchItem,
                 onBack = { onBack.invoke() }
             )
@@ -71,48 +68,53 @@ fun CurrenciesScreen(viewModel: CurrenciesViewModel) {
                 .pullRefresh(pullRefreshState)
         ) {
             val listState = rememberLazyListState()
-            LazyColumn(
-                state = listState,
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(vertical = AppTheme.dimensions.small),
-            ) {
-                items(
-                    items = uiState.currencies,
-                    key = { item ->
+            if (uiState.currencies.isEmpty()) {
+                NoContent(R.string.common__no_items)
+            } else {
+                LazyColumn(
+                    state = listState,
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(vertical = AppTheme.dimensions.small),
+                ) {
+                    items(
+                        items = uiState.currencies,
+                        key = { item ->
+                            when (item) {
+                                is CurrencyItem.Header -> "header_${item.title}"
+                                is CurrencyUi -> "currency_${item.id}"
+                            }
+                        },
+                        contentType = { item ->
+                            when (item) {
+                                is CurrencyItem.Header -> "header"
+                                is CurrencyUi -> "currency"
+                            }
+                        },
+                    ) { item ->
                         when (item) {
-                            is CurrencyItem.Header -> "header_${item.title}"
-                            is CurrencyUi -> "currency_${item.id}"
-                        }
-                    },
-                    contentType = { item ->
-                        when (item) {
-                            is CurrencyItem.Header -> "header"
-                            is CurrencyUi -> "currency"
-                        }
-                    },
-                ) { item ->
-                    when (item) {
-                        is CurrencyItem.Header -> {
-                            SectionHeader(item.title)
-                        }
-                        is CurrencyUi -> {
-                            CurrencyCard(
-                                modifier = Modifier
-                                    .padding(
-                                        horizontal = AppTheme.dimensions.small,
-                                        vertical = AppTheme.dimensions.xxMicro
-                                    )
-                                    .animateItem(),
-                                currency = item,
-                                query = uiState.searchQuery,
-                                onToggleFavorite = {
-                                    viewModel.onToggleFavorite(item.id)
-                                }
-                            )
+                            is CurrencyItem.Header -> {
+                                SectionHeader(item.title)
+                            }
+                            is CurrencyUi -> {
+                                CurrencyCard(
+                                    modifier = Modifier
+                                        .padding(
+                                            horizontal = AppTheme.dimensions.small,
+                                            vertical = AppTheme.dimensions.xxMicro
+                                        )
+                                        .animateItem(),
+                                    currency = item,
+                                    query = uiState.searchQuery,
+                                    onToggleFavorite = {
+                                        viewModel.onToggleFavorite(item.id)
+                                    }
+                                )
+                            }
                         }
                     }
                 }
             }
+
             PullRefreshIndicator(
                 refreshing = isRefreshing,
                 state = pullRefreshState,
@@ -125,7 +127,7 @@ fun CurrenciesScreen(viewModel: CurrenciesViewModel) {
 }
 
 @Composable
-fun SectionHeader(title: String) {
+private fun SectionHeader(title: String) {
     Text(
         text = title,
         style = AppTheme.typography.labelMedium,
@@ -141,7 +143,7 @@ fun SectionHeader(title: String) {
 }
 
 @Composable
-fun CurrencyCard(
+private fun CurrencyCard(
     modifier: Modifier,
     currency: CurrencyUi,
     query: String,
@@ -155,7 +157,7 @@ fun CurrencyCard(
 
     AppCard(borderColor = borderColor) {
         Column(
-            modifier = Modifier.padding(AppTheme.dimensions.medium),
+            modifier = modifier.padding(AppTheme.dimensions.medium),
             verticalArrangement = Arrangement.spacedBy(AppTheme.dimensions.small)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -182,7 +184,7 @@ fun CurrencyCard(
                         isFavorite = currency.isFavorite
                     )
 
-                    DefaultPadding()
+                    DefaultSpacer()
 
                     FavoriteButton(
                         isFavorite = currency.isFavorite,
