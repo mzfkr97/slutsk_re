@@ -25,6 +25,7 @@ android {
         buildConfigField("String", "YANDEX_BASE_API", "\"https://api.rasp.yandex.net/\"")
         buildConfigField("String", "YANDEX_MAP_API_KEY", "\"d1b6393c-5711-4d92-af7a-feefe51fa57a\"")
         buildConfigField("String", "CINEMA_URL", "\"https://api.megamag.by\"")
+        buildConfigField("String", "CINEMA_API_KEY", "\"bO5qn2poZnN12K6PO1GIjFukaCTau5nP\"")
         buildConfigField("String", "BASE_URL_WHEATHER", "\"http://api.openweathermap.org/data/2.5/\"")
         buildConfigField("String", "KEY_WEATHER_API", "\"7893b0fde7d34a64a7706039929369ce\"")
         buildConfigField("String", "CURRENCY_URL", "\"https://www.nbrb.by/\"")

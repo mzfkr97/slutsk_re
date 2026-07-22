@@ -1,6 +1,6 @@
 package com.romanzhurid.currencies.di
 
-import com.romanzhurid.currencies.presentation.CurrenciesViewModelFactory
+import com.romanzhurid.currencies.ui.CurrenciesViewModelFactory
 import dagger.Component
 
 @Component(dependencies = [CurrencyComponentDependencies::class])

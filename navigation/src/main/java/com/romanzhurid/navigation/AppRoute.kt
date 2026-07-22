@@ -3,11 +3,9 @@ package com.romanzhurid.navigation
 import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 
-interface Route : NavKey
+interface FeatureRoute : NavKey
 
-interface FeatureRoute : Route
-
-sealed interface AppRoute : Route {
+sealed interface AppRoute : NavKey {
     val instanceId: String
 
     @Serializable
@@ -28,5 +26,10 @@ sealed interface AppRoute : Route {
     @Serializable
     data class Settings(
         override val instanceId: String = "settings",
+    ) : AppRoute
+
+    @Serializable
+    data class Cinema(
+        override val instanceId: String = "${this.javaClass.canonicalName}",
     ) : AppRoute
 }

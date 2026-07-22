@@ -3,16 +3,16 @@ agp = "9.2.1"
 coreKtx = "1.18.0"
 activityCompose = "1.13.0"
 kotlin = "2.4.0"
-composeBom = "2026.06.00"
-dagger = "2.60"
+composeBom = "2026.06.01"
+dagger = "2.60.1"
 ksp = "2.3.9"
 retrofit = "3.0.0"
 okhttp-ver = "5.4.0"
 room = "2.8.4"
-nav3 = "1.1.3"
+nav3 = "1.1.4"
 securityCrypto = "1.1.0"
 kotlinxSerialization = "1.11.0"
-androidBuiltInKotlin = "9.2.1"
+androidBuiltInKotlin = "9.3.0"
 detekt = "1.23.8"
 core-splashscreen = "1.2.0"
 foundation = "1.11.3"
@@ -20,9 +20,16 @@ ktor = "3.5.1"
 pull_refresh = "1.6.0"
 logback = "1.5.16"
 exposed = "0.58.0"
-sqlite-jdbc = "3.48.0.0"
+sqlite-jdbc = "3.53.2.1"
+coil = "3.5.0"
+zoomable = "2.13.0"
 
 lifecycleRuntimeKtx = "2.10.0"
+junit = "4.13.2"
+junitVersion = "1.1.5"
+espressoCore = "3.5.1"
+appcompat = "1.6.1"
+material = "1.14.0"
 
 [libraries]
 
@@ -69,6 +76,15 @@ exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "e
 exposed-dao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exposed" }
 exposed-java-time = { module = "org.jetbrains.exposed:exposed-java-time", version.ref = "exposed" }
 sqlite-jdbc = { module = "org.xerial:sqlite-jdbc", version.ref = "sqlite-jdbc" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+
+coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
+coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
+zoomable = { group = "net.engawapg.lib", name = "zoomable", version.ref = "zoomable" }
 
 [plugins]
 

@@ -46,6 +46,12 @@ fun HomeScreen() {
             DefaultSpacer()
 
             StationsCard()
+
+            DefaultSpacer()
+
+            CinemaCard {
+                navigator.navigate(AppRoute.Cinema())
+            }
         }
     }
 }
@@ -71,6 +77,23 @@ private fun StationsCard() {
         }
         Button(onClick = {}) {
             Text(text = "StationsCard")
+        }
+    }
+}
+
+
+@Composable
+private fun CinemaCard(onCinemaClicked: () -> Unit) {
+    AppCard(
+        borderColor = AppTheme.colorScheme.primary,
+        modifier = Modifier
+            .padding(AppTheme.dimensions.medium)
+    ) {
+        Column() {
+
+        }
+        Button(onClick = { onCinemaClicked() }) {
+            Text(text = "Cinema")
         }
     }
 }

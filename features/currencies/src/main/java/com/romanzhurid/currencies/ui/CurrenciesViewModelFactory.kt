@@ -1,4 +1,4 @@
-package com.romanzhurid.currencies.presentation
+package com.romanzhurid.currencies.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

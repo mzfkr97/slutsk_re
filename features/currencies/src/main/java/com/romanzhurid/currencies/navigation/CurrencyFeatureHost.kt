@@ -7,8 +7,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.entryProvider
 import com.romanzhurid.currencies.di.CurrencyComponentDependenciesProvider
 import com.romanzhurid.currencies.di.CurrencyComponentHolder
-import com.romanzhurid.currencies.presentation.CurrenciesScreen
-import com.romanzhurid.currencies.presentation.CurrenciesViewModel
+import com.romanzhurid.currencies.ui.CurrenciesScreen
+import com.romanzhurid.currencies.ui.CurrenciesViewModel
 import com.romanzhurid.navigation.AppRoute
 import com.romanzhurid.navigation.host.FeatureHost
 

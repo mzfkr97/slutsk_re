@@ -1,0 +1,3 @@
+- [x] Update `ImageViewer.kt` to use `Modifier.zoomable`
+- [x] Verify build
+- [x] Create walkthrough

@@ -1,0 +1,85 @@
+[
+  {
+    "name": "Калi Ласка",
+    "phones": [
+      {
+        "operator": "Velcom",
+        "imageType": 1,
+        "number": "+375 29 659-44-44"
+      },
+      {
+        "operator": "Mts",
+        "imageType": 2,
+        "number": "+375 33 659-44-44"
+      },
+      {
+        "operator": "Life",
+        "imageType": 3,
+        "number": "+375 25 659-44-44"
+      }
+    ],
+    "description": "Короткий номер 157",
+    "url": "www.taxikalilaska.by"
+  },
+  {
+    "name": "Комфорт",
+    "phones": [
+      {
+        "operator": "Velcom",
+        "imageType": 1,
+        "number": "+375 29 166-00-77"
+      },
+      {
+        "operator": "Mts",
+        "imageType": 2,
+        "number": "+375 33 866-00-22"
+      },
+      {
+        "operator": "Life",
+        "imageType": 3,
+        "number": "+375 25 775-37-77"
+      }
+    ],
+    "description": "Короткий номер 135",
+    "url": "vk.com/slutsk_comfort_135"
+  },
+  {
+    "name": "Центр Скорость",
+    "phones": [
+      {
+        "operator": "Velcom",
+        "imageType": 1,
+        "number": "+375 33 349-23-25"
+      },
+      {
+        "operator": "Life",
+        "imageType": 3,
+        "number": "+375 25 693-23-25"
+      }
+    ],
+    "description": "Короткий номер 155",
+    "url": null
+  },
+  {
+    "name": "Лиза",
+    "phones": [
+      {
+        "operator": "Velcom",
+        "imageType": 1,
+        "number": "+375 44 719-10-00"
+      },
+      {
+        "operator": "Mts",
+        "imageType": 2,
+        "number": "+375 29 719-18-01"
+      },
+      {
+        "operator": "Life",
+        "imageType": 3,
+        "number": "+375 25 719-10-01"
+      }
+    ],
+    "description": "Ездить на такси стало еще экономнее",
+    "url": null
+  }
+]
