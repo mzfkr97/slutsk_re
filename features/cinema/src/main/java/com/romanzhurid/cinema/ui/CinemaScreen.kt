@@ -186,7 +186,7 @@ fun CinemaCard(
                 }
 
                 Text(
-                    text = item.pricesText,
+                    text = item.prices,
                     style = AppTheme.typography.titleMedium,
                     color = AppTheme.colorScheme.primary,
                 )

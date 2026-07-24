@@ -12,11 +12,15 @@ import com.romanzhurid.cinema.model.CinemaUiItem
 import com.romanzhurid.cinema.ui.CinemaViewModel.Event
 import com.romanzhurid.cinema.ui.CinemaViewModel.ViewState
 import com.romanzhurid.common.DispatcherProvider
+import com.romanzhurid.common.NetworkStateProvider
+import com.romanzhurid.common.NetworkStatusState
 import com.romanzhurid.common.progressdelegate.ProgressDelegate
 import com.romanzhurid.common.uistate.UiStateDelegate
 import com.romanzhurid.common.uistate.UiStateDelegateImpl
 import com.romanzhurid.domain.cinema.Calendar
 import com.romanzhurid.domain.cinema.repo.CinemaRepository
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
@@ -28,6 +32,7 @@ class CinemaViewModel(
     private val cinemaMapper: CinemaToUiMapper,
     private val dispatcherProvider: DispatcherProvider,
     private val progressDelegate: ProgressDelegate,
+    networkStateProvider: NetworkStateProvider,
 ) : ViewModel(),
     UiStateDelegate<ViewState, Event> by UiStateDelegateImpl(ViewState()),
     ProgressDelegate by progressDelegate {
@@ -64,7 +69,25 @@ class CinemaViewModel(
     }
 
     init {
-        loadCalendar()
+        networkStateProvider
+            .subscribeNetworkChanges()
+            .onEach { networkState ->
+                when (networkState) {
+                    is NetworkStatusState.Connected -> {
+                        loadCalendar()
+                    }
+
+                    is NetworkStatusState.Disconnected -> {
+                        viewModelScope.hideProgress()
+                        updateUiState {
+                            it.copy(
+                                isInitialLoading = true,
+                            )
+                        }
+                    }
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
     private fun loadCalendar() {

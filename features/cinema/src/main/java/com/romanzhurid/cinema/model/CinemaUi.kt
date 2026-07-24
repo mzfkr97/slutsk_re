@@ -7,7 +7,7 @@ sealed interface CinemaUiItem {
     ) : CinemaUiItem
 
     data class CinemaUi(
-        val pricesText: String,
+        val prices: String,
         val time: String,
         val cinemaId: Int,
         val descriptionHtml: String,

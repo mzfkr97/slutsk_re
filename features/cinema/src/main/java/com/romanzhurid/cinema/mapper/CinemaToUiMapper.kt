@@ -30,7 +30,7 @@ class CinemaToUiMapper @Inject constructor() {
     private fun mapMovie(data: Cinema): CinemaUiItem.CinemaUi =
         with(data) {
             CinemaUiItem.CinemaUi(
-                pricesText = "${prices.joinToString(" • ")} ${currency}",
+                prices = "${prices.distinct().joinToString(", ")} $currency",
                 time = time.cinemaTime(),
                 cinemaId = cinemaId,
                 descriptionHtml = descriptionHtml,

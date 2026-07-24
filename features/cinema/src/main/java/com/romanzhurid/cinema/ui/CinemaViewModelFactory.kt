@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.romanzhurid.cinema.mapper.CalendarToUiMapper
 import com.romanzhurid.cinema.mapper.CinemaToUiMapper
 import com.romanzhurid.common.DispatcherProvider
+import com.romanzhurid.common.NetworkStateProvider
 import com.romanzhurid.common.progressdelegate.ProgressDelegate
 import com.romanzhurid.domain.cinema.repo.CinemaRepository
 import javax.inject.Inject
@@ -15,6 +16,7 @@ class CinemaViewModelFactory @Inject constructor(
     private val cinemaMapper: CinemaToUiMapper,
     private val dispatcherProvider: DispatcherProvider,
     private val progressDelegate: ProgressDelegate,
+    private val networkStateProvider: NetworkStateProvider,
 ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
@@ -25,6 +27,7 @@ class CinemaViewModelFactory @Inject constructor(
             cinemaMapper = cinemaMapper,
             dispatcherProvider = dispatcherProvider,
             progressDelegate = progressDelegate,
+            networkStateProvider = networkStateProvider,
         ) as T
     }
 }
