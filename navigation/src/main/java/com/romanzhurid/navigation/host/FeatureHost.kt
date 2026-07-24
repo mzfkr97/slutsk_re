@@ -1,57 +1,45 @@
 package com.romanzhurid.navigation.host
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavEntry
-import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import androidx.navigation3.runtime.NavKey
 import com.romanzhurid.navigation.AppNavDisplay
 import com.romanzhurid.navigation.composition.LocalBackHandler
-import com.romanzhurid.navigation.navigator.NavigatorImpl
+import com.romanzhurid.navigation.composition.LocalFeatureNavigator
+import com.romanzhurid.navigation.navigator.rememberNavigator
+
 
 @Composable
-fun <R : Any, FR : Any> FeatureHost(
-    route: R,
+fun FeatureHost(
+    key: Any,
     clearComponent: () -> Unit,
-    initialStack: () -> List<FR>,
-    entryProviderFactory: () -> (key: FR) -> NavEntry<FR>
+    initialStack: () -> List<NavKey>,
+    entryProviderFactory: () -> (key: NavKey) -> NavEntry<NavKey>,
 ) {
     val parentBack = LocalBackHandler.current
 
-    val navigator = remember(route) {
-        NavigatorImpl(initialStack = initialStack())
-    }
+    val navigator = rememberNavigator(initialStack())
 
-    DisposableEffect(route) {
-        onDispose {
-            clearComponent()
-        }
-    }
-
-    val backStack by remember(navigator) {
-        derivedStateOf { navigator.backStack.toList() }
+    DisposableEffect(key) {
+        onDispose { clearComponent() }
     }
 
     val onBack = remember(navigator, parentBack) {
-        {
-            navigator.back() || parentBack()
-        }
+        { navigator.back() || parentBack() }
     }
 
-    val entryProvider = remember(route) {
+    val entryProvider = remember(key) {
         entryProviderFactory()
     }
 
-    AppNavDisplay(
-        backStack = backStack,
-        onBack = onBack,
-        entryDecorators = listOf(
-            rememberSaveableStateHolderNavEntryDecorator(),
-            rememberViewModelStoreNavEntryDecorator()
-        ),
-        entryProvider = entryProvider
-    )
+    CompositionLocalProvider(LocalFeatureNavigator provides navigator) {
+        AppNavDisplay(
+            backStack = navigator.backStack,
+            onBack = onBack,
+            entryProvider = entryProvider
+        )
+    }
 }

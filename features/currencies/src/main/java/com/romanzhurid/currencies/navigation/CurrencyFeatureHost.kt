@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import com.romanzhurid.currencies.di.CurrencyComponentDependenciesProvider
 import com.romanzhurid.currencies.di.CurrencyComponentHolder
@@ -25,7 +26,7 @@ fun CurrencyFeatureHost(route: AppRoute.Currencies) {
     }
 
     val entryProvider = remember(component) {
-        entryProvider {
+        entryProvider<NavKey> {
             entry<CurrencyFeatureRoute.Currencies> {
                 val viewModel = viewModel<CurrenciesViewModel>(
                     factory = component.getCurrenciesViewModelFactory()
@@ -36,7 +37,7 @@ fun CurrencyFeatureHost(route: AppRoute.Currencies) {
     }
 
     FeatureHost(
-        route = route.instanceId,
+        key = route.instanceId,
         clearComponent = {
             CurrencyComponentHolder.clear(route.instanceId)
         },

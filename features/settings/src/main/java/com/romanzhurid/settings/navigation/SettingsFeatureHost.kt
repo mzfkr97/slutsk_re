@@ -4,9 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import com.romanzhurid.navigation.AppRoute
-import com.romanzhurid.navigation.composition.LocalNavigator
+import com.romanzhurid.navigation.composition.LocalBackHandler
 import com.romanzhurid.navigation.host.FeatureHost
 import com.romanzhurid.settings.di.SettingsComponentDependenciesProvider
 import com.romanzhurid.settings.di.SettingsComponentHolder
@@ -23,25 +24,24 @@ fun SettingsFeatureHost(route: AppRoute.Settings) {
         )
     }
 
-    val navigator = LocalNavigator.current
-
     val entryProvider = remember(component) {
-        entryProvider<SettingsFeatureRoute> {
+        entryProvider<NavKey> {
             entry<SettingsFeatureRoute.Settings> {
+                val onBack = LocalBackHandler.current
                 val viewModel: SettingsViewModel = viewModel(
                     factory = component.settingsViewModelFactory
                 )
 
                 SettingsScreen(
                     viewModel = viewModel,
-                    onBackClick = { navigator.back() }
+                    onBackClick = { onBack() }
                 )
             }
         }
     }
 
     FeatureHost(
-        route = route.instanceId,
+        key = route.instanceId,
         clearComponent = {
             SettingsComponentHolder.clear()
         },

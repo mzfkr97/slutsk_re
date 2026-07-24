@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import com.romanzhurid.navigation.AppRoute
 import com.romanzhurid.navigation.composition.LocalNavigator
@@ -27,7 +28,7 @@ fun OnboardingFeatureHost(route: AppRoute.Onboarding) {
     }
 
     FeatureHost(
-        route = route.instanceId,
+        key = route.instanceId,
         clearComponent = {
             OnboardingComponentHolder.clear(route.instanceId)
         },
@@ -35,15 +36,15 @@ fun OnboardingFeatureHost(route: AppRoute.Onboarding) {
             listOf(OnboardingFeatureRoute.Onboarding)
         },
         entryProviderFactory = {
-            entryProvider<OnboardingFeatureRoute> {
+            entryProvider {
                 entry<OnboardingFeatureRoute.Onboarding> {
                     val viewModel = viewModel<OnboardingViewModel>(
                         factory = component.getOnboardingViewModelFactory()
                     )
                     OnboardingScreen(
                         viewModel = viewModel,
-                        onFinished = {
-                            appNavigator.replace(AppRoute.Home())
+                        onFinished = { destination ->
+                            appNavigator.replace(destination)
                         }
                     )
                 }

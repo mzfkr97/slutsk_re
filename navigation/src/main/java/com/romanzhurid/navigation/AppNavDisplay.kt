@@ -2,8 +2,8 @@ package com.romanzhurid.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavEntryDecorator
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
@@ -18,20 +18,20 @@ fun <T : Any> AppNavDisplay(
     modifier: Modifier = Modifier,
     backStack: List<T>,
     onBack: () -> Boolean,
-    entryDecorators: List<NavEntryDecorator<T>> =
-        listOf(rememberSaveableStateHolderNavEntryDecorator()),
+    entryDecorators: List<NavEntryDecorator<T>> = listOf(
+        rememberSaveableStateHolderNavEntryDecorator(),
+        rememberViewModelStoreNavEntryDecorator()
+    ),
     entryProvider: (key: T) -> NavEntry<T>,
 ) {
-    val backHandler = remember(onBack) { onBack }
-
     CompositionLocalProvider(
-        LocalBackHandler provides backHandler
+        LocalBackHandler provides onBack
     ) {
         NavDisplay(
             modifier = modifier,
             backStack = backStack,
             onBack = {
-                backHandler()
+                onBack()
             },
             entryDecorators = entryDecorators,
             transitionSpec = transitionSpec(),

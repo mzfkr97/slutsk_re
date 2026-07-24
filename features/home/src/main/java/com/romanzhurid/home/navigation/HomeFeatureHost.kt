@@ -3,6 +3,7 @@ package com.romanzhurid.home.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import com.romanzhurid.home.di.HomeComponentDependenciesProvider
 import com.romanzhurid.home.di.HomeComponentHolder
@@ -22,7 +23,7 @@ fun HomeFeatureHost(route: AppRoute.Home) {
     }
 
     val entryProvider = remember(component) {
-        entryProvider<HomeFeatureRoute> {
+        entryProvider<NavKey> {
             entry<HomeFeatureRoute.Home> {
                 HomeScreen()
             }
@@ -30,7 +31,7 @@ fun HomeFeatureHost(route: AppRoute.Home) {
     }
 
     FeatureHost(
-        route = route.instanceId,
+        key = route.instanceId,
         clearComponent = {
             HomeComponentHolder.clear(route.instanceId)
         },
