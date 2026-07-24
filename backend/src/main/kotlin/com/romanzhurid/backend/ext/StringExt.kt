@@ -13,4 +13,5 @@ internal fun printEndPoints() {
     println("  GET  /schedule/{id}       - Расписание по ID")
     println("  GET  /schedule/bus/{number} - Расписание по номеру автобуса")
     println("  GET  /schedule/station/{stationName} - Расписание по станции")
+    println("  GET  /taxi                - Каталог такси")
 }

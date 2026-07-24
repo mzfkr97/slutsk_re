@@ -29,6 +29,7 @@
 
     <!-- Home -->
     <string name="home__title">Home</string>
+    <string name="menu__cinema">Афиша</string>
     <!-- Screen titles -->
     <string name="currencies__screen_title">Курсы валют</string>
     <string name="currencies__screen_favorite">Избранное</string>
@@ -51,5 +52,22 @@
     <!-- Settings -->
     <string name="settings__screen_title">Настройки</string>
     <string name="settings__dark_theme">Темная тема</string>
+
+    <!--Errors-->
+    <string name="error_no_favorite_bus_station">Нет избранных маршрутов</string>
+    <string name="error__error">Ошибка!</string>
+    <string name="error__retry">Повторить</string>
+    <string name="error__alert_title">Внимание!</string>
+    <string name="error__send_error">Сообщить об ошибке</string>
+    <string name="error__default_massage">Произошла ошибка.</string>
+    <string name="error__connection_retry">Попробовать снова.</string>
+    <string name="error__network_default_error">Ошибка соединения!</string>
+    <string name="error__connection_error">Нет подключения к Интернету</string>
+    <string name="error__cinema_not_found_error">На эту дату ничего не найдено!</string>
+    <string name="error__not_found_error">Ничего не найдено!</string>
+    <string name="error__default_message">Ошибка при загрузке данных. Проверьте соединение с интернетом или повторите попытку позже</string>
+    <string name="error__no_find_items">Ничего не найдено!</string>
+    <string name="exception__news_mode">Невозможно загрузить ленту новостей!</string>
+    <string name="error__no_connection">Нет соединения!</string>
 
 </resources>

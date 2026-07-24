@@ -1,4 +1,4 @@
-package com.romanzhurid.currencies.presentation
+package com.romanzhurid.currencies.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -30,6 +30,7 @@ import com.romanzhurid.brandbook.R
 import com.romanzhurid.brandbook.components.button.FavoriteButton
 import com.romanzhurid.brandbook.components.card.AppCard
 import com.romanzhurid.brandbook.components.card.NoContent
+import com.romanzhurid.brandbook.components.text.SectionHeader
 import com.romanzhurid.brandbook.components.toolbar.AppToolbarWithSearch
 import com.romanzhurid.brandbook.ext.DefaultSpacer
 import com.romanzhurid.brandbook.ext.highlightText
@@ -124,22 +125,6 @@ internal fun CurrenciesScreen(viewModel: CurrenciesViewModel) {
             )
         }
     }
-}
-
-@Composable
-private fun SectionHeader(title: String) {
-    Text(
-        text = title,
-        style = AppTheme.typography.labelMedium,
-        color = AppTheme.colorScheme.primary,
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(AppTheme.colorScheme.primaryContainer)
-            .padding(
-                horizontal = AppTheme.dimensions.medium,
-                vertical = AppTheme.dimensions.small
-            )
-    )
 }
 
 @Composable

@@ -1,4 +1,4 @@
-package com.romanzhurid.currencies.presentation
+package com.romanzhurid.currencies.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,7 +12,7 @@ import com.romanzhurid.common.uistate.UiStateDelegateImpl
 import com.romanzhurid.currencies.mapper.CurrencyUiMapper
 import com.romanzhurid.currencies.model.CurrencyItem
 import com.romanzhurid.currencies.model.CurrencyItem.CurrencyUi
-import com.romanzhurid.currencies.presentation.CurrenciesViewModel.UiState
+import com.romanzhurid.currencies.ui.CurrenciesViewModel.UiState
 import com.romanzhurid.domain.currencies.interactor.CurrenciesInteractor
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch

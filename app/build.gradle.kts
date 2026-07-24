@@ -8,11 +8,7 @@ plugins {
 
 android {
     namespace = "com.romanzhurid.re"
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
-    }
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.romanzhurid.re"
@@ -47,6 +43,7 @@ dependencies {
     implementation(project(":features:home"))
     implementation(project(":features:currencies"))
     implementation(project(":features:settings"))
+    implementation(project(":features:cinema"))
 
     implementation(project(":core:domain"))
     implementation(project(":core:data"))

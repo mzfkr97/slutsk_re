@@ -1,6 +1,8 @@
 package com.romanzhurid.re.application
 
 import android.app.Application
+import com.romanzhurid.cinema.di.CinemaComponentDependencies
+import com.romanzhurid.cinema.di.CinemaComponentDependenciesProvider
 import com.romanzhurid.home.di.HomeComponentDependencies
 import com.romanzhurid.home.di.HomeComponentDependenciesProvider
 import com.romanzhurid.currencies.di.CurrencyComponentDependencies
@@ -17,7 +19,8 @@ class App :
     OnboardingComponentDependenciesProvider,
     HomeComponentDependenciesProvider,
     CurrencyComponentDependenciesProvider,
-    SettingsComponentDependenciesProvider {
+    SettingsComponentDependenciesProvider,
+    CinemaComponentDependenciesProvider {
 
     lateinit var appComponent: AppComponent
         private set
@@ -40,5 +43,8 @@ class App :
         get() = appComponent
 
     override val settingsComponentDependencies: SettingsComponentDependencies
+        get() = appComponent
+
+    override val cinemaComponentDependencies: CinemaComponentDependencies
         get() = appComponent
 }

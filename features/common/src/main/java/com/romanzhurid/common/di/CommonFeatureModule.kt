@@ -4,6 +4,8 @@ import android.content.Context
 import com.romanzhurid.common.ExceptionsEmitter
 import com.romanzhurid.common.ExceptionsFlow
 import com.romanzhurid.common.ExceptionsObserverImpl
+import com.romanzhurid.common.NetworkStateFlow
+import com.romanzhurid.common.NetworkStateProvider
 import com.romanzhurid.common.ProgressEmitter
 import com.romanzhurid.common.ProgressFlow
 import com.romanzhurid.common.ProgressObserverImpl
@@ -51,4 +53,8 @@ class CommonFeatureModule {
     @Provides
     @Singleton
     fun provideScmProgressDelegate(impl: ProgressDelegateImpl): ProgressDelegate = impl
+
+    @Provides
+    @Singleton
+    fun provideNetworkStateProvider(impl: NetworkStateProvider): NetworkStateFlow = impl
 }

@@ -19,6 +19,7 @@ import androidx.navigation3.runtime.entryProvider
 import com.romanzhurid.brandbook.components.errorbottomsheet.ErrorBottomSheet
 import com.romanzhurid.brandbook.components.progress.ProgressItem
 import com.romanzhurid.brandbook.theme.AppTheme
+import com.romanzhurid.cinema.navigation.CinemaFeatureHost
 import com.romanzhurid.common.ProgressState
 import com.romanzhurid.common.uistate.CollectEventEffect
 import com.romanzhurid.common.uistate.collectUiState
@@ -99,6 +100,7 @@ fun MainScreen(
             entry<AppRoute.Home> { HomeFeatureHost(it) }
             entry<AppRoute.Currencies> { CurrencyFeatureHost(it) }
             entry<AppRoute.Settings> { SettingsFeatureHost(it) }
+            entry<AppRoute.Cinema> { CinemaFeatureHost(it) }
         }
     }
 
