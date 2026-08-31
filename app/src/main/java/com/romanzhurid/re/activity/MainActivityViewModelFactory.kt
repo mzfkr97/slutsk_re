@@ -3,26 +3,19 @@ package com.romanzhurid.re.activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.romanzhurid.common.ExceptionsFlow
+import com.romanzhurid.common.ExceptionsObserverImpl
 import com.romanzhurid.common.ProgressFlow
+import com.romanzhurid.common.ProgressObserverImpl
 import com.romanzhurid.common.ResourceProvider
 import com.romanzhurid.domain.AppSettings
 import org.koin.dsl.module
 
 val mainActivityModule = module {
-    factory {
+    factory<MainActivityViewModelFactory> {
         MainActivityViewModelFactory(
             appSettings = get(),
-            progressFlow = get<ProgressFlow>(),
-            exceptionsFlow = get<ExceptionsFlow>(),
-            res = get(),
-        )
-    }
-
-    factory {
-        MainActivityViewModel(
-            appSettings = get(),
-            progressFlow = get<ProgressFlow>(),
-            exceptionsFlow = get<ExceptionsFlow>(),
+            progressFlow = get<ProgressObserverImpl>(),
+            exceptionsFlow = get<ExceptionsObserverImpl>(),
             res = get(),
         )
     }

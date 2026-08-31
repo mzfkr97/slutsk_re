@@ -24,30 +24,14 @@ val commonFeatureModule = module {
         ExceptionsObserverImpl()
     }
 
-    single<ExceptionsFlow> {
-        get<ExceptionsObserverImpl>()
-    }
-
-    single<ExceptionsEmitter> {
-        get<ExceptionsObserverImpl>()
-    }
-
     single<ProgressObserverImpl> {
         ProgressObserverImpl()
     }
 
-    single<ProgressEmitter> {
-        get<ProgressObserverImpl>()
-    }
-
-    single<ProgressFlow> {
-        get<ProgressObserverImpl>()
-    }
-
     single<ProgressDelegate> {
         ProgressDelegateImpl(
-            progressEmitter = get<ProgressEmitter>(),
-            exceptionsEmitter = get<ExceptionsEmitter>()
+            progressEmitter = get<ProgressObserverImpl>(),
+            exceptionsEmitter = get<ExceptionsObserverImpl>()
         )
     }
 
