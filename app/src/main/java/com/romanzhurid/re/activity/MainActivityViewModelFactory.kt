@@ -19,6 +19,15 @@ val mainActivityModule = module {
             res = get(),
         )
     }
+
+    factory<MainActivityViewModel> {
+        MainActivityViewModel(
+            appSettings = get(),
+            progressFlow = get<ProgressObserverImpl>(),
+            exceptionsFlow = get<ExceptionsObserverImpl>(),
+            res = get(),
+        )
+    }
 }
 
 class MainActivityViewModelFactory(
