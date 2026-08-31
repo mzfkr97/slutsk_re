@@ -5,17 +5,17 @@ import com.romanzhurid.currencies.mapper.CurrencyUiMapper
 import org.koin.dsl.module
 
 val currenciesModule = module {
-    single {
+    single<CurrencyUiMapper> {
         CurrencyUiMapper(res = get())
     }
 
-    factory {
+    factory<CurrenciesViewModelFactory> {
         CurrenciesViewModelFactory(
             currenciesInteractor = get(),
             res = get(),
             dispatcherProvider = get(),
             progressDelegate = get(),
-            currencyUiMapper = get(),
+            currencyUiMapper = get<CurrencyUiMapper>(),
         )
     }
 }

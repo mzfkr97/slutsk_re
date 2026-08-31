@@ -4,7 +4,7 @@ import com.romanzhurid.onboarding.onboarding.OnboardingViewModelFactory
 import org.koin.dsl.module
 
 val onboardingModule = module {
-    factory {
+    factory<OnboardingViewModelFactory> {
         OnboardingViewModelFactory(
             appSettings = get(),
             progressDelegate = get(),
