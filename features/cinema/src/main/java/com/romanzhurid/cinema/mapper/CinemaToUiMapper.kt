@@ -7,9 +7,8 @@ import com.romanzhurid.domain.cinema.Cinema
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import javax.inject.Inject
 
-class CinemaToUiMapper @Inject constructor() {
+class CinemaToUiMapper {
 
     fun map(data: List<Cinema>): List<CinemaUiItem> {
         return data

@@ -1,7 +1,6 @@
 package com.romanzhurid.common
 
 import kotlinx.coroutines.Dispatchers
-import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 interface DispatcherProvider {
@@ -17,7 +16,7 @@ interface DispatcherProvider {
     fun background(): CoroutineContext
 }
 
-class DispatcherProviderImpl @Inject constructor() : DispatcherProvider {
+class DispatcherProviderImpl : DispatcherProvider {
 
     override fun main() = Dispatchers.Main
 

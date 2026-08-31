@@ -1,16 +1,27 @@
 package com.romanzhurid.cinema.di
 
+import com.romanzhurid.cinema.mapper.CalendarToUiMapper
+import com.romanzhurid.cinema.mapper.CinemaToUiMapper
 import com.romanzhurid.cinema.ui.CinemaViewModelFactory
-import dagger.Component
+import org.koin.dsl.module
 
-@Component(dependencies = [CinemaComponentDependencies::class])
-interface CinemaComponent {
+val cinemaModule = module {
+    single {
+        CalendarToUiMapper()
+    }
 
-    fun getCinemaViewModelFactory(): CinemaViewModelFactory
+    single {
+        CinemaToUiMapper()
+    }
 
-    @Component.Builder
-    interface Builder {
-        fun cinemaComponentDependencies(dependencies: CinemaComponentDependencies): Builder
-        fun build(): CinemaComponent
+    factory {
+        CinemaViewModelFactory(
+            cinemaRepository = get(),
+            calendarToUiMapper = get(),
+            cinemaMapper = get(),
+            dispatcherProvider = get(),
+            progressDelegate = get(),
+            networkStateProvider = get(),
+        )
     }
 }

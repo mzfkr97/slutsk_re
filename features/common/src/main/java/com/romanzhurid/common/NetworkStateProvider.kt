@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import javax.inject.Inject
 
 /**
  * listening for network changes on device and emitting them as a NetworkState
@@ -33,7 +32,7 @@ sealed class NetworkStatusState {
     object Disconnected : NetworkStatusState()
 }
 
-class NetworkStateProvider @Inject constructor(
+class NetworkStateProvider(
     private val context: Context
 ) : NetworkStateFlow {
 

@@ -5,11 +5,7 @@ plugins {
 
 android {
     namespace = "com.romanzhurid.domain"
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
-    }
+    compileSdk = 37
 
     defaultConfig {
         minSdk = 30
@@ -30,5 +26,5 @@ kotlin {
 dependencies {
     implementation(libs.androidx.core.ktx)
 
-    implementation(libs.dagger)
+    implementation(libs.koin.android)
 }

@@ -4,9 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.romanzhurid.common.progressdelegate.ProgressDelegate
 import com.romanzhurid.domain.AppSettings
-import javax.inject.Inject
 
-class SettingsViewModelFactory @Inject constructor(
+class SettingsViewModelFactory(
     private val appSettings: AppSettings,
     private val progressDelegate: ProgressDelegate
 ) : ViewModelProvider.Factory {

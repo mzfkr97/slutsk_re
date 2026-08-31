@@ -1,16 +1,21 @@
 package com.romanzhurid.currencies.di
 
 import com.romanzhurid.currencies.ui.CurrenciesViewModelFactory
-import dagger.Component
+import com.romanzhurid.currencies.mapper.CurrencyUiMapper
+import org.koin.dsl.module
 
-@Component(dependencies = [CurrencyComponentDependencies::class])
-interface CurrencyComponent {
+val currenciesModule = module {
+    single {
+        CurrencyUiMapper(res = get())
+    }
 
-    fun getCurrenciesViewModelFactory(): CurrenciesViewModelFactory
-
-    @Component.Builder
-    interface Builder {
-        fun currencyComponentDependencies(dependencies: CurrencyComponentDependencies): Builder
-        fun build(): CurrencyComponent
+    factory {
+        CurrenciesViewModelFactory(
+            currenciesInteractor = get(),
+            res = get(),
+            dispatcherProvider = get(),
+            progressDelegate = get(),
+            currencyUiMapper = get(),
+        )
     }
 }

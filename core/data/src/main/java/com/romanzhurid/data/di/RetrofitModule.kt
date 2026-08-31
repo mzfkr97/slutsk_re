@@ -1,144 +1,94 @@
 package com.romanzhurid.data.di
 
-import android.util.Log
 import com.romanzhurid.data.BuildConfig
-import com.romanzhurid.data.di.qualifier.BackendApi
-import com.romanzhurid.data.di.qualifier.CinemaApi
 import com.romanzhurid.data.remote.BusApi
 import com.romanzhurid.data.remote.cinema.ApiCinema
 import com.romanzhurid.data.remote.cinema.CinemaAuthInterceptor
 import com.romanzhurid.data.remote.currencies.CurrencyApi
-import dagger.Module
-import dagger.Provides
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.core.qualifier.named
+import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import java.util.concurrent.TimeUnit
-import javax.inject.Singleton
-import com.romanzhurid.data.di.qualifier.CurrencyApi as CurrencyQualifier
 
-@Module(includes = [InterceptorsModule::class])
-class RetrofitModule {
+val retrofitModule = module {
+    includes(interceptorsModule)
 
-    companion object {
-        private const val TIMEOUT_SECONDS = 30L
-    }
-
-    @Provides
-    @Singleton
-    fun provideJson(): Json {
-        return Json {
+    single {
+        Json {
             ignoreUnknownKeys = true
             isLenient = true
             encodeDefaults = true
         }
     }
 
-    private fun OkHttpClient.Builder.applyTimeouts(): OkHttpClient.Builder {
-        return this
-            .connectTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
-            .readTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
-            .writeTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
-    }
-
-    @Provides
-    @Singleton
-    fun provideOkHttpClient(
-        loggingInterceptor: HttpLoggingInterceptor,
-    ): OkHttpClient {
-        return OkHttpClient.Builder()
+    single {
+        val loggingInterceptor: HttpLoggingInterceptor = get()
+        OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
-            .applyTimeouts()
+            .connectTimeout(30L, TimeUnit.SECONDS)
+            .readTimeout(30L, TimeUnit.SECONDS)
+            .writeTimeout(30L, TimeUnit.SECONDS)
             .build()
     }
 
-    @CinemaApi
-    @Provides
-    @Singleton
-    fun provideCinemaOkHttpClient(
-        okHttpClient: OkHttpClient,
-        cinemaAuthInterceptor: CinemaAuthInterceptor,
-    ): OkHttpClient {
-        return okHttpClient
+    single(named("cinemaHttpClient")) {
+        val okHttpClient: OkHttpClient = get()
+        val cinemaAuthInterceptor: CinemaAuthInterceptor = get()
+        okHttpClient
             .newBuilder()
             .addInterceptor(cinemaAuthInterceptor)
             .build()
     }
 
-    @CinemaApi
-    @Provides
-    @Singleton
-    fun provideCinemaRetrofit(
-        @CinemaApi okHttpClient: OkHttpClient,
-        json: Json,
-    ): Retrofit {
-        return createRetrofit(
-            okHttpClient = okHttpClient,
-            json = json,
-            baseUrl = BuildConfig.CINEMA_URL,
+    single(named("cinemaRetrofit")) {
+        val okHttpClient: OkHttpClient = get(named("cinemaHttpClient"))
+        val json: Json = get()
+        createRetrofit(okHttpClient, json, BuildConfig.CINEMA_URL)
+    }
+
+    single(named("backendRetrofit")) {
+        val okHttpClient: OkHttpClient = get()
+        val json: Json = get()
+        createRetrofit(okHttpClient, json, BuildConfig.BASE_URL)
+    }
+
+    single(named("currencyRetrofit")) {
+        val okHttpClient: OkHttpClient = get()
+        val json: Json = get()
+        createRetrofit(okHttpClient, json, BuildConfig.CURRENCY_URL)
+    }
+
+    single<ApiCinema> {
+        val retrofit: Retrofit = get(named("cinemaRetrofit"))
+        retrofit.create(ApiCinema::class.java)
+    }
+
+    single<BusApi> {
+        val retrofit: Retrofit = get(named("backendRetrofit"))
+        retrofit.create(BusApi::class.java)
+    }
+
+    single<CurrencyApi> {
+        val retrofit: Retrofit = get(named("currencyRetrofit"))
+        retrofit.create(CurrencyApi::class.java)
+    }
+}
+
+private fun createRetrofit(
+    okHttpClient: OkHttpClient,
+    json: Json,
+    baseUrl: String,
+): Retrofit {
+    return Retrofit.Builder()
+        .baseUrl(baseUrl)
+        .client(okHttpClient)
+        .addConverterFactory(
+            json.asConverterFactory("application/json".toMediaType())
         )
-    }
-
-    @BackendApi
-    @Provides
-    @Singleton
-    fun provideBackendRetrofit(
-        okHttpClient: OkHttpClient,
-        json: Json,
-    ): Retrofit {
-        return createRetrofit(okHttpClient, json, BuildConfig.BASE_URL)
-    }
-
-    @CurrencyQualifier
-    @Provides
-    @Singleton
-    fun provideCurrencyRetrofit(
-        okHttpClient: OkHttpClient,
-        json: Json,
-    ): Retrofit {
-        return createRetrofit(okHttpClient, json, BuildConfig.CURRENCY_URL)
-    }
-
-    @CinemaApi
-    @Provides
-    @Singleton
-    fun provideCinemaApi(
-        @CinemaApi retrofit: Retrofit,
-    ): ApiCinema {
-        return retrofit.create(ApiCinema::class.java)
-    }
-
-    @BackendApi
-    @Provides
-    @Singleton
-    fun provideBusApi(
-        @BackendApi retrofit: Retrofit,
-    ): BusApi {
-        return retrofit.create(BusApi::class.java)
-    }
-
-    @Provides
-    @Singleton
-    fun provideCurrencyApi(
-        @CurrencyQualifier retrofit: Retrofit,
-    ): CurrencyApi {
-        return retrofit.create(CurrencyApi::class.java)
-    }
-
-    private fun createRetrofit(
-        okHttpClient: OkHttpClient,
-        json: Json,
-        baseUrl: String,
-    ): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(baseUrl)
-            .client(okHttpClient)
-            .addConverterFactory(
-                json.asConverterFactory("application/json".toMediaType())
-            )
-            .build()
-    }
+        .build()
 }

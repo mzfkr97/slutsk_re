@@ -1,20 +1,10 @@
 package com.romanzhurid.cinema.di
 
+import com.romanzhurid.cinema.ui.CinemaViewModelFactory
+import org.koin.core.context.GlobalContext
+
 object CinemaComponentHolder {
-    private val components = mutableMapOf<String, CinemaComponent>()
-
-    fun get(
-        instanceId: String,
-        dependencies: CinemaComponentDependencies
-    ): CinemaComponent {
-        return components.getOrPut(instanceId) {
-            DaggerCinemaComponent.builder()
-                .cinemaComponentDependencies(dependencies)
-                .build()
-        }
-    }
-
-    fun clear(instanceId: String) {
-        components.remove(instanceId)
+    fun getViewModelFactory(): CinemaViewModelFactory {
+        return GlobalContext.get().get()
     }
 }

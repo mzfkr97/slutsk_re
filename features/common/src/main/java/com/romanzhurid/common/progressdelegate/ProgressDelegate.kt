@@ -9,7 +9,6 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 import kotlin.coroutines.cancellation.CancellationException
 
 interface ProgressDelegate {
@@ -23,7 +22,7 @@ interface ProgressDelegate {
     fun CoroutineScope.exceptionHandler(afterHideProgress: (() -> Unit)? = null): CoroutineExceptionHandler
 }
 
-class ProgressDelegateImpl @Inject constructor(
+class ProgressDelegateImpl(
     private val progressEmitter: ProgressEmitter,
     private val exceptionsEmitter: ExceptionsEmitter,
 ) : ProgressDelegate {

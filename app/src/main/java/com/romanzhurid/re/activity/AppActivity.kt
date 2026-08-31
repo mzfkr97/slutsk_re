@@ -35,22 +35,17 @@ import com.romanzhurid.navigation.composition.LocalNavigator
 import com.romanzhurid.navigation.navigator.NavigatorImpl
 import com.romanzhurid.navigation.navigator.isReady
 import com.romanzhurid.re.activity.MainActivityViewModel.*
-import com.romanzhurid.re.application.App
 import com.romanzhurid.re.ext.setSlideDownExitAnimation
-import javax.inject.Inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AppActivity : ComponentActivity() {
 
-    @Inject
-    lateinit var factory: MainActivityViewModelFactory
-    private val viewModel: MainActivityViewModel by viewModels { factory }
+    private val viewModel: MainActivityViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        (applicationContext as App).appComponent.inject(this)
-
-        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
 
+        val splashScreen = installSplashScreen()
         enableEdgeToEdge()
 
         setContent {

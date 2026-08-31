@@ -1,20 +1,13 @@
 package com.romanzhurid.onboarding.di
 
 import com.romanzhurid.onboarding.onboarding.OnboardingViewModelFactory
-import dagger.Component
+import org.koin.dsl.module
 
-@OnboardingScope
-@Component(
-    dependencies = [OnboardingComponentDependencies::class]
-)
-interface OnboardingComponent {
-    fun getOnboardingViewModelFactory(): OnboardingViewModelFactory
-
-    companion object {
-        private var component: OnboardingComponent? = null
-
-        fun get(): OnboardingComponent {
-            return component ?: throw NotImplementedError("This component must be initialized")
-        }
+val onboardingModule = module {
+    factory {
+        OnboardingViewModelFactory(
+            appSettings = get(),
+            progressDelegate = get(),
+        )
     }
 }

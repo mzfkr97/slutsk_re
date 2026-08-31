@@ -8,9 +8,8 @@ import com.romanzhurid.common.DispatcherProvider
 import com.romanzhurid.common.NetworkStateProvider
 import com.romanzhurid.common.progressdelegate.ProgressDelegate
 import com.romanzhurid.domain.cinema.repo.CinemaRepository
-import javax.inject.Inject
 
-class CinemaViewModelFactory @Inject constructor(
+class CinemaViewModelFactory(
     private val cinemaRepository: CinemaRepository,
     private val calendarToUiMapper: CalendarToUiMapper,
     private val cinemaMapper: CinemaToUiMapper,

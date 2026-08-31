@@ -7,9 +7,8 @@ import com.romanzhurid.common.ResourceProvider
 import com.romanzhurid.common.progressdelegate.ProgressDelegate
 import com.romanzhurid.currencies.mapper.CurrencyUiMapper
 import com.romanzhurid.domain.currencies.interactor.CurrenciesInteractor
-import javax.inject.Inject
 
-class CurrenciesViewModelFactory @Inject constructor(
+class CurrenciesViewModelFactory(
     private val currenciesInteractor: CurrenciesInteractor,
     private val res: ResourceProvider,
     private val dispatcherProvider: DispatcherProvider,

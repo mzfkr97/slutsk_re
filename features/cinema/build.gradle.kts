@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.android.built.in1.kotlin)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.ksp)
+    
 }
 
 android {
@@ -46,8 +46,9 @@ dependencies {
     implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.androidx.compose.material)
 
-    implementation(libs.dagger)
-    ksp(libs.dagger.compiler)
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
+    
 
     implementation(libs.bundles.androidx.nav3)
     implementation(libs.kotlinx.serialization.json)

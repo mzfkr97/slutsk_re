@@ -1,22 +1,16 @@
 package com.romanzhurid.data.di
 
 import com.romanzhurid.data.remote.cinema.CinemaAuthInterceptor
-import dagger.Module
-import dagger.Provides
 import okhttp3.logging.HttpLoggingInterceptor
-import javax.inject.Singleton
+import org.koin.dsl.module
 
-@Module
-class InterceptorsModule {
+val interceptorsModule = module {
+    single {
+        CinemaAuthInterceptor()
+    }
 
-    @Provides
-    @Singleton
-    fun provideCinemaAuthInterceptor(): CinemaAuthInterceptor = CinemaAuthInterceptor()
-
-    @Provides
-    @Singleton
-    fun provideLoggingInterceptor(): HttpLoggingInterceptor {
-        return HttpLoggingInterceptor().apply {
+    single {
+        HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.HEADERS
         }
     }

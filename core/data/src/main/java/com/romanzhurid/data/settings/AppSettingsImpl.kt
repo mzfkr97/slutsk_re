@@ -6,9 +6,8 @@ import com.romanzhurid.domain.AppSettings
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import javax.inject.Inject
 
-class AppSettingsImpl @Inject constructor(private val preferences: SharedPreferences) : AppSettings {
+class AppSettingsImpl  constructor(private val preferences: SharedPreferences) : AppSettings {
 
     override var isFirstAppStart: Boolean by PreferencesDelegate(
         preferences,

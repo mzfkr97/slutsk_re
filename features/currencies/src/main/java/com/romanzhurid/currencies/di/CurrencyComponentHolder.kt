@@ -1,20 +1,10 @@
 package com.romanzhurid.currencies.di
 
+import com.romanzhurid.currencies.ui.CurrenciesViewModelFactory
+import org.koin.core.context.GlobalContext
+
 object CurrencyComponentHolder {
-    private val components = mutableMapOf<String, CurrencyComponent>()
-
-    fun get(
-        instanceId: String,
-        dependencies: CurrencyComponentDependencies
-    ): CurrencyComponent {
-        return components.getOrPut(instanceId) {
-            DaggerCurrencyComponent.builder()
-                .currencyComponentDependencies(dependencies)
-                .build()
-        }
-    }
-
-    fun clear(instanceId: String) {
-        components.remove(instanceId)
+    fun getViewModelFactory(): CurrenciesViewModelFactory {
+        return GlobalContext.get().get()
     }
 }

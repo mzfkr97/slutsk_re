@@ -8,9 +8,8 @@ import com.romanzhurid.domain.currencies.model.Currency
 import com.romanzhurid.domain.currencies.repository.CurrencyRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
-class CurrencyRepositoryImpl @Inject constructor(
+class CurrencyRepositoryImpl  constructor(
     private val api: CurrencyApi,
     private val remoteMapper: CurrencyRemoteMapper,
     private val currencyDao: CurrencyDao,

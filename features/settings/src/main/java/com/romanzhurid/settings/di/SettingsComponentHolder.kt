@@ -1,16 +1,10 @@
 package com.romanzhurid.settings.di
 
+import com.romanzhurid.settings.presentation.SettingsViewModelFactory
+import org.koin.core.context.GlobalContext
+
 object SettingsComponentHolder {
-    private var component: SettingsComponent? = null
-
-    fun get(dependencies: SettingsComponentDependencies): SettingsComponent {
-        if (component == null) {
-            component = DaggerSettingsComponent.factory().create(dependencies)
-        }
-        return component!!
-    }
-
-    fun clear() {
-        component = null
+    fun getViewModelFactory(): SettingsViewModelFactory {
+        return GlobalContext.get().get()
     }
 }

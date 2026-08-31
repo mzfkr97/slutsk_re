@@ -4,9 +4,8 @@ import com.romanzhurid.brandbook.R
 import com.romanzhurid.common.ResourceProvider
 import com.romanzhurid.currencies.model.CurrencyItem
 import com.romanzhurid.domain.currencies.model.Currency
-import javax.inject.Inject
 
-class CurrencyUiMapper @Inject constructor(private val res: ResourceProvider) {
+class CurrencyUiMapper  constructor(private val res: ResourceProvider) {
 
     fun map(currency: List<Currency>): List<CurrencyItem> {
         val favorites = currency.filter { it.isFavorite }

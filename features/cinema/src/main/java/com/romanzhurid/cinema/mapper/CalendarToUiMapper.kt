@@ -5,9 +5,8 @@ import com.romanzhurid.brandbook.ext.getDayNumber
 import com.romanzhurid.brandbook.ext.thisDayIsMonday
 import com.romanzhurid.cinema.model.CalendarUi
 import com.romanzhurid.domain.cinema.Calendar
-import javax.inject.Inject
 
-class CalendarToUiMapper @Inject constructor() {
+class CalendarToUiMapper {
 
     fun map(model: Calendar) =
         with(model) {

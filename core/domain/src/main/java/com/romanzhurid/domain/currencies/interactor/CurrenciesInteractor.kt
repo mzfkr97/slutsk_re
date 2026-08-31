@@ -3,9 +3,8 @@ package com.romanzhurid.domain.currencies.interactor
 import com.romanzhurid.domain.currencies.model.Currency
 import com.romanzhurid.domain.currencies.repository.CurrencyRepository
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
 
-class CurrenciesInteractor @Inject constructor(
+class CurrenciesInteractor(
     private val repository: CurrencyRepository
 ) {
     suspend fun getAllCurrencies(): List<Currency> {

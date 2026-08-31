@@ -1,26 +1,23 @@
 package com.romanzhurid.data.di
 
-import android.content.Context
 import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 import com.romanzhurid.data.BuildConfig
-import com.romanzhurid.domain.AppSettings
-import com.romanzhurid.data.di.module.DatabaseModule
-import com.romanzhurid.data.di.module.RepositoryModule
+import com.romanzhurid.data.di.module.databaseModule
+import com.romanzhurid.data.di.module.repositoryModule
 import com.romanzhurid.data.settings.AppSettingsImpl
-import dagger.Module
-import dagger.Provides
-import javax.inject.Singleton
+import com.romanzhurid.domain.AppSettings
+import org.koin.android.ext.koin.androidContext
+import org.koin.dsl.module
 
-@Module(includes = [RetrofitModule::class, DatabaseModule::class])
-class CoreDataModule {
+val coreDataModule = module {
+    includes(retrofitModule, databaseModule, repositoryModule)
 
-    @Singleton
-    @Provides
-    fun provideEncryptedSharedPreferences(context: Context): SharedPreferences {
+    single<SharedPreferences> {
+        val context = androidContext()
         val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
-        return EncryptedSharedPreferences.create(
+        EncryptedSharedPreferences.create(
             BuildConfig.PREF_PACKAGE_NAME,
             masterKeyAlias,
             context,
@@ -29,7 +26,7 @@ class CoreDataModule {
         )
     }
 
-    @Singleton
-    @Provides
-    fun provideAppSettings(impl: AppSettingsImpl): AppSettings = impl
+    single<AppSettings> {
+        AppSettingsImpl(get())
+    }
 }

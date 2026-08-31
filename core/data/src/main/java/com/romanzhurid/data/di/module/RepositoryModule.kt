@@ -3,19 +3,31 @@ package com.romanzhurid.data.di.module
 import com.romanzhurid.data.repository.cinema.CinemaRepositoryImpl
 import com.romanzhurid.data.repository.currencies.CurrencyRepositoryImpl
 import com.romanzhurid.domain.cinema.repo.CinemaRepository
+import com.romanzhurid.domain.currencies.interactor.CurrenciesInteractor
 import com.romanzhurid.domain.currencies.repository.CurrencyRepository
-import dagger.Binds
-import dagger.Module
-import javax.inject.Singleton
+import org.koin.core.qualifier.named
+import org.koin.dsl.module
 
-@Module
-interface RepositoryModule {
+val repositoryModule = module {
+    single<CinemaRepository> {
+        CinemaRepositoryImpl(
+            apiCinema = get(),
+            cinemaRemoteMapper = get()
+        )
+    }
 
-    @Binds
-    @Singleton
-    fun bindsCinemaRepository(impl: CinemaRepositoryImpl): CinemaRepository
+    single<CurrencyRepository> {
+        CurrencyRepositoryImpl(
+            api = get(),
+            remoteMapper = get(),
+            currencyDao = get(),
+            localMapper = get()
+        )
+    }
 
-    @Binds
-    @Singleton
-    fun bindsCurrencyRepository(impl: CurrencyRepositoryImpl): CurrencyRepository
+    single {
+        CurrenciesInteractor(
+            repository = get()
+        )
+    }
 }

@@ -6,9 +6,29 @@ import com.romanzhurid.common.ExceptionsFlow
 import com.romanzhurid.common.ProgressFlow
 import com.romanzhurid.common.ResourceProvider
 import com.romanzhurid.domain.AppSettings
-import javax.inject.Inject
+import org.koin.dsl.module
 
-class MainActivityViewModelFactory @Inject constructor(
+val mainActivityModule = module {
+    factory {
+        MainActivityViewModelFactory(
+            appSettings = get(),
+            progressFlow = get<ProgressFlow>(),
+            exceptionsFlow = get<ExceptionsFlow>(),
+            res = get(),
+        )
+    }
+
+    factory {
+        MainActivityViewModel(
+            appSettings = get(),
+            progressFlow = get<ProgressFlow>(),
+            exceptionsFlow = get<ExceptionsFlow>(),
+            res = get(),
+        )
+    }
+}
+
+class MainActivityViewModelFactory(
     private val appSettings: AppSettings,
     private val progressFlow: ProgressFlow,
     private val exceptionsFlow: ExceptionsFlow,

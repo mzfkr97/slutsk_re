@@ -3,9 +3,8 @@ package com.romanzhurid.data.remote.currencies.mapper
 import com.romanzhurid.data.remote.currencies.model.BankCurrencyRemote
 import com.romanzhurid.data.remote.currencies.model.CurrencyRemote
 import com.romanzhurid.domain.currencies.model.Currency
-import javax.inject.Inject
 
-class CurrencyRemoteMapper @Inject constructor() {
+class CurrencyRemoteMapper  constructor() {
     fun map(remote: CurrencyRemote): Currency = Currency(
         id = remote.curId,
         abbreviation = remote.abbreviation,
