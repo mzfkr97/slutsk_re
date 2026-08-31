@@ -47,9 +47,11 @@ import com.romanzhurid.common.uistate.CollectEventEffect
 import com.romanzhurid.common.uistate.collectUiState
 import com.romanzhurid.common.viewer.ImageViewer
 import com.romanzhurid.navigation.composition.LocalBackHandler
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun CinemaScreen(viewModel: CinemaViewModel) {
+fun CinemaScreen() {
+    val viewModel = koinViewModel<CinemaViewModel>()
     val onBack = LocalBackHandler.current
     val uiState by viewModel.collectUiState()
 

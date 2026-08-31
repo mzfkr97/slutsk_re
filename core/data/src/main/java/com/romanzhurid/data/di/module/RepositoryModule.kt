@@ -5,7 +5,6 @@ import com.romanzhurid.data.repository.currencies.CurrencyRepositoryImpl
 import com.romanzhurid.domain.cinema.repo.CinemaRepository
 import com.romanzhurid.domain.currencies.interactor.CurrenciesInteractor
 import com.romanzhurid.domain.currencies.repository.CurrencyRepository
-import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val repositoryModule = module {

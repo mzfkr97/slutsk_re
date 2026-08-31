@@ -38,15 +38,14 @@ import com.romanzhurid.onboarding.model.IntroPage
 import com.romanzhurid.onboarding.onboarding.OnboardingViewModel.Event
 import com.romanzhurid.onboarding.onboarding.OnboardingViewModel.UiState
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 internal fun OnboardingScreen(
-    viewModel: OnboardingViewModel,
     onFinished: (AppRoute) -> Unit,
 ) {
-
+    val viewModel = koinViewModel<OnboardingViewModel>()
     val uiState by viewModel.collectUiState()
-
     viewModel.CollectEventEffect { event ->
         when (event) {
             is Event.OnClearAndPush -> {
@@ -69,63 +68,57 @@ private fun OnboardingScreenContent(
     val pagerState = rememberPagerState { uiState.pages.size }
     val scope = rememberCoroutineScope()
 
-    Scaffold(
-        topBar = {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(AppTheme.dimensions.medium),
-                contentAlignment = Alignment.CenterEnd
-            ) {
-                if (pagerState.currentPage < uiState.pages.size - 1) {
-                    TextButton(onClick = onFinishIntro) {
-                        Text(
-                            text = stringResource(R.string.onboarding__skip),
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    }
+    Scaffold(topBar = {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(AppTheme.dimensions.medium),
+            contentAlignment = Alignment.CenterEnd
+        ) {
+            if (pagerState.currentPage < uiState.pages.size - 1) {
+                TextButton(onClick = onFinishIntro) {
+                    Text(
+                        text = stringResource(R.string.onboarding__skip),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.primary
+                    )
                 }
             }
-        },
-        bottomBar = {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(AppTheme.dimensions.medium),
-                verticalArrangement = Arrangement.spacedBy(AppTheme.dimensions.small),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                PagerIndicator(
-                    count = uiState.pages.size,
-                    currentPage = pagerState.currentPage
-                )
-
-                Spacer(modifier = Modifier.height(AppTheme.dimensions.medium))
-
-                AppBaseButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = if (pagerState.currentPage == uiState.pages.size - 1) {
-                        stringResource(R.string.onboarding__get_started)
-                    } else {
-                        stringResource(R.string.onboarding__next)
-                    },
-                    onClick = {
-                        if (pagerState.currentPage < uiState.pages.size - 1) {
-                            scope.launch {
-                                pagerState.animateScrollToPage(pagerState.currentPage + 1)
-                            }
-                        } else {
-                            onFinishIntro()
-                        }
-                    }
-                )
-            }
         }
-    ) { padding ->
-        HorizontalPager(
-            state = pagerState,
+    }, bottomBar = {
+        Column(
             modifier = Modifier
+                .fillMaxWidth()
+                .padding(AppTheme.dimensions.medium),
+            verticalArrangement = Arrangement.spacedBy(AppTheme.dimensions.small),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            PagerIndicator(
+                count = uiState.pages.size, currentPage = pagerState.currentPage
+            )
+
+            Spacer(modifier = Modifier.height(AppTheme.dimensions.medium))
+
+            AppBaseButton(
+                modifier = Modifier.fillMaxWidth(),
+                text = if (pagerState.currentPage == uiState.pages.size - 1) {
+                    stringResource(R.string.onboarding__get_started)
+                } else {
+                    stringResource(R.string.onboarding__next)
+                },
+                onClick = {
+                    if (pagerState.currentPage < uiState.pages.size - 1) {
+                        scope.launch {
+                            pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                        }
+                    } else {
+                        onFinishIntro()
+                    }
+                })
+        }
+    }) { padding ->
+        HorizontalPager(
+            state = pagerState, modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
         ) { pageIndex ->
@@ -161,12 +154,9 @@ private fun IntroPageContent(page: IntroPage) {
         Spacer(modifier = Modifier.height(AppTheme.dimensions.large))
 
         Text(
-            text = stringResource(page.title),
-            style = MaterialTheme.typography.headlineMedium.copy(
-                fontWeight = FontWeight.Bold,
-                fontSize = AppTheme.localFontsSize.xxSmall
-            ),
-            textAlign = TextAlign.Center
+            text = stringResource(page.title), style = MaterialTheme.typography.headlineMedium.copy(
+                fontWeight = FontWeight.Bold, fontSize = AppTheme.localFontsSize.xxSmall
+            ), textAlign = TextAlign.Center
         )
 
         Spacer(modifier = Modifier.height(AppTheme.dimensions.small))
@@ -182,8 +172,7 @@ private fun IntroPageContent(page: IntroPage) {
 
 @Composable
 private fun PagerIndicator(
-    count: Int,
-    currentPage: Int
+    count: Int, currentPage: Int
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(AppTheme.dimensions.small),

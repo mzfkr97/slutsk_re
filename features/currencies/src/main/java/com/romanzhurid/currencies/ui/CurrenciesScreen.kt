@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -39,10 +38,12 @@ import com.romanzhurid.common.uistate.collectUiState
 import com.romanzhurid.currencies.model.CurrencyItem
 import com.romanzhurid.currencies.model.CurrencyItem.CurrencyUi
 import com.romanzhurid.navigation.composition.LocalBackHandler
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-internal fun CurrenciesScreen(viewModel: CurrenciesViewModel) {
+internal fun CurrenciesScreen() {
+    val viewModel = koinViewModel<CurrenciesViewModel>()
     val onBack = LocalBackHandler.current
     val uiState by viewModel.collectUiState()
     val isRefreshing = uiState.isLoading

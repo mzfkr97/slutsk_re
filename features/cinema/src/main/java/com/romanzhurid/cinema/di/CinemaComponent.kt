@@ -2,8 +2,9 @@ package com.romanzhurid.cinema.di
 
 import com.romanzhurid.cinema.mapper.CalendarToUiMapper
 import com.romanzhurid.cinema.mapper.CinemaToUiMapper
-import com.romanzhurid.cinema.ui.CinemaViewModelFactory
+import com.romanzhurid.cinema.ui.CinemaViewModel
 import com.romanzhurid.common.progressdelegate.ProgressDelegate
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val cinemaModule = module {
@@ -15,8 +16,8 @@ val cinemaModule = module {
         CinemaToUiMapper()
     }
 
-    factory<CinemaViewModelFactory> {
-        CinemaViewModelFactory(
+    viewModel {
+        CinemaViewModel(
             cinemaRepository = get(),
             calendarToUiMapper = get<CalendarToUiMapper>(),
             cinemaMapper = get<CinemaToUiMapper>(),
