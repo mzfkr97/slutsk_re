@@ -13,6 +13,7 @@ import com.romanzhurid.common.ResourceProviderImpl
 import com.romanzhurid.common.progressdelegate.ProgressDelegate
 import com.romanzhurid.common.progressdelegate.ProgressDelegateImpl
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val commonFeatureModule = module {
@@ -20,28 +21,28 @@ val commonFeatureModule = module {
         ResourceProviderImpl(androidContext())
     }
 
-    single<ExceptionsObserverImpl> {
+    single(named("exceptions")) {
         ExceptionsObserverImpl()
     }
 
     single<ExceptionsFlow> {
-        get<ExceptionsObserverImpl>()
+        get(named("exceptions"))
     }
 
     single<ExceptionsEmitter> {
-        get<ExceptionsObserverImpl>()
+        get(named("exceptions"))
     }
 
-    single<ProgressObserverImpl> {
+    single(named("progress")) {
         ProgressObserverImpl()
     }
 
     single<ProgressEmitter> {
-        get<ProgressObserverImpl>()
+        get(named("progress"))
     }
 
     single<ProgressFlow> {
-        get<ProgressObserverImpl>()
+        get(named("progress"))
     }
 
     single<ProgressDelegate> {
