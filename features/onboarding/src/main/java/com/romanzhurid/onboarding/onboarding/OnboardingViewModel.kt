@@ -26,6 +26,11 @@ class OnboardingViewModel(
 
     sealed interface Event {
         data class OnClearAndPush(val destination: AppRoute) : Event
+        data object RequestPermissions : Event
+    }
+
+    fun requestPermissions() {
+        viewModelScope.sendEvent(Event.RequestPermissions)
     }
 
     fun onFinishIntro() {
