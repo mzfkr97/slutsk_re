@@ -5,7 +5,7 @@ import com.romanzhurid.common.ResourceProvider
 import com.romanzhurid.currencies.model.CurrencyItem
 import com.romanzhurid.domain.currencies.model.Currency
 
-class CurrencyUiMapper  constructor(private val res: ResourceProvider) {
+class CurrencyUiMapper(private val res: ResourceProvider) {
 
     fun map(currency: List<Currency>): List<CurrencyItem> {
         val favorites = currency.filter { it.isFavorite }

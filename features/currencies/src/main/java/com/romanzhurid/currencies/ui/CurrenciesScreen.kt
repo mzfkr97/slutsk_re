@@ -38,12 +38,10 @@ import com.romanzhurid.common.uistate.collectUiState
 import com.romanzhurid.currencies.model.CurrencyItem
 import com.romanzhurid.currencies.model.CurrencyItem.CurrencyUi
 import com.romanzhurid.navigation.composition.LocalBackHandler
-import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-internal fun CurrenciesScreen() {
-    val viewModel = koinViewModel<CurrenciesViewModel>()
+internal fun CurrenciesScreen(viewModel: CurrenciesViewModel) {
     val onBack = LocalBackHandler.current
     val uiState by viewModel.collectUiState()
     val isRefreshing = uiState.isLoading

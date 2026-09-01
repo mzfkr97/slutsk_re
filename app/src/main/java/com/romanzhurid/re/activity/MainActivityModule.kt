@@ -11,6 +11,7 @@ val mainActivityModule = module {
             appSettings = get(),
             progressFlow = get<ProgressObserverImpl>(),
             exceptionsFlow = get<ExceptionsObserverImpl>(),
+            exceptionMapper = get(),
             res = get(),
         )
     }

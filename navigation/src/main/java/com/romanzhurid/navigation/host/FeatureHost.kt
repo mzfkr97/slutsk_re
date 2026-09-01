@@ -9,25 +9,35 @@ import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDe
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import com.romanzhurid.navigation.AppNavDisplay
+import com.romanzhurid.navigation.AppRoute
 import com.romanzhurid.navigation.composition.LocalBackHandler
 import com.romanzhurid.navigation.navigator.NavigatorImpl
+import org.koin.compose.getKoin
+import org.koin.core.scope.Scope
 
 @Composable
-fun <R : Any, FR : Any> FeatureHost(
-    route: R,
-    clearComponent: () -> Unit,
+fun <Route : AppRoute, FR : Any> FeatureHost(
+    route: Route,
+    featureScope: FeatureScope,
     initialStack: () -> List<FR>,
-    entryProviderFactory: () -> (key: FR) -> NavEntry<FR>
+    entryProviderFactory: (Scope) -> (FR) -> NavEntry<FR>,
 ) {
     val parentBack = LocalBackHandler.current
+    val koin = getKoin()
 
+    val scope = remember(route.instanceId) {
+        koin.getOrCreateScope(
+            scopeId = route.instanceId,
+            qualifier = featureScope.qualifier
+        )
+    }
     val navigator = remember(route) {
         NavigatorImpl(initialStack = initialStack())
     }
 
-    DisposableEffect(route) {
+    DisposableEffect(scope) {
         onDispose {
-            clearComponent()
+            scope.close()
         }
     }
 
@@ -41,8 +51,8 @@ fun <R : Any, FR : Any> FeatureHost(
         }
     }
 
-    val entryProvider = remember(route) {
-        entryProviderFactory()
+    val entryProvider = remember(route, scope) {
+        entryProviderFactory(scope)
     }
 
     AppNavDisplay(

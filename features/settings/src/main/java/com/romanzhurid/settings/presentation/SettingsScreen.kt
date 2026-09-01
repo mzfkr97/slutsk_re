@@ -13,13 +13,12 @@ import com.romanzhurid.brandbook.components.checkbox.AppCheckBox
 import com.romanzhurid.brandbook.components.toolbar.AppToolbar
 import com.romanzhurid.brandbook.theme.AppTheme
 import com.romanzhurid.common.uistate.collectUiState
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SettingsScreen(
+    viewModel: SettingsViewModel,
     onBackClick: () -> Unit
 ) {
-    val viewModel = koinViewModel<SettingsViewModel>()
     val uiState by viewModel.collectUiState()
 
     Scaffold(

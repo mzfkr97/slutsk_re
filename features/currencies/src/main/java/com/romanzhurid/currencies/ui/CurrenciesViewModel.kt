@@ -33,7 +33,6 @@ class CurrenciesViewModel(
         val searchQuery: String = EMPTY_STRING,
         val lastUpdateTimeMs: String = EMPTY_STRING,
         val isLoading: Boolean = false,
-
     )
 
     private val exceptionHandler = viewModelScope.exceptionHandler {

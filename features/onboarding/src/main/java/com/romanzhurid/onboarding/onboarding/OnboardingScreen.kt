@@ -42,9 +42,9 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 internal fun OnboardingScreen(
+    viewModel: OnboardingViewModel,
     onFinished: (AppRoute) -> Unit,
 ) {
-    val viewModel = koinViewModel<OnboardingViewModel>()
     val uiState by viewModel.collectUiState()
     viewModel.CollectEventEffect { event ->
         when (event) {

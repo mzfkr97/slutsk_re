@@ -8,10 +8,4 @@ sealed interface CinemaFeatureRoute : FeatureRoute {
 
     @Serializable
     data object Cinema : CinemaFeatureRoute
-
-    @Serializable
-    data object CinemaDetails : CinemaFeatureRoute
-
-    @Serializable
-    data object CinemaGallery : CinemaFeatureRoute
 }
