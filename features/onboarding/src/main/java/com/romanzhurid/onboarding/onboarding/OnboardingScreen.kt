@@ -1,5 +1,8 @@
 package com.romanzhurid.onboarding.onboarding
 
+import android.Manifest
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -36,9 +39,7 @@ import com.romanzhurid.common.uistate.collectUiState
 import com.romanzhurid.navigation.AppRoute
 import com.romanzhurid.onboarding.model.IntroPage
 import com.romanzhurid.onboarding.onboarding.OnboardingViewModel.Event
-import com.romanzhurid.onboarding.onboarding.OnboardingViewModel.UiState
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 internal fun OnboardingScreen(
@@ -46,23 +47,37 @@ internal fun OnboardingScreen(
     onFinished: (AppRoute) -> Unit,
 ) {
     val uiState by viewModel.collectUiState()
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions(),
+        onResult = {
+            viewModel.onFinishIntro()
+        }
+    )
     viewModel.CollectEventEffect { event ->
         when (event) {
             is Event.OnClearAndPush -> {
                 onFinished(event.destination)
+            }
+            is Event.RequestPermissions -> {
+                permissionLauncher.launch(
+                    arrayOf(
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    )
+                )
             }
         }
     }
 
     OnboardingScreenContent(
         uiState = uiState,
-        onFinishIntro = viewModel::onFinishIntro,
+        onFinishIntro = viewModel::requestPermissions,
     )
 }
 
 @Composable
 private fun OnboardingScreenContent(
-    uiState: UiState,
+    uiState: OnboardingViewModel.UiState,
     onFinishIntro: () -> Unit,
 ) {
     val pagerState = rememberPagerState { uiState.pages.size }
