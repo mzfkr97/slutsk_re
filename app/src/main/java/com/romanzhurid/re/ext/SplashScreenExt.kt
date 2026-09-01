@@ -16,6 +16,7 @@ fun SplashScreen.setSlideDownExitAnimation() {
         ).apply {
             interpolator = AccelerateDecelerateInterpolator()
             duration = 200L
+
             doOnEnd { splashScreen.remove() }
         }.start()
     }

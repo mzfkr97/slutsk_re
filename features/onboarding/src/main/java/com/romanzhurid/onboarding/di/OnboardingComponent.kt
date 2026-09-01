@@ -2,7 +2,7 @@ package com.romanzhurid.onboarding.di
 
 import com.romanzhurid.navigation.host.FeatureScope
 import com.romanzhurid.onboarding.onboarding.OnboardingViewModel
-import org.koin.core.module.dsl.viewModel
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -12,11 +12,6 @@ object OnboardingFeatureScope : FeatureScope {
 
 val onboardingModule = module {
     scope<OnboardingFeatureScope> {
-        viewModel {
-            OnboardingViewModel(
-                appSettings = get(),
-                progressDelegate = get(),
-            )
-        }
+        viewModelOf(::OnboardingViewModel)
     }
 }
