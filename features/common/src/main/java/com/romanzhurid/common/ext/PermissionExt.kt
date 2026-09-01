@@ -3,7 +3,19 @@ package com.romanzhurid.common.ext
 import android.content.Context
 import android.content.pm.PackageManager
 import android.Manifest
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import androidx.core.content.ContextCompat
+
+fun Context.openAppSettings() {
+    startActivity(
+        Intent(
+            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+            Uri.fromParts("package", packageName, null)
+        )
+    )
+}
 
 fun Context.hasLocationPermission(): Boolean {
     return ContextCompat.checkSelfPermission(
@@ -15,33 +27,3 @@ fun Context.hasLocationPermission(): Boolean {
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
 }
-
-/*
-val context = LocalContext.current
-
-val hasLocationPermission = remember {
-    context.hasLocationPermission()
-}
-
-if (context.hasLocationPermission()) {
-    // работаем с локацией
-} else {
-    permissionLauncher.launch(
-        arrayOf(
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        )
-    )
-}
-ActivityCompat.shouldShowRequestPermissionRationale(
-    activity,
-    Manifest.permission.ACCESS_FINE_LOCATION
-)
-if (hasLocationPermission()) {
-} else if (shouldShowRequestPermissionRationale(...)) {
-    permissionLauncher.launch(...)
-} else {
-    "Don't ask again"
-    permissionLauncher.launch(...)
-}
- */

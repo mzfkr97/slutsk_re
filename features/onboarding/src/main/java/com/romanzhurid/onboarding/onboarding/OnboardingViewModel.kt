@@ -2,6 +2,7 @@ package com.romanzhurid.onboarding.onboarding
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.romanzhurid.common.permisison.PermissionHelper
 import com.romanzhurid.common.progressdelegate.ProgressDelegate
 import com.romanzhurid.common.uistate.UiStateDelegate
 import com.romanzhurid.common.uistate.UiStateDelegateImpl
@@ -14,6 +15,7 @@ import kotlinx.coroutines.launch
 
 class OnboardingViewModel(
     private val appSettings: AppSettings,
+    private val permissionHelper: PermissionHelper,
     progressDelegate: ProgressDelegate,
 ) : ViewModel(),
     UiStateDelegate<UiState, Event> by UiStateDelegateImpl(UiState()),
@@ -30,7 +32,11 @@ class OnboardingViewModel(
     }
 
     fun requestPermissions() {
-        viewModelScope.sendEvent(Event.RequestPermissions)
+        if (permissionHelper.isLocationPermissionGranted()) {
+            onFinishIntro()
+        } else {
+            viewModelScope.sendEvent(Event.RequestPermissions)
+        }
     }
 
     fun onFinishIntro() {

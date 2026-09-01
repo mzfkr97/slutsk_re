@@ -1,5 +1,0 @@
-- [x] Add Coil to `libs.versions.toml`
-- [x] Add Coil to `features/cinema/build.gradle.kts`
-- [x] Sync Gradle
-- [x] Update `CinemaScreen.kt` to use `AsyncImage` in `CinemaCard`
-- [x] Verify the build
