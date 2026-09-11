@@ -2,9 +2,10 @@ package com.romanzhurid.data.di
 
 import com.romanzhurid.data.BuildConfig
 import com.romanzhurid.data.remote.BusApi
-import com.romanzhurid.data.remote.cinema.ApiCinema
+import com.romanzhurid.data.remote.cinema.CinemaApi
 import com.romanzhurid.data.remote.cinema.CinemaAuthInterceptor
 import com.romanzhurid.data.remote.currencies.CurrencyApi
+import com.romanzhurid.data.remote.weather.WeatherApi
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -63,9 +64,15 @@ val retrofitModule = module {
         createRetrofit(okHttpClient, json, BuildConfig.CURRENCY_URL)
     }
 
-    single<ApiCinema> {
+    single(named("weatherRetrofit")) {
+        val okHttpClient: OkHttpClient = get()
+        val json: Json = get()
+        createRetrofit(okHttpClient, json, BuildConfig.BASE_URL_WHEATHER)
+    }
+
+    single<CinemaApi> {
         val retrofit: Retrofit = get(named("cinemaRetrofit"))
-        retrofit.create(ApiCinema::class.java)
+        retrofit.create(CinemaApi::class.java)
     }
 
     single<BusApi> {
@@ -76,6 +83,10 @@ val retrofitModule = module {
     single<CurrencyApi> {
         val retrofit: Retrofit = get(named("currencyRetrofit"))
         retrofit.create(CurrencyApi::class.java)
+    }
+
+    single<WeatherApi> {
+        get<Retrofit>(named("weatherRetrofit")).create(WeatherApi::class.java)
     }
 }
 

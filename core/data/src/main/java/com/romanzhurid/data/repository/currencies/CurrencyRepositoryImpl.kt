@@ -9,7 +9,7 @@ import com.romanzhurid.domain.currencies.repository.CurrencyRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class CurrencyRepositoryImpl  constructor(
+class CurrencyRepositoryImpl(
     private val api: CurrencyApi,
     private val remoteMapper: CurrencyRemoteMapper,
     private val currencyDao: CurrencyDao,

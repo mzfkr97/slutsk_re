@@ -1,6 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">IPill</string>
+    <string name="weather__wind_direction_north">↓ N Северный</string>
+    <string name="weather__wind_direction_nne">NNE Северо-северо-восточный</string>
+    <string name="weather__wind_direction_ne">NE Северо-восточный</string>
+    <string name="weather__wind_direction_ene">ENE Востоко-северо-восточный</string>
+    <string name="weather__wind_direction_east">← E Восточный</string>
+    <string name="weather__wind_direction_ese">ESE Востоко-юго-восточный</string>
+    <string name="weather__wind_direction_se">SE Юго-восточный</string>
+    <string name="weather__wind_direction_sse">SSE Юго-юго-восточный</string>
+    <string name="weather__wind_direction_south">↑ S Южный</string>
+    <string name="weather__wind_direction_ssw">SSW Юго-юго-западный</string>
+    <string name="weather__wind_direction_sw">SW Юго-западный</string>
+    <string name="weather__wind_direction_wsw">WSW Западо-юго-западный</string>
+    <string name="weather__wind_direction_west">→ W Западный</string>
+    <string name="weather__wind_direction_wnw">WNW Западо-северо-западный</string>
+    <string name="weather__wind_direction_nw">NW Северо-западный</string>
+    <string name="weather__wind_direction_nnw">NNW Северо-северо-западный</string>
+    <string name="weather__wind_speed">Скорость ветра: %1$d км/ч - %2$.1f м/с</string>
+    <string name="weather__pressure">Давление: %1$d мм рт.ст. / %2$d гПа</string>
+    <string name="weather__temperature">%1$s°C</string>
+    <string name="weather__feels_like">Ощущается как: %1$s°C</string>
     <string name="common__error_something_went_wrong">Something went wrong</string>
     <string name="common__error_unauthorized">Unauthorized</string>
     <string name="common__error">Error</string>
@@ -71,5 +91,10 @@
     <string name="error__no_find_items">Ничего не найдено!</string>
     <string name="exception__news_mode">Невозможно загрузить ленту новостей!</string>
     <string name="error__no_connection">Нет соединения!</string>
+    <string name="weather__exception_no_location_permission">Не предоставлен доступ к геолокации</string>
+    <string name="weather__exception_location_unavailable">Невозможно определить местоположение</string>
+    <string name="weather__exception_no_internet">Нет подключения к интернету</string>
+    <string name="weather__exception_timeout">Сервер не отвечает</string>
+    <string name="weather__exception_default">Не удалось загрузить погоду</string>
 
 </resources>

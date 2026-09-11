@@ -2,6 +2,7 @@ package com.romanzhurid.data.di.module
 
 import com.romanzhurid.data.local.database.AppDatabase
 import com.romanzhurid.data.local.mapper.CurrencyLocalMapper
+import com.romanzhurid.data.local.mapper.WeatherRemoteToLocalMapper
 import com.romanzhurid.data.remote.cinema.mapper.CinemaRemoteMapper
 import com.romanzhurid.data.remote.currencies.mapper.CurrencyRemoteMapper
 import org.koin.android.ext.koin.androidContext
@@ -23,6 +24,10 @@ val databaseModule = module {
 
     single {
         CurrencyRemoteMapper()
+    }
+
+    single {
+        WeatherRemoteToLocalMapper()
     }
 
     single {

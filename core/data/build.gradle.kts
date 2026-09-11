@@ -54,6 +54,7 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.security.crypto)
+    implementation(libs.play.services.location)
 
     api(libs.retrofit)
     api(libs.retrofit.kotlinx.serialization.converter)

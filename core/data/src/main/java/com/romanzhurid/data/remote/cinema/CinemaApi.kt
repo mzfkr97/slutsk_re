@@ -2,10 +2,9 @@ package com.romanzhurid.data.remote.cinema
 
 import com.romanzhurid.data.remote.cinema.model.CinemaRemote
 import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.Query
 
-interface ApiCinema {
+interface CinemaApi {
 
     /** Техническая поддержка MegamagBy slutsk-app@yandex.ru
      параметры тутака: https://api.megamag.by/

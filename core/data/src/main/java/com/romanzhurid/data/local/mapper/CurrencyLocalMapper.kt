@@ -3,7 +3,7 @@ package com.romanzhurid.data.local.mapper
 import com.romanzhurid.data.local.entity.CurrencyEntity
 import com.romanzhurid.domain.currencies.model.Currency
 
-class CurrencyLocalMapper  constructor() {
+class CurrencyLocalMapper {
     fun map(entity: CurrencyEntity): Currency {
         return Currency(
             id = entity.id,
