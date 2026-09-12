@@ -2,22 +2,28 @@ package com.romanzhurid.home.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.romanzhurid.brandbook.R
 import com.romanzhurid.common.DispatcherProvider
 import com.romanzhurid.common.ExceptionsEmitter
+import com.romanzhurid.common.ResourceProvider
 import com.romanzhurid.common.mapper.ExceptionMapper
 import com.romanzhurid.common.permisison.PermissionHelper
 import com.romanzhurid.common.progressdelegate.ProgressDelegate
 import com.romanzhurid.common.uistate.UiStateDelegate
 import com.romanzhurid.common.uistate.UiStateDelegateImpl
-import com.romanzhurid.domain.location.LocationRepository
 import com.romanzhurid.domain.currencies.interactor.WeatherInteractor
+import com.romanzhurid.domain.exception.LocationUnavailableException
 import com.romanzhurid.domain.exception.NoLocationPermissionException
+import com.romanzhurid.domain.location.LocationRepository
 import com.romanzhurid.home.mapper.WeatherUiMapper
 import com.romanzhurid.home.model.WeatherState
-import com.romanzhurid.home.presentation.HomeScreenViewModel.*
-import kotlinx.coroutines.CoroutineExceptionHandler
+import com.romanzhurid.home.model.WeatherState.Error.ErrorType
+import com.romanzhurid.home.presentation.HomeScreenViewModel.Event
+import com.romanzhurid.home.presentation.HomeScreenViewModel.UiState
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
 class HomeScreenViewModel(
     progressDelegate: ProgressDelegate,
@@ -28,6 +34,7 @@ class HomeScreenViewModel(
     private val dispatcherProvider: DispatcherProvider,
     private val permissionHelper: PermissionHelper,
     private val locationRepository: LocationRepository,
+    private val res: ResourceProvider
 ) :
     ViewModel(),
     UiStateDelegate<UiState, Event> by UiStateDelegateImpl(UiState()),
@@ -38,7 +45,10 @@ class HomeScreenViewModel(
         val weather: WeatherState = WeatherState.Loading,
     )
 
-    sealed interface Event
+    sealed interface Event {
+        data object RequestLocationPermission : Event
+        data object OpenAppSettings : Event
+    }
 
     private val exceptionHandler = viewModelScope.exceptionHandler {
 
@@ -50,14 +60,50 @@ class HomeScreenViewModel(
     }
 
     fun onResume() {
-        if (stateValue.weather is WeatherState.Success) return
+        when ((stateValue.weather as? WeatherState.Error)?.errorType) {
+            ErrorType.LOCATION_UNAVAILABLE -> loadWeather()
+            else -> Unit
+        }
+    }
 
-        if ((stateValue.weather as? WeatherState.Error)?.isNoLocation == true) {
+    fun onReturnedFromSettings() {
+        if (permissionHelper.isLocationPermissionGranted()) {
             loadWeather()
         }
     }
 
-    private fun loadWeather() {
+    fun onLocationPermissionResult(
+        granted: Boolean,
+        permanentlyDenied: Boolean
+    ) {
+        when {
+            granted -> {
+                loadWeather()
+            }
+            permanentlyDenied -> {
+                updateUiState {
+                    it.copy(
+                        weather = WeatherState.Error(
+                            message = res.getString(R.string.weather__exception_no_location_permission),
+                            errorType = ErrorType.PERMISSION_PERMANENTLY_DENIED
+                        )
+                    )
+                }
+            }
+            else -> {
+                updateUiState {
+                    it.copy(
+                        weather = WeatherState.Error(
+                            message = res.getString(R.string.weather__exception_no_location_permission),
+                            errorType = ErrorType.NO_LOCATION_PERMISSION
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    fun loadWeather() {
         viewModelScope.launch(exceptionHandler) {
             updateUiState {
                 it.copy(weather = WeatherState.Loading)
@@ -82,16 +128,54 @@ class HomeScreenViewModel(
                     it.copy(weather = WeatherState.Success(weatherUi))
                 }
             }.onFailure { throwable ->
-                val (message, isNoLocation) = exceptionMapper.mapWeatherException(throwable)
+                val weatherError = mapWeatherException(throwable)
                 updateUiState {
                     it.copy(
                         weather = WeatherState.Error(
-                            message = message,
-                            isNoLocation = isNoLocation
+                            message = weatherError.message,
+                            errorType = weatherError.errorType
                         )
                     )
                 }
             }
         }
+    }
+
+    fun onWeatherErrorClicked(errorType: ErrorType) {
+        when (errorType) {
+            ErrorType.NO_LOCATION_PERMISSION -> {
+                viewModelScope.sendEvent(Event.RequestLocationPermission)
+            }
+            ErrorType.PERMISSION_PERMANENTLY_DENIED -> {
+                viewModelScope.sendEvent(Event.OpenAppSettings)
+            }
+            else -> {
+                loadWeather()
+            }
+        }
+    }
+
+    private fun mapWeatherException(error: Throwable): WeatherState.Error {
+        val (resId, errorType) = when (error) {
+            is LocationUnavailableException -> {
+                R.string.weather__exception_location_unavailable to ErrorType.LOCATION_UNAVAILABLE
+            }
+            is NoLocationPermissionException -> {
+                R.string.weather__exception_no_location_permission to ErrorType.NO_LOCATION_PERMISSION
+            }
+
+            is UnknownHostException -> {
+                R.string.weather__exception_no_internet to ErrorType.UNKNOWN
+            }
+
+            is SocketTimeoutException -> {
+                R.string.weather__exception_timeout to ErrorType.UNKNOWN
+            }
+
+            else -> {
+                R.string.weather__exception_default to ErrorType.UNKNOWN
+            }
+        }
+        return WeatherState.Error(res.getString(resId), errorType)
     }
 }

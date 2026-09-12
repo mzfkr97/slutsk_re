@@ -92,7 +92,7 @@
     <string name="exception__news_mode">Невозможно загрузить ленту новостей!</string>
     <string name="error__no_connection">Нет соединения!</string>
     <string name="weather__exception_no_location_permission">Не предоставлен доступ к геолокации</string>
-    <string name="weather__exception_location_unavailable">Невозможно определить местоположение</string>
+    <string name="weather__exception_location_unavailable">Службы локации недоступны</string>
     <string name="weather__exception_no_internet">Нет подключения к интернету</string>
     <string name="weather__exception_timeout">Сервер не отвечает</string>
     <string name="weather__exception_default">Не удалось загрузить погоду</string>
