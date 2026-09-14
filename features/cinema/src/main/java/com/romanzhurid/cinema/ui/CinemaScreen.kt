@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -28,6 +29,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -43,7 +45,6 @@ import com.romanzhurid.brandbook.components.text.SectionHeader
 import com.romanzhurid.brandbook.components.toolbar.AppToolbar
 import com.romanzhurid.brandbook.theme.AppTheme
 import com.romanzhurid.cinema.model.CinemaUiItem
-import com.romanzhurid.common.uistate.CollectEventEffect
 import com.romanzhurid.common.uistate.collectUiState
 import com.romanzhurid.common.viewer.ImageViewer
 import com.romanzhurid.navigation.composition.LocalBackHandler
@@ -52,14 +53,6 @@ import com.romanzhurid.navigation.composition.LocalBackHandler
 fun CinemaScreen(viewModel: CinemaViewModel) {
     val onBack = LocalBackHandler.current
     val uiState by viewModel.collectUiState()
-
-    viewModel.CollectEventEffect { event ->
-        when (event) {
-            is CinemaViewModel.Event.ToGallery -> {
-
-            }
-        }
-    }
 
     Scaffold(
         topBar = {
@@ -106,9 +99,6 @@ fun CinemaScreen(viewModel: CinemaViewModel) {
                                             )
                                             .animateItem(),
                                         item = item,
-                                        onImageClicked = { imageUrl ->
-                                            viewModel.onImageClicked(imageUrl)
-                                        }
                                     )
                                 }
                             }
@@ -123,8 +113,7 @@ fun CinemaScreen(viewModel: CinemaViewModel) {
 @Composable
 fun CinemaCard(
     modifier: Modifier = Modifier,
-    item: CinemaUiItem.CinemaUi,
-    onImageClicked: (String) -> Unit
+    item: CinemaUiItem.CinemaUi
 ) {
     var expanded by rememberSaveable {
         mutableStateOf(false)
@@ -137,11 +126,12 @@ fun CinemaCard(
 
     AppCard(
         modifier = modifier,
-        borderColor = AppTheme.colorScheme.primary,
+        borderColor = AppTheme.colorScheme.primaryContainer,
     ) {
         Row(
             modifier = Modifier.padding(AppTheme.dimensions.medium)
         ) {
+
             AsyncImage(
                 model = item.imageUrl,
                 contentDescription = item.name,
@@ -150,11 +140,11 @@ fun CinemaCard(
                     .height(180.dp)
                     .clip(RoundedCornerShape(16.dp))
                     .clickable(onClick = {
-                        //onImageClicked(item.imageUrl)
                         showViewer = true
                     }),
                 contentScale = ContentScale.Crop,
             )
+
 
             Spacer(modifier = Modifier.width(AppTheme.dimensions.medium))
 
@@ -165,31 +155,37 @@ fun CinemaCard(
 
                 Text(
                     text = item.name,
-                    style = AppTheme.typography.titleLarge,
+                    style = AppTheme.typography.titleMedium,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
 
-                Surface(
-                    shape = RoundedCornerShape(12.dp),
-                    color = AppTheme.colorScheme.primaryContainer,
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
+                    Surface(
+                        shape = RoundedCornerShape(12.dp),
+                        color = AppTheme.colorScheme.primaryContainer,
+                    ) {
+                        Text(
+                            text = item.time,
+                            modifier = Modifier.padding(
+                                horizontal = 12.dp,
+                                vertical = 6.dp,
+                            ),
+                            style = AppTheme.typography.bodySmall,
+                            color = AppTheme.colorScheme.onPrimaryContainer,
+                        )
+                    }
+
                     Text(
-                        text = item.time,
-                        modifier = Modifier.padding(
-                            horizontal = 12.dp,
-                            vertical = 6.dp,
-                        ),
-                        style = AppTheme.typography.titleSmall,
-                        color = AppTheme.colorScheme.onPrimaryContainer,
+                        text = item.prices,
+                        style = AppTheme.typography.bodySmall,
+                        color = AppTheme.colorScheme.primary,
                     )
                 }
-
-                Text(
-                    text = item.prices,
-                    style = AppTheme.typography.titleMedium,
-                    color = AppTheme.colorScheme.primary,
-                )
 
                 HorizontalDivider()
 
@@ -204,7 +200,7 @@ fun CinemaCard(
                     ) {
                         Text(
                             text = AnnotatedString.fromHtml(item.descriptionHtml),
-                            style = AppTheme.typography.bodyMedium,
+                            style = AppTheme.typography.bodySmall,
                             color = AppTheme.colorScheme.onSurfaceVariant,
                             maxLines = if (expanded) Int.MAX_VALUE else 6,
                             overflow = TextOverflow.Ellipsis,
@@ -219,6 +215,7 @@ fun CinemaCard(
                                 onClick = { expanded = !expanded }
                             ) {
                                 Text(
+                                    style = AppTheme.typography.bodySmall,
                                     text = if (expanded) {
                                         "Свернуть"
                                     } else {
