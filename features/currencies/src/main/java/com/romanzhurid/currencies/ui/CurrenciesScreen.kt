@@ -6,8 +6,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -25,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import com.romanzhurid.brandbook.R
 import com.romanzhurid.brandbook.components.button.FavoriteButton
 import com.romanzhurid.brandbook.components.card.AppCard
@@ -133,42 +137,48 @@ private fun CurrencyCard(
     query: String,
     onToggleFavorite: () -> Unit
 ) {
-    val borderColor = if (currency.isFavorite) {
-        AppTheme.colorScheme.primary
-    } else {
-        AppTheme.colorScheme.outlineVariant
-    }
 
-    AppCard(borderColor = borderColor) {
-        Column(
-            modifier = modifier.padding(AppTheme.dimensions.medium),
-            verticalArrangement = Arrangement.spacedBy(AppTheme.dimensions.small)
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = highlightText(
-                            text = currency.name,
-                            query = query
-                        ),
-                        style = AppTheme.typography.titleMedium
-                    )
-                    Text(
-                        text = highlightText(
-                            text = currency.abbreviation,
-                            query = query
-                        ),
-                        style = AppTheme.typography.labelMedium,
-                        color = AppTheme.colorScheme.onSurfaceVariant
-                    )
-                }
+    AppCard(modifier) {
+        Column {
+            Row(
+                Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.primary)
+                    .padding(8.dp)
+            ) {
+                Text(
+                    text = highlightText(
+                        text = currency.name,
+                        query = query
+                    ),
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    style = AppTheme.typography.titleMedium
+                )
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(start = 8.dp, end = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = highlightText(
+                        text = currency.abbreviation,
+                        query = query
+                    ),
+                    style = AppTheme.typography.labelMedium,
+                )
+
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    RateBadge(
-                        formattedRate = currency.officialRate,
-                        isFavorite = currency.isFavorite
+                    Text(
+                        text = currency.officialRate,
+                        style = AppTheme.typography.labelLarge,
+                        fontWeight = FontWeight.SemiBold,
                     )
 
-                    DefaultSpacer()
+                    Spacer(modifier = Modifier.width(4.dp))
 
                     FavoriteButton(
                         isFavorite = currency.isFavorite,
@@ -205,7 +215,6 @@ private fun RateBadge(
             )
             .padding(
                 horizontal = AppTheme.dimensions.xxSmall,
-                vertical = AppTheme.dimensions.xxMicro
             )
     ) {
         Text(

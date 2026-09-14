@@ -3,6 +3,7 @@ package com.romanzhurid.home.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.romanzhurid.brandbook.R
+import com.romanzhurid.brandbook.ext.EMPTY_STRING
 import com.romanzhurid.common.DispatcherProvider
 import com.romanzhurid.common.ExceptionsEmitter
 import com.romanzhurid.common.ResourceProvider
@@ -11,7 +12,9 @@ import com.romanzhurid.common.permisison.PermissionHelper
 import com.romanzhurid.common.progressdelegate.ProgressDelegate
 import com.romanzhurid.common.uistate.UiStateDelegate
 import com.romanzhurid.common.uistate.UiStateDelegateImpl
+import com.romanzhurid.domain.currencies.interactor.CurrenciesInteractor
 import com.romanzhurid.domain.currencies.interactor.WeatherInteractor
+import com.romanzhurid.domain.currencies.model.Currency
 import com.romanzhurid.domain.exception.LocationUnavailableException
 import com.romanzhurid.domain.exception.NoLocationPermissionException
 import com.romanzhurid.domain.location.LocationRepository
@@ -34,6 +37,7 @@ class HomeScreenViewModel(
     private val dispatcherProvider: DispatcherProvider,
     private val permissionHelper: PermissionHelper,
     private val locationRepository: LocationRepository,
+    private val currenciesInteractor: CurrenciesInteractor,
     private val res: ResourceProvider
 ) :
     ViewModel(),
@@ -43,6 +47,7 @@ class HomeScreenViewModel(
     data class UiState(
         val isLoading: Boolean = false,
         val weather: WeatherState = WeatherState.Loading,
+        val currency: String = EMPTY_STRING,
     )
 
     sealed interface Event {
@@ -56,7 +61,7 @@ class HomeScreenViewModel(
 
     init {
         loadWeather()
-
+        loadCurrencies()
     }
 
     fun onResume() {
@@ -103,6 +108,7 @@ class HomeScreenViewModel(
         }
     }
 
+    // region weather
     fun loadWeather() {
         viewModelScope.launch(exceptionHandler) {
             updateUiState {
@@ -178,4 +184,19 @@ class HomeScreenViewModel(
         }
         return WeatherState.Error(res.getString(resId), errorType)
     }
+    // endregion
+
+    // region currencies
+
+    private fun loadCurrencies() {
+        viewModelScope.launch {
+            val currency = withContext(dispatcherProvider.background()) {
+                currenciesInteractor.getCurrencyById()
+            }
+            updateUiState {
+                it.copy(currency = "${currency.abbreviation} ${currency.officialRate}")
+            }
+        }
+    }
+    // endregion
 }

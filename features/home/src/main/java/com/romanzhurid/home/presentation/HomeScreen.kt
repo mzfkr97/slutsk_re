@@ -64,11 +64,11 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
         rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             val granted = permissions.values.any { it }
             val permanentlyDenied = granted.not() &&
-                        activity != null &&
-                        ActivityCompat.shouldShowRequestPermissionRationale(
-                            activity,
-                            Manifest.permission.ACCESS_FINE_LOCATION
-                        ).not()
+                    activity != null &&
+                    ActivityCompat.shouldShowRequestPermissionRationale(
+                        activity,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    ).not()
 
             viewModel.onLocationPermissionResult(
                 granted = granted,
@@ -137,7 +137,10 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
 
             HeaderCard(
                 uiState = uiState,
-                onWeatherErrorClicked = viewModel::onWeatherErrorClicked
+                onWeatherErrorClicked = viewModel::onWeatherErrorClicked,
+                onCurrenciesClicked = {
+                    navigator.navigate(AppRoute.Currencies())
+                }
             )
 
             DefaultSpacer()
@@ -156,7 +159,8 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
 @Composable
 private fun HeaderCard(
     uiState: HomeScreenViewModel.UiState,
-    onWeatherErrorClicked: (errorType: ErrorType) -> Unit
+    onWeatherErrorClicked: (errorType: ErrorType) -> Unit,
+    onCurrenciesClicked: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -166,10 +170,16 @@ private fun HeaderCard(
     ) {
         WeatherCard(
             weatherState = uiState.weather,
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f).fillMaxHeight(),
             onWeatherErrorClicked = { errorType ->
                 onWeatherErrorClicked(errorType)
             }
+        )
+
+        Currency(
+            modifier = Modifier.weight(1f).fillMaxHeight(),
+            uiState.currency,
+            onCurrenciesClicked
         )
     }
 }
@@ -180,11 +190,7 @@ private fun WeatherCard(
     weatherState: WeatherState,
     onWeatherErrorClicked: (errorType: ErrorType) -> Unit
 ) {
-    Box(
-        modifier = modifier
-            .padding(8.dp)
-            .fillMaxHeight()
-    ) {
+    Box(modifier = modifier) {
         when (weatherState) {
             is WeatherState.Error -> {
                 WeatherError(weatherState) {
@@ -217,14 +223,9 @@ fun WeatherError(weatherError: WeatherState.Error, onWeatherErrorClicked: () -> 
 
 @Composable
 fun WeatherContent(ui: WeatherUi) {
-    Row(
-        modifier = Modifier.fillMaxSize(),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
+    Row {
         Column {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = ui.temperature,
                     style = MaterialTheme.typography.titleMedium,
@@ -250,6 +251,32 @@ fun WeatherContent(ui: WeatherUi) {
                 color = AppTheme.colorScheme.primary
             )
         }
+    }
+}
+
+@Composable
+private fun Currency(
+    modifier: Modifier,
+    currency: String,
+    onCurrenciesClicked: () -> Unit
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.End
+    ) {
+        Text(
+            text = currency,
+            style = MaterialTheme.typography.bodySmall,
+            color = AppTheme.colorScheme.primary
+        )
+        Text(
+            modifier = Modifier.clickable {
+                onCurrenciesClicked.invoke()
+            },
+            text = "Больше курсов",
+            style = MaterialTheme.typography.bodySmall,
+            color = AppTheme.colorScheme.primary
+        )
     }
 }
 

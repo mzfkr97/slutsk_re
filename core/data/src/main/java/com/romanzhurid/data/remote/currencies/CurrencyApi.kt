@@ -9,12 +9,8 @@ import retrofit2.http.Query
 interface CurrencyApi {
 
     @GET("/api/exrates/rates/{cur_id}")
-    suspend fun getCurrency(
-        @Path("cur_id") curId: Int
-    ): BankCurrencyRemote
+    suspend fun getCurrencyById(@Path("cur_id") currencyId: Int): BankCurrencyRemote
 
     @GET("/api/exrates/rates")
-    suspend fun getAllCurrency(
-        @Query("periodicity") periodicity: Int = 0
-    ): List<CurrencyRemote>
+    suspend fun getAllCurrency(@Query("periodicity") periodicity: Int = 0): List<CurrencyRemote>
 }

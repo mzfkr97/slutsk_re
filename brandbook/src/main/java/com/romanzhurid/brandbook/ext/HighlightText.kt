@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -19,7 +20,8 @@ fun DefaultSpacer() {
 @Composable
 fun highlightText(
     text: String,
-    query: String
+    query: String,
+    spanColor: Color = AppTheme.colorScheme.primary,
 ): AnnotatedString {
     if (query.isBlank()) return AnnotatedString(text)
     val lowerText = text.lowercase()
@@ -32,7 +34,7 @@ fun highlightText(
         append(text.substring(0, startIndex))
         withStyle(
             style = SpanStyle(
-                color = AppTheme.colorScheme.primary,
+                color = spanColor,
                 fontWeight = FontWeight.Bold
             )
         ) {
