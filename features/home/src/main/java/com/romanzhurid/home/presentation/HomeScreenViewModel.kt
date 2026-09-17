@@ -3,6 +3,7 @@ package com.romanzhurid.home.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.romanzhurid.brandbook.R
+import com.romanzhurid.brandbook.components.errorbottomsheet.ErrorState.ErrorType
 import com.romanzhurid.brandbook.ext.EMPTY_STRING
 import com.romanzhurid.common.DispatcherProvider
 import com.romanzhurid.common.ExceptionsEmitter
@@ -14,19 +15,15 @@ import com.romanzhurid.common.uistate.UiStateDelegate
 import com.romanzhurid.common.uistate.UiStateDelegateImpl
 import com.romanzhurid.domain.currencies.interactor.CurrenciesInteractor
 import com.romanzhurid.domain.currencies.interactor.WeatherInteractor
-import com.romanzhurid.domain.currencies.model.Currency
-import com.romanzhurid.domain.exception.LocationUnavailableException
 import com.romanzhurid.domain.exception.NoLocationPermissionException
 import com.romanzhurid.domain.location.LocationRepository
 import com.romanzhurid.home.mapper.WeatherUiMapper
 import com.romanzhurid.home.model.WeatherState
-import com.romanzhurid.home.model.WeatherState.Error.ErrorType
 import com.romanzhurid.home.presentation.HomeScreenViewModel.Event
 import com.romanzhurid.home.presentation.HomeScreenViewModel.UiState
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
 
 class HomeScreenViewModel(
     progressDelegate: ProgressDelegate,
@@ -100,7 +97,7 @@ class HomeScreenViewModel(
                     it.copy(
                         weather = WeatherState.Error(
                             message = res.getString(R.string.weather__exception_no_location_permission),
-                            errorType = ErrorType.NO_LOCATION_PERMISSION
+                            errorType = ErrorType.LOCATION_NO_PERMISSION
                         )
                     )
                 }
@@ -134,12 +131,12 @@ class HomeScreenViewModel(
                     it.copy(weather = WeatherState.Success(weatherUi))
                 }
             }.onFailure { throwable ->
-                val weatherError = mapWeatherException(throwable)
+                val (message, error) = exceptionMapper.mapWeatherException(throwable)
                 updateUiState {
                     it.copy(
                         weather = WeatherState.Error(
-                            message = weatherError.message,
-                            errorType = weatherError.errorType
+                            message = message,
+                            errorType = error
                         )
                     )
                 }
@@ -149,7 +146,7 @@ class HomeScreenViewModel(
 
     fun onWeatherErrorClicked(errorType: ErrorType) {
         when (errorType) {
-            ErrorType.NO_LOCATION_PERMISSION -> {
+            ErrorType.LOCATION_NO_PERMISSION -> {
                 viewModelScope.sendEvent(Event.RequestLocationPermission)
             }
             ErrorType.PERMISSION_PERMANENTLY_DENIED -> {
@@ -160,36 +157,15 @@ class HomeScreenViewModel(
             }
         }
     }
-
-    private fun mapWeatherException(error: Throwable): WeatherState.Error {
-        val (resId, errorType) = when (error) {
-            is LocationUnavailableException -> {
-                R.string.weather__exception_location_unavailable to ErrorType.LOCATION_UNAVAILABLE
-            }
-            is NoLocationPermissionException -> {
-                R.string.weather__exception_no_location_permission to ErrorType.NO_LOCATION_PERMISSION
-            }
-
-            is UnknownHostException -> {
-                R.string.weather__exception_no_internet to ErrorType.UNKNOWN
-            }
-
-            is SocketTimeoutException -> {
-                R.string.weather__exception_timeout to ErrorType.UNKNOWN
-            }
-
-            else -> {
-                R.string.weather__exception_default to ErrorType.UNKNOWN
-            }
-        }
-        return WeatherState.Error(res.getString(resId), errorType)
-    }
     // endregion
 
     // region currencies
-
     private fun loadCurrencies() {
-        viewModelScope.launch {
+        viewModelScope.launch(CoroutineExceptionHandler { context, throwable ->
+            updateUiState {
+                it.copy(currency = res.getString(R.string.error__network_default_error))
+            }
+        }) {
             val currency = withContext(dispatcherProvider.background()) {
                 currenciesInteractor.getCurrencyById()
             }

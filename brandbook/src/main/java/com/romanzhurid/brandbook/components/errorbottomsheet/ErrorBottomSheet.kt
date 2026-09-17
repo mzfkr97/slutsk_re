@@ -61,7 +61,9 @@ fun ErrorBottomSheet(
     val icon = when (errorState.type) {
         ErrorType.NO_INTERNET -> Icons.Default.WifiOff
         ErrorType.NO_CONNECTION_TO_SERVER -> Icons.Default.Storage
-        ErrorType.UNKNOWN -> Icons.Default.ErrorOutline
+        else -> {
+            Icons.Default.ErrorOutline
+        }
     }
 
     val sheetState = rememberModalBottomSheetState(

@@ -1,7 +1,6 @@
 package com.romanzhurid.home.presentation
 
 import android.Manifest
-import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
@@ -33,7 +32,6 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Lifecycle
@@ -42,13 +40,13 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import coil3.compose.AsyncImage
 import com.romanzhurid.brandbook.R
 import com.romanzhurid.brandbook.components.card.AppCard
+import com.romanzhurid.brandbook.components.errorbottomsheet.ErrorState.ErrorType
 import com.romanzhurid.brandbook.components.toolbar.AppToolbar
 import com.romanzhurid.brandbook.ext.DefaultSpacer
 import com.romanzhurid.brandbook.theme.AppTheme
 import com.romanzhurid.common.uistate.CollectEventEffect
 import com.romanzhurid.common.uistate.collectUiState
 import com.romanzhurid.home.model.WeatherState
-import com.romanzhurid.home.model.WeatherState.Error.ErrorType
 import com.romanzhurid.home.model.WeatherUi
 import com.romanzhurid.navigation.AppRoute
 import com.romanzhurid.navigation.composition.LocalNavigator

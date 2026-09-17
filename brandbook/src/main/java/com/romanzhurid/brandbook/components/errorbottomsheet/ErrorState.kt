@@ -10,6 +10,9 @@ data class ErrorState(
     enum class ErrorType {
         UNKNOWN,
         NO_INTERNET,
-        NO_CONNECTION_TO_SERVER
+        NO_CONNECTION_TO_SERVER,
+        LOCATION_UNAVAILABLE,
+        LOCATION_NO_PERMISSION,
+        PERMISSION_PERMANENTLY_DENIED,
     }
 }
