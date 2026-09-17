@@ -1,9 +1,6 @@
 package com.romanzhurid.home.presentation
 
 import android.Manifest
-import android.content.Intent
-import android.net.Uri
-import android.provider.Settings
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -25,6 +22,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Button
@@ -33,46 +31,41 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import coil3.compose.AsyncImage
 import com.romanzhurid.brandbook.R
 import com.romanzhurid.brandbook.components.card.AppCard
 import com.romanzhurid.brandbook.components.errorbottomsheet.ErrorState.ErrorType
 import com.romanzhurid.brandbook.components.toolbar.AppToolbar
-import androidx.compose.foundation.lazy.items
-import androidx.compose.ui.res.stringResource
 import com.romanzhurid.brandbook.theme.AppTheme
+import com.romanzhurid.common.ext.ResumeEffect
+import com.romanzhurid.common.ext.appSettingsIntent
+import com.romanzhurid.common.ext.launchLocationPermission
 import com.romanzhurid.common.uistate.CollectEventEffect
 import com.romanzhurid.common.uistate.collectUiState
 import com.romanzhurid.home.model.HomeBottomMenu
 import com.romanzhurid.home.model.HomeBottomMenuType
 import com.romanzhurid.home.model.WeatherState
 import com.romanzhurid.home.model.WeatherUi
-import com.romanzhurid.home.presentation.HomeScreenViewModel.*
 import com.romanzhurid.home.presentation.HomeScreenViewModel.Event
-import com.romanzhurid.navigation.AppRoute
-import com.romanzhurid.navigation.AppRoute.*
+import com.romanzhurid.home.presentation.HomeScreenViewModel.UiState
 import com.romanzhurid.navigation.composition.LocalNavigator
 
 @Composable
 fun HomeScreen(viewModel: HomeScreenViewModel) {
     val navigator = LocalNavigator.current
     val uiState by viewModel.collectUiState()
-    val lifecycleOwner = LocalLifecycleOwner.current
-
     val activity = LocalActivity.current
-    val permissionLauncher =
+
+    val locationPermissionLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             val granted = permissions.values.any { it }
             val permanentlyDenied = granted.not() &&
@@ -96,49 +89,20 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
     viewModel.CollectEventEffect { event ->
         when (event) {
             is Event.RequestLocationPermission -> {
-                permissionLauncher.launch(
-                    arrayOf(
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION
-                    )
-                )
+                locationPermissionLauncher.launchLocationPermission()
             }
             Event.ToGlobalSettings -> {
-                appSettingsLauncher.launch(
-                    Intent(
-                        Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                        Uri.fromParts("package", activity?.packageName, null)
-                    )
-                )
+                activity
+                    ?.appSettingsIntent()
+                    ?.let(appSettingsLauncher::launch)
             }
-            Event.ToAppSettings -> {
-                navigator.navigate(AppRoute.Settings())
-            }
-            Event.ToCinema -> {
-                navigator.navigate(Cinema())
-            }
-            Event.ToCurrencies -> {
-                navigator.navigate(AppRoute.Currencies())
-            }
-            Event.ToDeliveryFood -> {
-                navigator.navigate(AppRoute.Currencies())
+            is Event.NavigateTo -> {
+                navigator.navigate(event.route)
             }
         }
     }
 
-    DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME) {
-                viewModel.onResume()
-            }
-        }
-
-        lifecycleOwner.lifecycle.addObserver(observer)
-
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
-        }
-    }
+    ResumeEffect(onResume = viewModel::onResume)
 
     Scaffold(
         topBar = {
@@ -219,6 +183,7 @@ private fun HeaderCard(
     }
 }
 
+// region WEATHER
 @Composable
 private fun WeatherCard(
     modifier: Modifier = Modifier,
@@ -288,7 +253,9 @@ fun WeatherContent(ui: WeatherUi) {
         }
     }
 }
+// endregion
 
+// region CURRENCY
 @Composable
 private fun Currency(
     modifier: Modifier,
@@ -314,6 +281,7 @@ private fun Currency(
         )
     }
 }
+// endregion
 
 @Composable
 private fun StationsCard() {

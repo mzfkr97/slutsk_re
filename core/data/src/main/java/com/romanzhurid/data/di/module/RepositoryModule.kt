@@ -12,7 +12,6 @@ import com.romanzhurid.domain.currencies.interactor.WeatherInteractorImpl
 import com.romanzhurid.domain.currencies.repository.CurrencyRepository
 import com.romanzhurid.domain.weather.WeatherRepository
 import org.koin.android.ext.koin.androidApplication
-import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val repositoryModule = module {
@@ -26,7 +25,6 @@ val repositoryModule = module {
     single<CurrencyRepository> {
         CurrencyRepositoryImpl(
             api = get(),
-            busApi = get(),
             remoteMapper = get(),
             currencyDao = get(),
             localMapper = get(),

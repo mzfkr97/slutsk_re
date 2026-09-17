@@ -102,11 +102,11 @@ fun MainScreen(
 
     val appEntryProvider = remember {
         entryProvider {
-            entry<AppRoute.Onboarding> { OnboardingFeatureHost(it) }
-            entry<AppRoute.Home> { HomeFeatureHost(it) }
-            entry<AppRoute.Currencies> { CurrencyFeatureHost(it) }
-            entry<AppRoute.Settings> { SettingsFeatureHost(it) }
-            entry<AppRoute.Cinema> { CinemaFeatureHost(it) }
+            entry<AppRoute.Onboarding>(content = ::OnboardingFeatureHost)
+            entry<AppRoute.Home>(content = ::HomeFeatureHost)
+            entry<AppRoute.Currencies>(content = ::CurrencyFeatureHost)
+            entry<AppRoute.Settings>(content = ::SettingsFeatureHost)
+            entry<AppRoute.Cinema>(content =::CinemaFeatureHost)
         }
     }
 

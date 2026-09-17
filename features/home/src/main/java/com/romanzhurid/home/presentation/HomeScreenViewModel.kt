@@ -23,6 +23,7 @@ import com.romanzhurid.home.model.HomeBottomMenuType
 import com.romanzhurid.home.model.WeatherState
 import com.romanzhurid.home.presentation.HomeScreenViewModel.Event
 import com.romanzhurid.home.presentation.HomeScreenViewModel.UiState
+import com.romanzhurid.navigation.AppRoute
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -31,7 +32,6 @@ class HomeScreenViewModel(
     progressDelegate: ProgressDelegate,
     private val weatherInteractor: WeatherInteractor,
     private val weatherUiMapper: WeatherUiMapper,
-    private val exceptionsEmitter: ExceptionsEmitter,
     private val exceptionMapper: ExceptionMapper,
     private val dispatcherProvider: DispatcherProvider,
     private val permissionHelper: PermissionHelper,
@@ -54,12 +54,11 @@ class HomeScreenViewModel(
 
     sealed interface Event {
         data object RequestLocationPermission : Event
-        data object ToAppSettings : Event
         data object ToGlobalSettings : Event
-        data object ToCinema : Event
-        data object ToCurrencies : Event
-        data object ToDeliveryFood : Event
+        data class NavigateTo(val route: AppRoute) : Event
     }
+
+    private var navigationInProgress = false
 
     private val exceptionHandler = viewModelScope.exceptionHandler {
 
@@ -71,26 +70,32 @@ class HomeScreenViewModel(
     }
 
     fun onNavigate(homeBottomMenuType: HomeBottomMenuType) {
+        if (navigationInProgress) return
+
+        navigationInProgress = true
+
         viewModelScope.launch {
-            val event = when(homeBottomMenuType) {
+            val route = when(homeBottomMenuType) {
                 HomeBottomMenuType.SETTINGS -> {
-                    Event.ToAppSettings
+                    AppRoute.Settings()
                 }
                 HomeBottomMenuType.CINEMA -> {
-                    Event.ToCinema
+                    AppRoute.Cinema()
                 }
                 HomeBottomMenuType.CURRENCIES -> {
-                    Event.ToCurrencies
+                    AppRoute.Currencies()
                 }
                 HomeBottomMenuType.DELIVERY_FOOD -> {
-                    Event.ToDeliveryFood
+                    AppRoute.DeliveryFood()
                 }
             }
-            sendEvent(event)
+            sendEvent(Event.NavigateTo(route))
         }
     }
 
     fun onResume() {
+        navigationInProgress = false
+
         when ((stateValue.weather as? WeatherState.Error)?.errorType) {
             ErrorType.LOCATION_UNAVAILABLE -> loadWeather()
             else -> Unit
@@ -134,7 +139,7 @@ class HomeScreenViewModel(
         }
     }
 
-    // region weather
+    // region WEATHER
     fun loadWeather() {
         viewModelScope.launch(exceptionHandler) {
             updateUiState {
@@ -188,7 +193,7 @@ class HomeScreenViewModel(
     }
     // endregion
 
-    // region currencies
+    // region CURRENCIES
     private fun loadCurrencies() {
         viewModelScope.launch(CoroutineExceptionHandler { context, throwable ->
             updateUiState {

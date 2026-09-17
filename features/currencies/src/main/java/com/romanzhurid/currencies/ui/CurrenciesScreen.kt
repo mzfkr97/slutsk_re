@@ -8,13 +8,11 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
@@ -35,7 +33,6 @@ import com.romanzhurid.brandbook.components.card.AppCard
 import com.romanzhurid.brandbook.components.card.NoContent
 import com.romanzhurid.brandbook.components.text.SectionHeader
 import com.romanzhurid.brandbook.components.toolbar.AppToolbarWithSearch
-import com.romanzhurid.brandbook.ext.DefaultSpacer
 import com.romanzhurid.brandbook.ext.highlightText
 import com.romanzhurid.brandbook.theme.AppTheme
 import com.romanzhurid.common.uistate.collectUiState
@@ -187,41 +184,5 @@ private fun CurrencyCard(
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun RateBadge(
-    formattedRate: String,
-    isFavorite: Boolean
-) {
-    val backgroundColor = if (isFavorite) {
-        AppTheme.colorScheme.primary.copy(alpha = 0.12f)
-    } else {
-        AppTheme.colorScheme.surfaceVariant
-    }
-
-    val textColor = if (isFavorite) {
-        AppTheme.colorScheme.primary
-    } else {
-        AppTheme.colorScheme.onSurfaceVariant
-    }
-
-    Box(
-        modifier = Modifier
-            .background(
-                color = backgroundColor,
-                shape = RoundedCornerShape(AppTheme.dimensions.small)
-            )
-            .padding(
-                horizontal = AppTheme.dimensions.xxSmall,
-            )
-    ) {
-        Text(
-            text = formattedRate,
-            style = AppTheme.typography.labelLarge,
-            fontWeight = FontWeight.SemiBold,
-            color = textColor
-        )
     }
 }

@@ -1,6 +1,5 @@
 package com.romanzhurid.onboarding.onboarding
 
-import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -34,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.romanzhurid.brandbook.R
 import com.romanzhurid.brandbook.components.button.AppBaseButton
 import com.romanzhurid.brandbook.theme.AppTheme
+import com.romanzhurid.common.ext.launchLocationPermission
 import com.romanzhurid.common.uistate.CollectEventEffect
 import com.romanzhurid.common.uistate.collectUiState
 import com.romanzhurid.navigation.AppRoute
@@ -59,12 +59,7 @@ internal fun OnboardingScreen(
                 onFinished(event.destination)
             }
             is Event.RequestPermissions -> {
-                permissionLauncher.launch(
-                    arrayOf(
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION
-                    )
-                )
+                permissionLauncher.launchLocationPermission()
             }
         }
     }

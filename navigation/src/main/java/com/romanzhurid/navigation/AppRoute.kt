@@ -29,6 +29,11 @@ sealed interface AppRoute : NavKey {
     ) : AppRoute
 
     @Serializable
+    data class DeliveryFood(
+        override val instanceId: String = "settings",
+    ) : AppRoute
+
+    @Serializable
     data class Cinema(
         override val instanceId: String = "${this.javaClass.canonicalName}",
     ) : AppRoute

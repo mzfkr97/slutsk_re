@@ -1,19 +1,29 @@
 package com.romanzhurid.common.ext
 
-import android.content.Context
-import android.content.pm.PackageManager
 import android.Manifest
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.Settings
+import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.core.content.ContextCompat
 
-fun Context.openAppSettings() {
-    startActivity(
-        Intent(
-            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-            Uri.fromParts("package", packageName, null)
+fun ManagedActivityResultLauncher<Array<String>, Map<String, Boolean>>.launchLocationPermission() {
+    launch(
+        arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
         )
+    )
+}
+
+fun Context.openAppSettings() = startActivity(appSettingsIntent())
+
+fun Context.appSettingsIntent(): Intent {
+    return Intent(
+        Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+        Uri.fromParts("package", packageName, null)
     )
 }
 
