@@ -7,19 +7,24 @@ import android.provider.Settings
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Button
@@ -32,6 +37,9 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Lifecycle
@@ -42,13 +50,19 @@ import com.romanzhurid.brandbook.R
 import com.romanzhurid.brandbook.components.card.AppCard
 import com.romanzhurid.brandbook.components.errorbottomsheet.ErrorState.ErrorType
 import com.romanzhurid.brandbook.components.toolbar.AppToolbar
-import com.romanzhurid.brandbook.ext.DefaultSpacer
+import androidx.compose.foundation.lazy.items
+import androidx.compose.ui.res.stringResource
 import com.romanzhurid.brandbook.theme.AppTheme
 import com.romanzhurid.common.uistate.CollectEventEffect
 import com.romanzhurid.common.uistate.collectUiState
+import com.romanzhurid.home.model.HomeBottomMenu
+import com.romanzhurid.home.model.HomeBottomMenuType
 import com.romanzhurid.home.model.WeatherState
 import com.romanzhurid.home.model.WeatherUi
+import com.romanzhurid.home.presentation.HomeScreenViewModel.*
+import com.romanzhurid.home.presentation.HomeScreenViewModel.Event
 import com.romanzhurid.navigation.AppRoute
+import com.romanzhurid.navigation.AppRoute.*
 import com.romanzhurid.navigation.composition.LocalNavigator
 
 @Composable
@@ -81,7 +95,7 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
 
     viewModel.CollectEventEffect { event ->
         when (event) {
-            is HomeScreenViewModel.Event.RequestLocationPermission -> {
+            is Event.RequestLocationPermission -> {
                 permissionLauncher.launch(
                     arrayOf(
                         Manifest.permission.ACCESS_FINE_LOCATION,
@@ -89,13 +103,25 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
                     )
                 )
             }
-            HomeScreenViewModel.Event.OpenAppSettings -> {
+            Event.ToGlobalSettings -> {
                 appSettingsLauncher.launch(
                     Intent(
                         Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                         Uri.fromParts("package", activity?.packageName, null)
                     )
                 )
+            }
+            Event.ToAppSettings -> {
+                navigator.navigate(AppRoute.Settings())
+            }
+            Event.ToCinema -> {
+                navigator.navigate(Cinema())
+            }
+            Event.ToCurrencies -> {
+                navigator.navigate(AppRoute.Currencies())
+            }
+            Event.ToDeliveryFood -> {
+                navigator.navigate(AppRoute.Currencies())
             }
         }
     }
@@ -121,34 +147,42 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
                 actionIcon = Icons.Outlined.Settings,
                 showBackBtn = false,
                 onActionClick = {
-                    navigator.navigate(AppRoute.Settings())
+                    viewModel.onNavigate(HomeBottomMenuType.SETTINGS)
                 },
             )
         }
     ) { paddingValues ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .padding(4.dp)
+                .padding(paddingValues),
+            contentPadding = PaddingValues(4.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
 
-            HeaderCard(
-                uiState = uiState,
-                onWeatherErrorClicked = viewModel::onWeatherErrorClicked,
-                onCurrenciesClicked = {
-                    navigator.navigate(AppRoute.Currencies())
-                }
-            )
+            item {
+                HeaderCard(
+                    uiState = uiState,
+                    onWeatherErrorClicked = viewModel::onWeatherErrorClicked,
+                    onCurrenciesClicked = {
+                        viewModel.onNavigate(HomeBottomMenuType.CURRENCIES)
+                    }
+                )
+            }
+            item {
+                StationsCard()
+            }
 
-            DefaultSpacer()
-
-            StationsCard()
-
-            DefaultSpacer()
-
-            CinemaCard {
-                navigator.navigate(AppRoute.Cinema())
+            items(
+                items = uiState.bottomMenu,
+                key = { it.menuType }
+            ) { menu ->
+                BottomCard(
+                    homeBottomMenu = menu,
+                    onBottomMenuClicked = { item ->
+                        viewModel.onNavigate(item)
+                    }
+                )
             }
         }
     }
@@ -156,26 +190,29 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
 
 @Composable
 private fun HeaderCard(
-    uiState: HomeScreenViewModel.UiState,
+    uiState: UiState,
     onWeatherErrorClicked: (errorType: ErrorType) -> Unit,
     onCurrenciesClicked: () -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(IntrinsicSize.Min),
+            .height(IntrinsicSize.Min)
+            .defaultMinSize(minHeight = 96.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         WeatherCard(
             weatherState = uiState.weather,
-            modifier = Modifier.weight(1f).fillMaxHeight(),
-            onWeatherErrorClicked = { errorType ->
-                onWeatherErrorClicked(errorType)
-            }
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight(),
+            onWeatherErrorClicked = onWeatherErrorClicked
         )
 
         Currency(
-            modifier = Modifier.weight(1f).fillMaxHeight(),
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight(),
             uiState.currency,
             onCurrenciesClicked
         )
@@ -290,15 +327,41 @@ private fun StationsCard() {
 }
 
 @Composable
-private fun CinemaCard(onCinemaClicked: () -> Unit) {
+private fun BottomCard(
+    homeBottomMenu: HomeBottomMenu,
+    onBottomMenuClicked: (HomeBottomMenuType) -> Unit
+) {
     AppCard(
-        borderColor = AppTheme.colorScheme.primary,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(96.dp)
+            .clickable(onClick = {
+                onBottomMenuClicked(homeBottomMenu.menuType)
+            })
     ) {
-        Column() {
+        Box(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Image(
+                painter = painterResource(homeBottomMenu.backgroundResId),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
 
-        }
-        Button(onClick = { onCinemaClicked() }) {
-            Text(text = "Cinema")
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.4f))
+            )
+
+            Text(
+                text = stringResource(homeBottomMenu.titleResId),
+                color = Color.White,
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(16.dp)
+            )
         }
     }
 }

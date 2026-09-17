@@ -6,4 +6,5 @@ object Routes {
     const val SCHEDULE_BY_BUS_NUMBER = "bus/{number}"
     const val SCHEDULE_BY_STATION_NAME = "station/{stationName}"
     const val TAXI = "/taxi"
+    const val DELIVERY_FOOD = "/delivery"
 }

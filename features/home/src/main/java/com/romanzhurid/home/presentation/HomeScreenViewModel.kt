@@ -18,6 +18,8 @@ import com.romanzhurid.domain.currencies.interactor.WeatherInteractor
 import com.romanzhurid.domain.exception.NoLocationPermissionException
 import com.romanzhurid.domain.location.LocationRepository
 import com.romanzhurid.home.mapper.WeatherUiMapper
+import com.romanzhurid.home.model.HomeBottomMenu
+import com.romanzhurid.home.model.HomeBottomMenuType
 import com.romanzhurid.home.model.WeatherState
 import com.romanzhurid.home.presentation.HomeScreenViewModel.Event
 import com.romanzhurid.home.presentation.HomeScreenViewModel.UiState
@@ -38,18 +40,25 @@ class HomeScreenViewModel(
     private val res: ResourceProvider
 ) :
     ViewModel(),
-    UiStateDelegate<UiState, Event> by UiStateDelegateImpl(UiState()),
+    UiStateDelegate<UiState, Event> by UiStateDelegateImpl(UiState(
+        bottomMenu = HomeBottomMenu.getDefaultMenu()
+    )),
     ProgressDelegate by progressDelegate {
 
     data class UiState(
         val isLoading: Boolean = false,
         val weather: WeatherState = WeatherState.Loading,
         val currency: String = EMPTY_STRING,
+        val bottomMenu: List<HomeBottomMenu>
     )
 
     sealed interface Event {
         data object RequestLocationPermission : Event
-        data object OpenAppSettings : Event
+        data object ToAppSettings : Event
+        data object ToGlobalSettings : Event
+        data object ToCinema : Event
+        data object ToCurrencies : Event
+        data object ToDeliveryFood : Event
     }
 
     private val exceptionHandler = viewModelScope.exceptionHandler {
@@ -59,6 +68,26 @@ class HomeScreenViewModel(
     init {
         loadWeather()
         loadCurrencies()
+    }
+
+    fun onNavigate(homeBottomMenuType: HomeBottomMenuType) {
+        viewModelScope.launch {
+            val event = when(homeBottomMenuType) {
+                HomeBottomMenuType.SETTINGS -> {
+                    Event.ToAppSettings
+                }
+                HomeBottomMenuType.CINEMA -> {
+                    Event.ToCinema
+                }
+                HomeBottomMenuType.CURRENCIES -> {
+                    Event.ToCurrencies
+                }
+                HomeBottomMenuType.DELIVERY_FOOD -> {
+                    Event.ToDeliveryFood
+                }
+            }
+            sendEvent(event)
+        }
     }
 
     fun onResume() {
@@ -150,7 +179,7 @@ class HomeScreenViewModel(
                 viewModelScope.sendEvent(Event.RequestLocationPermission)
             }
             ErrorType.PERMISSION_PERMANENTLY_DENIED -> {
-                viewModelScope.sendEvent(Event.OpenAppSettings)
+                viewModelScope.sendEvent(Event.ToGlobalSettings)
             }
             else -> {
                 loadWeather()

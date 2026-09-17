@@ -16,3 +16,13 @@ data class TaxiCatalogItem(
     val description: String,
     val url: String? = null
 )
+
+@Serializable
+data class DeliveryCatalogItem(
+    val imageUrl: String,
+    val phone: String,
+    val description: String,
+    val title: String,
+    val url: String,
+    val workTime: String,
+)
