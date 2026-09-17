@@ -26,4 +26,8 @@ interface BusApi {
     suspend fun getScheduleById(
         @Path("id") id: Int
     ): ScheduleItemRemote
+
+    @GET("delivery")
+    suspend fun getDelivery(
+    )
 }

@@ -27,7 +27,8 @@ android {
         buildConfigField("String", "KEY_WEATHER_API", "\"7893b0fde7d34a64a7706039929369ce\"")
         buildConfigField("String", "CURRENCY_URL", "\"https://www.nbrb.by/\"")
         buildConfigField("String", "BELARUSBANK_URL", "\"http://belarusbank.by/\"")
-        buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:8080/\"")
+        //buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:8080/\"")
+        buildConfigField("String", "BASE_URL", "\"http://192.168.100.221:8080/\"")
     }
 
     buildFeatures {

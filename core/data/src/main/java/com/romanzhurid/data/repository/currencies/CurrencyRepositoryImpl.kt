@@ -1,7 +1,9 @@
 package com.romanzhurid.data.repository.currencies
 
+import android.util.Log
 import com.romanzhurid.data.local.dao.CurrencyDao
 import com.romanzhurid.data.local.mapper.CurrencyLocalMapper
+import com.romanzhurid.data.remote.BusApi
 import com.romanzhurid.data.remote.currencies.CurrencyApi
 import com.romanzhurid.data.remote.currencies.mapper.CurrencyRemoteMapper
 import com.romanzhurid.domain.AppSettings
@@ -12,6 +14,7 @@ import kotlinx.coroutines.flow.map
 
 class CurrencyRepositoryImpl(
     private val api: CurrencyApi,
+    private val busApi: BusApi,
     private val remoteMapper: CurrencyRemoteMapper,
     private val currencyDao: CurrencyDao,
     private val localMapper: CurrencyLocalMapper,
@@ -27,6 +30,8 @@ class CurrencyRepositoryImpl(
     }
 
     override suspend fun getCurrencyById(): Currency {
+        val bus = busApi.getDelivery()
+        Log.d("TAG", "getCurrencyById: bus: $bus")
         return remoteMapper.map(api.getCurrencyById(appSettings.currencyId))
     }
 

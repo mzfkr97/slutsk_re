@@ -26,6 +26,7 @@ val repositoryModule = module {
     single<CurrencyRepository> {
         CurrencyRepositoryImpl(
             api = get(),
+            busApi = get(),
             remoteMapper = get(),
             currencyDao = get(),
             localMapper = get(),
