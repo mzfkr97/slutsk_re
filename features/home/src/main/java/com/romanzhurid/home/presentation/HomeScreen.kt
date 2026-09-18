@@ -178,7 +178,7 @@ private fun HeaderCard(
         modifier = Modifier
             .fillMaxWidth()
             .height(IntrinsicSize.Min)
-            .defaultMinSize(minHeight = 96.dp),
+            .defaultMinSize(minHeight = 48.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         WeatherCard(
