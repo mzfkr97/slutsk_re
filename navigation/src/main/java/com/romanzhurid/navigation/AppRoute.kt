@@ -34,6 +34,12 @@ sealed interface AppRoute : NavKey {
     ) : AppRoute
 
     @Serializable
+    data class Bus(
+        val stationId: Int? = null,
+        override val instanceId: String = "settings",
+    ) : AppRoute
+
+    @Serializable
     data class Cinema(
         override val instanceId: String = "${this.javaClass.canonicalName}",
     ) : AppRoute

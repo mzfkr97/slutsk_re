@@ -1,6 +1,8 @@
 package com.romanzhurid.data.di.module
 
 import com.romanzhurid.data.local.database.AppDatabase
+import com.romanzhurid.data.local.mapper.BusEndPointLocalMapper
+import com.romanzhurid.data.local.mapper.BusStationLocalMapper
 import com.romanzhurid.data.local.mapper.CurrencyLocalMapper
 import com.romanzhurid.data.local.mapper.WeatherRemoteToLocalMapper
 import com.romanzhurid.data.remote.cinema.mapper.CinemaRemoteMapper
@@ -17,6 +19,14 @@ val databaseModule = module {
         get<AppDatabase>().currencyDao()
     }
 
+    factory {
+        get<AppDatabase>().busStationDao()
+    }
+
+    factory {
+        get<AppDatabase>().busEndPointDao()
+    }
+
     // Mappers
     single {
         CurrencyLocalMapper()
@@ -28,6 +38,14 @@ val databaseModule = module {
 
     single {
         WeatherRemoteToLocalMapper()
+    }
+
+    single {
+        BusStationLocalMapper()
+    }
+
+    single {
+        BusEndPointLocalMapper()
     }
 
     single {

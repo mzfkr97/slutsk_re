@@ -6,7 +6,8 @@ enum class HomeBottomMenuType {
     SETTINGS,
     CURRENCIES,
     CINEMA,
-    DELIVERY_FOOD
+    DELIVERY_FOOD,
+    ROUTES
 }
 
 data class HomeBottomMenu(
