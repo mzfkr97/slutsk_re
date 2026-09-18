@@ -15,7 +15,7 @@ interface BusEndPointDao {
     @Query("SELECT * FROM bus_end_point_list ORDER BY bus_number")
     fun getAll(): Flow<List<BusEndPointEntity>>
 
-    @Query("SELECT * FROM bus_end_point_list WHERE bus_number = :busNumberLIMIT 1")
+    @Query("SELECT * FROM bus_end_point_list WHERE bus_number = :busNumber LIMIT 1")
     suspend fun getByBusNumber(busNumber: Int): BusEndPointEntity?
 
     @Query(" SELECT * FROM bus_end_point_list WHERE is_favorite = 1 ORDER BY bus_number")
