@@ -43,6 +43,7 @@ dependencies {
     implementation(project(":features:currencies"))
     implementation(project(":features:settings"))
     implementation(project(":features:cinema"))
+    implementation(project(":features:bus"))
 
     implementation(project(":core:domain"))
     implementation(project(":core:data"))

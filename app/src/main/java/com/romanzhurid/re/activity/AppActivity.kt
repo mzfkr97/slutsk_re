@@ -22,6 +22,7 @@ import com.romanzhurid.brandbook.components.errorbottomsheet.ErrorBottomSheet
 import com.romanzhurid.brandbook.components.progress.ProgressItem
 import com.romanzhurid.brandbook.theme.AppTheme
 import com.romanzhurid.cinema.navigation.CinemaFeatureHost
+import com.romanzhurid.bus.navigation.BusFeatureHost
 import com.romanzhurid.common.ProgressState
 import com.romanzhurid.common.uistate.collectUiState
 import com.romanzhurid.onboarding.navigation.OnboardingFeatureHost
@@ -107,6 +108,7 @@ fun MainScreen(
             entry<AppRoute.Currencies>(content = ::CurrencyFeatureHost)
             entry<AppRoute.Settings>(content = ::SettingsFeatureHost)
             entry<AppRoute.Cinema>(content =::CinemaFeatureHost)
+            entry<AppRoute.Bus>(content = ::BusFeatureHost)
         }
     }
 

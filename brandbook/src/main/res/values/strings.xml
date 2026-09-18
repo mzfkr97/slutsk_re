@@ -48,6 +48,12 @@
     <string name="currencies__screen_favorites_header">Избранное</string>
     <string name="currencies__screen_all_currencies_header">Все курсы</string>
 
+    <!-- Bus -->
+    <string name="bus__screen_title">Автобусы</string>
+    <string name="bus__screen_favorites_header">Избранное</string>
+    <string name="bus__screen_all_header">Все маршруты</string>
+    <string name="bus__detail_title">Расписание</string>
+
 
     <!-- Home -->
     <string name="home__title">Home</string>
