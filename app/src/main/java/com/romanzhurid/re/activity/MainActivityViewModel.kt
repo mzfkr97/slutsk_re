@@ -83,7 +83,7 @@ class MainActivityViewModel(
     }
 
     private fun handleException(error: Throwable) {
-        Log.d("TAG", "handleException: ${error}")
+        Log.d("TAG", "handleException: $error")
         updateUiState {
             it.copy(errorState = exceptionMapper.map(error))
         }

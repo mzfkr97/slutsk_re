@@ -20,7 +20,7 @@ import com.romanzhurid.data.local.entity.CurrencyEntity
         BusEndPointEntity::class,
         BusScheduleEntity::class,
     ],
-    version = 3,
+    version = 1,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

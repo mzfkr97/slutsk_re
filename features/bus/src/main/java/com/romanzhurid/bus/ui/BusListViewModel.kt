@@ -26,7 +26,8 @@ class BusListViewModel(
     private val busUiMapper: BusUiMapper,
     private val dispatcherProvider: DispatcherProvider,
     progressDelegate: ProgressDelegate,
-) : ViewModel(), UiStateDelegate<UiState, Event> by UiStateDelegateImpl(UiState()),
+) : ViewModel(),
+    UiStateDelegate<UiState, Event> by UiStateDelegateImpl(UiState()),
     ProgressDelegate by progressDelegate {
 
     data class UiState(
@@ -53,12 +54,12 @@ class BusListViewModel(
                     busUiMapper.map(buses)
                 }
             }
-            .onEach { mapped ->
-                val onlyBuses = mapped.filterIsInstance<BusUi>()
+            .onEach { buses ->
+                val onlyBuses = buses.filterIsInstance<BusUi>()
                 updateUiState {
                     it.copy(
                         allBuses = onlyBuses,
-                        buses = mapped
+                        buses = buses
                     )
                 }
             }
@@ -68,25 +69,32 @@ class BusListViewModel(
             .launchIn(viewModelScope)
     }
 
-    fun onToggleFavorite(id: Int, isFavorite: Boolean) {
+    fun onToggleFavorite(
+        id: Int,
+        isFavorite: Boolean
+    ) {
         viewModelScope.launch(exceptionHandler) {
             withContext(dispatcherProvider.background()) {
-                busEndPointInteractor.toggleFavorite(id, isFavorite.not())
+                busEndPointInteractor.toggleFavorite(
+                    id = id,
+                    isFavorite = isFavorite.not()
+                )
             }
         }
     }
 
     fun onBusClicked(busNumber: Int) {
-        viewModelScope.launch {
-            sendEvent(Event.NavigateToDetail(busNumber))
-        }
+        viewModelScope.sendEvent(Event.NavigateToDetail(busNumber))
     }
 
     fun searchItem(query: String) {
         updateUiState {
             it.copy(
                 searchQuery = query,
-                buses = filterByQuery(it.allBuses, query)
+                buses = filterByQuery(
+                    all = it.allBuses,
+                    query = query
+                )
             )
         }
     }

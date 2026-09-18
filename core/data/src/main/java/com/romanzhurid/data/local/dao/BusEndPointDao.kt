@@ -12,27 +12,13 @@ import com.romanzhurid.data.local.entity.BusEndPointEntity
 @Dao
 interface BusEndPointDao {
 
-    @Query("""
-        SELECT * 
-        FROM bus_end_point_list
-        ORDER BY bus_number
-    """)
+    @Query("SELECT * FROM bus_end_point_list ORDER BY bus_number")
     fun getAll(): Flow<List<BusEndPointEntity>>
 
-    @Query("""
-        SELECT *
-        FROM bus_end_point_list
-        WHERE bus_number = :busNumber
-        LIMIT 1
-    """)
+    @Query("SELECT * FROM bus_end_point_list WHERE bus_number = :busNumberLIMIT 1")
     suspend fun getByBusNumber(busNumber: Int): BusEndPointEntity?
 
-    @Query("""
-        SELECT *
-        FROM bus_end_point_list
-        WHERE is_favorite = 1
-        ORDER BY bus_number
-    """)
+    @Query(" SELECT * FROM bus_end_point_list WHERE is_favorite = 1 ORDER BY bus_number")
     fun getFavorites(): Flow<List<BusEndPointEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -50,11 +36,7 @@ interface BusEndPointDao {
     @Query("DELETE FROM bus_end_point_list")
     suspend fun deleteAll()
 
-    @Query("""
-        UPDATE bus_end_point_list
-        SET is_favorite = :isFavorite
-        WHERE _id = :id
-    """)
+    @Query("UPDATE bus_end_point_list SET is_favorite = :isFavorite WHERE _id = :id")
     suspend fun updateFavorite(
         id: Int,
         isFavorite: Boolean

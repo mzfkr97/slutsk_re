@@ -28,6 +28,5 @@ interface BusApi {
     ): ScheduleItemRemote
 
     @GET("delivery")
-    suspend fun getDelivery(
-    )
+    suspend fun getDelivery()
 }
