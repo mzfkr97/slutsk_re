@@ -35,12 +35,13 @@ fun BusFeatureHost(route: AppRoute.Bus) {
 
     val navigator = remember(route) {
         val busNumber = route.stationId
+        val initialRoute = busNumber?.let {
+            BusFeatureRoute.BusDetail(busNumber)
+        } ?: run {
+            BusFeatureRoute.BusList
+        }
         NavigatorImpl(
-            initialStack = if (busNumber != null) {
-                listOf(BusFeatureRoute.BusList, BusFeatureRoute.BusDetail(busNumber))
-            } else {
-                listOf(BusFeatureRoute.BusList)
-            }
+            initialStack = listOf(initialRoute)
         )
     }
 

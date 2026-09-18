@@ -87,20 +87,20 @@ class HomeScreenViewModel(
 
         viewModelScope.launch {
             val route = when(homeBottomMenuType) {
-                HomeBottomMenuType.SETTINGS -> {
+                HomeBottomMenuType.Settings -> {
                     Settings()
                 }
-                HomeBottomMenuType.CINEMA -> {
+                HomeBottomMenuType.Cinema -> {
                     Cinema()
                 }
-                HomeBottomMenuType.CURRENCIES -> {
+                HomeBottomMenuType.Currencies -> {
                     Currencies()
                 }
-                HomeBottomMenuType.DELIVERY_FOOD -> {
+                HomeBottomMenuType.DeliveryFood -> {
                     DeliveryFood()
                 }
-                HomeBottomMenuType.ROUTES -> {
-                    Bus(stationId = null)
+                is HomeBottomMenuType.BusRoutes -> {
+                    Bus(stationId = homeBottomMenuType.busNumber)
                 }
             }
             sendEvent(Event.NavigateTo(route))

@@ -23,11 +23,11 @@ class BusDetailViewModel(
     private val busScheduleUiMapper: BusScheduleUiMapper,
     private val dispatcherProvider: DispatcherProvider,
     progressDelegate: ProgressDelegate,
-) : ViewModel(), UiStateDelegate<UiState, Unit> by UiStateDelegateImpl(UiState()),
+) : ViewModel(), UiStateDelegate<UiState, Unit> by UiStateDelegateImpl(UiState(busNumber = busNumber)),
     ProgressDelegate by progressDelegate {
 
     data class UiState(
-        val busNumber: Int = 0,
+        val busNumber: Int,
         val schedules: List<BusScheduleUi> = emptyList(),
         val isLoading: Boolean = true,
     )
@@ -37,7 +37,6 @@ class BusDetailViewModel(
     }
 
     init {
-        updateUiState { it.copy(busNumber = busNumber) }
         observeSchedules()
     }
 

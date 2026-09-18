@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,8 +28,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.DirectionsBus
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -120,7 +117,7 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
                 actionIcon = Icons.Outlined.Settings,
                 showBackBtn = false,
                 onActionClick = {
-                    viewModel.onNavigate(HomeBottomMenuType.SETTINGS)
+                    viewModel.onNavigate(HomeBottomMenuType.Settings)
                 },
             )
         }
@@ -138,7 +135,7 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
                     uiState = uiState,
                     onWeatherErrorClicked = viewModel::onWeatherErrorClicked,
                     onCurrenciesClicked = {
-                        viewModel.onNavigate(HomeBottomMenuType.CURRENCIES)
+                        viewModel.onNavigate(HomeBottomMenuType.Currencies)
                     }
                 )
             }
@@ -147,15 +144,15 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
                 StationCard(
                     stations = uiState.stations,
                     modifier = Modifier.fillMaxWidth(),
-                    onAllRouteClicked = {
-                        viewModel.onNavigate(HomeBottomMenuType.ROUTES)
+                    onRouteClicked = { stationId ->
+                        viewModel.onNavigate(HomeBottomMenuType.BusRoutes(stationId))
                     }
                 )
             }
 
             items(
                 items = uiState.bottomMenu,
-                key = { it.menuType }
+                key = { it.menuType.hashCode() }
             ) { menu ->
                 BottomCard(
                     homeBottomMenu = menu,
@@ -203,7 +200,7 @@ private fun HeaderCard(
 private fun StationCard(
     stations: List<StationUi>,
     modifier: Modifier = Modifier,
-    onAllRouteClicked: () -> Unit
+    onRouteClicked: (Int?) -> Unit
 ) {
     AppCard(modifier = modifier) {
         Column(
@@ -231,7 +228,9 @@ private fun StationCard(
                     )
                 }
                 TextButton(
-                    onClick = onAllRouteClicked
+                    onClick = {
+                        onRouteClicked.invoke(null)
+                    }
                 ) {
                     Text("Все рейсы")
                 }
@@ -250,7 +249,9 @@ private fun StationCard(
                     AppCard (
                         modifier = Modifier
                             .width(48.dp)
-                            .height(48.dp)
+                            .height(48.dp).singleClick{
+                                onRouteClicked.invoke(station.busNumber)
+                            }
                     ) {
                         Box(
                             modifier = Modifier.fillMaxSize(),

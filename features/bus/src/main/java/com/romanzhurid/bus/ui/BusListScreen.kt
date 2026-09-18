@@ -45,7 +45,9 @@ internal fun BusListScreen(
 
     viewModel.CollectEventEffect { event ->
         when (event) {
-            is Event.NavigateToDetail -> onNavigateToDetail(event.busNumber)
+            is Event.NavigateToDetail -> {
+                onNavigateToDetail(event.busNumber)
+            }
         }
     }
 
