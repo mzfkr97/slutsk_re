@@ -1,0 +1,58 @@
+[
+  {
+    "imageUrl": "https://cdn.pixabay.com/photo/2017/09/18/16/53/burger-2762371_960_720.jpg",
+    "phone": "+375 33 666-16-63",
+    "description": "Бургеры, роллы - ресторан быстрого питания.\nДоставка осуществляется с 08:30 до 22:30.",
+    "title": "Чикен Брикен",
+    "url": "bricken.by",
+    "workTime": "08:00 - 23:00\nБез обеда и выходных"
+  },
+  {
+    "imageUrl": "https://cdn.pixabay.com/photo/2016/07/28/19/47/pizza-1549189_960_720.jpg",
+    "phone": "+375 29 696-64-64",
+    "description": "Служба доставки пиццы и суши",
+    "title": "ЕШЬ",
+    "url": "slutsk.esh.by",
+    "workTime": "Прием заказов на доставку:\nВс-чт: 10:00 - 22:00\nПт-сб: 10:00 - 23:00\nСамовывоз - Слуцк, ул. 14 Партизан, 30"
+  },
+  {
+    "imageUrl": "https://defst1.gilmon.ru/resources/fs/i/shares/21/58/2158_large_1653567913.jpg",
+    "phone": "+375 29 240-24-04",
+    "description": "Шаурма",
+    "title": "Шаурма - Барсук",
+    "url": "www.instagram.com/shawarma_barsuk",
+    "workTime": "Пн-чт, Вс: 10:00 - 22:00\nПт, сб: 10:00 - 23:00"
+  },
+  {
+    "imageUrl": "https://cdn.pixabay.com/photo/2017/10/02/22/24/pizza-2810589_960_720.jpg",
+    "phone": "+375 44 593-09-99",
+    "description": "Бесплатная от 20 руб. \nПицца, суши, блюда по основному меню кафе-пиццерии",
+    "title": "Сорренто",
+    "url": "vk.com/club55286676",
+    "workTime": "Прием заказов: 12:00 - 24:00"
+  },
+  {
+    "imageUrl": "https://cdn.pixabay.com/photo/2017/08/15/20/04/wood-fired-pizzas-2645327_960_720.jpg",
+    "phone": "+375 29 370-78-71",
+    "description": "Бесплатная от 20 руб.\nСуши, Роллы, Гарниры",
+    "title": "Sushi Slutsk",
+    "url": "vk.com/sushi_slutsk",
+    "workTime": "Прием заказов: Пн - чт: 11:00 - 22:45,\n Пт,Сб 11:00 - 02:00\n Вс 11:00 - 24:00\nДоставка от 20 р по городу бесплатная"
+  },
+  {
+    "imageUrl": "https://cdn.pixabay.com/photo/2018/04/13/17/12/vegetable-skewer-3317055_960_720.jpg",
+    "phone": "+375 29 351-55-55",
+    "description": "Пицца, Суши, Шашлык",
+    "title": "Завалинка",
+    "url": "zavalinka.by",
+    "workTime": "Прием заказов: 16:00 - 00:40,\nДоставка от 15 р по городу бесплатная"
+  },
+  {
+    "imageUrl": "https://cdn.pixabay.com/photo/2015/04/19/08/32/marguerite-729510_960_720.jpg",
+    "phone": "+375 29 859-70-70",
+    "description": "Доставка бесплатно",
+    "title": "Цветы в слуцке",
+    "url": "vk.com/tsvetyslutsk",
+    "workTime": "С 07:00 до 22:00"
+  }
+]

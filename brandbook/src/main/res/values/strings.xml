@@ -1,6 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">IPill</string>
+    <string name="weather__wind_direction_north">↓ N Северный</string>
+    <string name="weather__wind_direction_nne">NNE Северо-северо-восточный</string>
+    <string name="weather__wind_direction_ne">NE Северо-восточный</string>
+    <string name="weather__wind_direction_ene">ENE Востоко-северо-восточный</string>
+    <string name="weather__wind_direction_east">← E Восточный</string>
+    <string name="weather__wind_direction_ese">ESE Востоко-юго-восточный</string>
+    <string name="weather__wind_direction_se">SE Юго-восточный</string>
+    <string name="weather__wind_direction_sse">SSE Юго-юго-восточный</string>
+    <string name="weather__wind_direction_south">↑ S Южный</string>
+    <string name="weather__wind_direction_ssw">SSW Юго-юго-западный</string>
+    <string name="weather__wind_direction_sw">SW Юго-западный</string>
+    <string name="weather__wind_direction_wsw">WSW Западо-юго-западный</string>
+    <string name="weather__wind_direction_west">→ W Западный</string>
+    <string name="weather__wind_direction_wnw">WNW Западо-северо-западный</string>
+    <string name="weather__wind_direction_nw">NW Северо-западный</string>
+    <string name="weather__wind_direction_nnw">NNW Северо-северо-западный</string>
+    <string name="weather__wind_speed">Скорость ветра: %1$d км/ч - %2$.1f м/с</string>
+    <string name="weather__pressure">Давление: %1$d мм рт.ст. / %2$d гПа</string>
+    <string name="weather__temperature">%1$s°C</string>
+    <string name="weather__feels_like">Ощущается как: %1$s°C</string>
     <string name="common__error_something_went_wrong">Something went wrong</string>
     <string name="common__error_unauthorized">Unauthorized</string>
     <string name="common__error">Error</string>
@@ -11,6 +31,7 @@
     <string name="common__close">Close</string>
     <string name="common__retry">Retry</string>
     <string name="common__no_connection">No internet connection</string>
+    <string name="common__no_items">No items</string>
 
     <!-- Onboarding -->
     <string name="onboarding__welcome_title">Welcome to SlutskRe</string>
@@ -19,6 +40,8 @@
     <string name="onboarding__bus_schedules_description">Check real-time bus schedules and routes easily.</string>
     <string name="onboarding__stay_updated_title">Stay Updated</string>
     <string name="onboarding__stay_updated_description">Get notifications about local events and news.</string>
+    <string name="onboarding__location_title">Enable Location</string>
+    <string name="onboarding__location_description">Allow location access to show nearby places and useful routes.</string>
     <string name="onboarding__next">Next</string>
     <string name="onboarding__get_started">Get Started</string>
     <string name="onboarding__skip">Skip</string>
@@ -28,6 +51,8 @@
 
     <!-- Home -->
     <string name="home__title">Home</string>
+    <string name="menu__cinema">Афиша</string>
+    <string name="menu__delivery_food">Доставка еды</string>
     <!-- Screen titles -->
     <string name="currencies__screen_title">Курсы валют</string>
     <string name="currencies__screen_favorite">Избранное</string>
@@ -50,5 +75,27 @@
     <!-- Settings -->
     <string name="settings__screen_title">Настройки</string>
     <string name="settings__dark_theme">Темная тема</string>
+
+    <!--Errors-->
+    <string name="error_no_favorite_bus_station">Нет избранных маршрутов</string>
+    <string name="error__error">Ошибка!</string>
+    <string name="error__retry">Повторить</string>
+    <string name="error__alert_title">Внимание!</string>
+    <string name="error__send_error">Сообщить об ошибке</string>
+    <string name="error__default_massage">Произошла ошибка.</string>
+    <string name="error__connection_retry">Попробовать снова.</string>
+    <string name="error__network_default_error">Ошибка соединения!</string>
+    <string name="error__connection_error">Нет подключения к Интернету</string>
+    <string name="error__cinema_not_found_error">На эту дату ничего не найдено!</string>
+    <string name="error__not_found_error">Ничего не найдено!</string>
+    <string name="error__default_message">Ошибка при загрузке данных. Проверьте соединение с интернетом или повторите попытку позже</string>
+    <string name="error__no_find_items">Ничего не найдено!</string>
+    <string name="exception__news_mode">Невозможно загрузить ленту новостей!</string>
+    <string name="error__no_connection">Нет соединения!</string>
+    <string name="weather__exception_no_location_permission">Не предоставлен доступ к геолокации</string>
+    <string name="weather__exception_location_unavailable">Службы локации недоступны</string>
+    <string name="weather__exception_no_internet">Нет подключения к интернету</string>
+    <string name="weather__exception_timeout">Сервер не отвечает</string>
+    <string name="weather__exception_default">Не удалось загрузить погоду</string>
 
 </resources>

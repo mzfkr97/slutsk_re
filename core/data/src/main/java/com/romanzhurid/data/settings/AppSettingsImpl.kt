@@ -6,9 +6,10 @@ import com.romanzhurid.domain.AppSettings
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import javax.inject.Inject
+import androidx.core.content.edit
 
-class AppSettingsImpl @Inject constructor(private val preferences: SharedPreferences) : AppSettings {
+class AppSettingsImpl(private val preferences: SharedPreferences) : AppSettings {
+
 
     override var isFirstAppStart: Boolean by PreferencesDelegate(
         preferences,
@@ -19,10 +20,16 @@ class AppSettingsImpl @Inject constructor(private val preferences: SharedPrefere
     override var isDarkTheme: Boolean
         get() = preferences.getBoolean(BuildConfig.PREF_IS_DARK_THEME, false)
         set(value) {
-            preferences.edit().putBoolean(BuildConfig.PREF_IS_DARK_THEME, value).apply()
+            preferences.edit { putBoolean(BuildConfig.PREF_IS_DARK_THEME, value) }
             _isDarkThemeFlow.value = value
         }
 
     private val _isDarkThemeFlow = MutableStateFlow(isDarkTheme)
     override val isDarkThemeFlow: StateFlow<Boolean> = _isDarkThemeFlow.asStateFlow()
+
+    override val currencyId: Int by PreferencesDelegate(
+        preferences,
+        BuildConfig.PREF_CURRENCY_ID,
+        431
+    )
 }

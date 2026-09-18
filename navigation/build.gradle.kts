@@ -8,11 +8,7 @@ plugins {
 
 android {
     namespace = "com.romanzhurid.navigation"
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
-    }
+    compileSdk = 37
 
     defaultConfig {
         minSdk = 30
@@ -46,8 +42,9 @@ dependencies {
     implementation(libs.bundles.androidx.nav3)
     implementation(libs.androidx.lifecycle.viewmodel.navigation3)
 
-    implementation(libs.dagger)
-    ksp(libs.dagger.compiler)
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
+    
 
     detektPlugins(libs.detekt.formatting)
 }

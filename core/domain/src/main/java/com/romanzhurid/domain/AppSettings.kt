@@ -7,4 +7,5 @@ interface AppSettings {
     var isDarkTheme: Boolean
 
     val isDarkThemeFlow: StateFlow<Boolean>
+    val currencyId: Int
 }

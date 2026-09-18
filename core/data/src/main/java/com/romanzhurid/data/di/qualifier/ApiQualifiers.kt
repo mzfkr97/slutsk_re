@@ -1,27 +1,7 @@
 package com.romanzhurid.data.di.qualifier
 
-import javax.inject.Qualifier
+import org.koin.core.qualifier.named
 
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class BackendApi
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class YandexApi
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class CinemaApi
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class WeatherApi
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class CurrencyApi
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class BelarusbankApi
+val BACKEND_API = named("backend_api")
+val CINEMA_API = named("cinema_api")
+val CURRENCY_API = named("currency_api")

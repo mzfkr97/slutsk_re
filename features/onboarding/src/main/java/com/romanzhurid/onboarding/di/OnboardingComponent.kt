@@ -1,20 +1,17 @@
 package com.romanzhurid.onboarding.di
 
-import com.romanzhurid.onboarding.onboarding.OnboardingViewModelFactory
-import dagger.Component
+import com.romanzhurid.navigation.host.FeatureScope
+import com.romanzhurid.onboarding.onboarding.OnboardingViewModel
+import org.koin.core.module.dsl.viewModelOf
+import org.koin.core.qualifier.named
+import org.koin.dsl.module
 
-@OnboardingScope
-@Component(
-    dependencies = [OnboardingComponentDependencies::class]
-)
-interface OnboardingComponent {
-    fun getOnboardingViewModelFactory(): OnboardingViewModelFactory
+object OnboardingFeatureScope : FeatureScope {
+    override val qualifier = named<OnboardingFeatureScope>()
+}
 
-    companion object {
-        private var component: OnboardingComponent? = null
-
-        fun get(): OnboardingComponent {
-            return component ?: throw NotImplementedError("This component must be initialized")
-        }
+val onboardingModule = module {
+    scope<OnboardingFeatureScope> {
+        viewModelOf(::OnboardingViewModel)
     }
 }

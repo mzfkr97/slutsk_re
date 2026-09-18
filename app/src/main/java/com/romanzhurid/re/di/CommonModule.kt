@@ -1,15 +1,28 @@
 package com.romanzhurid.re.di
 
-import android.content.Context
-import dagger.Module
-import dagger.Provides
-import javax.inject.Singleton
+import com.romanzhurid.cinema.di.cinemaModule
+import com.romanzhurid.common.di.commonFeatureModule
+import com.romanzhurid.common.di.commonToolsModule
+import com.romanzhurid.common.di.permissionModule
+import com.romanzhurid.currencies.di.currenciesModule
+import com.romanzhurid.data.di.coreDataModule
+import com.romanzhurid.re.activity.mainActivityModule
+import com.romanzhurid.settings.di.settingsModule
+import com.romanzhurid.onboarding.di.onboardingModule
+import com.romanzhurid.home.di.homeModule
+import org.koin.dsl.module
 
-@Module
-class CommonModule {
-
-    @Provides
-    @ApplicationContext
-    @Singleton
-    fun provideContext(context: Context): Context = context
+val appModule = module {
+    includes(
+        commonToolsModule,
+        permissionModule,
+        commonFeatureModule,
+        coreDataModule,
+        mainActivityModule,
+        onboardingModule,
+        homeModule,
+        currenciesModule,
+        settingsModule,
+        cinemaModule,
+    )
 }

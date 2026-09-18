@@ -1,13 +1,28 @@
 package com.romanzhurid.home.di
 
-import dagger.Component
+import com.romanzhurid.common.ExceptionsObserverImpl
+import com.romanzhurid.common.ExceptionsEmitter
+import com.romanzhurid.common.ProgressObserverImpl
+import com.romanzhurid.common.ProgressEmitter
+import com.romanzhurid.home.mapper.WeatherUiMapper
+import com.romanzhurid.home.presentation.HomeScreenViewModel
+import com.romanzhurid.navigation.host.FeatureScope
+import org.koin.core.module.dsl.scopedOf
+import org.koin.core.module.dsl.viewModelOf
+import org.koin.core.qualifier.named
+import org.koin.dsl.module
 
-@Component(dependencies = [HomeComponentDependencies::class])
-interface HomeComponent {
+object HomeFeatureScope : FeatureScope {
+    override val qualifier = named<HomeFeatureScope>()
+}
 
-    @Component.Builder
-    interface Builder {
-        fun homeComponentDependencies(dependencies: HomeComponentDependencies): Builder
-        fun build(): HomeComponent
+val homeModule = module {
+    scope<HomeFeatureScope> {
+        scoped<ProgressEmitter> { get<ProgressObserverImpl>() }
+        scoped<ExceptionsEmitter> { get<ExceptionsObserverImpl>() }
+        scopedOf(::ProgressObserverImpl)
+        scopedOf(::ExceptionsObserverImpl)
+        scopedOf(::WeatherUiMapper)
+        viewModelOf(::HomeScreenViewModel)
     }
 }

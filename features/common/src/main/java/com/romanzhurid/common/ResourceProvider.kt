@@ -11,7 +11,6 @@ import androidx.annotation.Px
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import java.util.Locale
-import javax.inject.Inject
 
 interface ResourceProvider {
 
@@ -37,7 +36,7 @@ interface ResourceProvider {
     fun getLocale(): Locale
 }
 
-class ResourceProviderImpl @Inject constructor(
+class ResourceProviderImpl(
     private val context: Context
 ) : ResourceProvider {
 

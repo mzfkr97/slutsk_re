@@ -1,54 +1,48 @@
 package com.romanzhurid.common.di
 
-import android.content.Context
-import com.romanzhurid.common.ExceptionsEmitter
-import com.romanzhurid.common.ExceptionsFlow
 import com.romanzhurid.common.ExceptionsObserverImpl
-import com.romanzhurid.common.ProgressEmitter
-import com.romanzhurid.common.ProgressFlow
+import com.romanzhurid.common.NetworkStateFlow
+import com.romanzhurid.common.NetworkStateProvider
 import com.romanzhurid.common.ProgressObserverImpl
 import com.romanzhurid.common.ResourceProvider
 import com.romanzhurid.common.ResourceProviderImpl
+import com.romanzhurid.common.mapper.ExceptionMapper
 import com.romanzhurid.common.progressdelegate.ProgressDelegate
 import com.romanzhurid.common.progressdelegate.ProgressDelegateImpl
-import dagger.Module
-import dagger.Provides
-import javax.inject.Singleton
+import org.koin.android.ext.koin.androidContext
+import org.koin.dsl.module
 
-@Module
-class CommonFeatureModule {
-
-    @Provides
-    @Singleton
-    fun provideResourceProvider(context: Context): ResourceProvider {
-        return ResourceProviderImpl(context)
+val commonFeatureModule = module {
+    single<ResourceProvider> {
+        ResourceProviderImpl(androidContext())
     }
 
-    @Provides
-    @Singleton
-    fun provideExceptionsObserver(): ExceptionsObserverImpl = ExceptionsObserverImpl()
+    single<ExceptionsObserverImpl> {
+        ExceptionsObserverImpl()
+    }
 
-    @Provides
-    @Singleton
-    fun provideExceptionsFlow(impl: ExceptionsObserverImpl): ExceptionsFlow = impl
+    single<ProgressObserverImpl> {
+        ProgressObserverImpl()
+    }
 
-    @Provides
-    @Singleton
-    fun provideExceptionsEmitter(impl: ExceptionsObserverImpl): ExceptionsEmitter = impl
+    single<ProgressDelegate> {
+        ProgressDelegateImpl(
+            progressEmitter = get<ProgressObserverImpl>(),
+            exceptionsEmitter = get<ExceptionsObserverImpl>()
+        )
+    }
 
-    @Provides
-    @Singleton
-    fun provideProgressObserver(): ProgressObserverImpl = ProgressObserverImpl()
+    single<NetworkStateProvider> {
+        NetworkStateProvider(
+            context = androidContext()
+        )
+    }
 
-    @Provides
-    @Singleton
-    fun provideProgressEmitter(impl: ProgressObserverImpl): ProgressEmitter = impl
+    single<NetworkStateFlow> {
+        get<NetworkStateProvider>()
+    }
 
-    @Provides
-    @Singleton
-    fun provideProgressFlow(impl: ProgressObserverImpl): ProgressFlow = impl
-
-    @Provides
-    @Singleton
-    fun provideScmProgressDelegate(impl: ProgressDelegateImpl): ProgressDelegate = impl
+    single<ExceptionMapper> {
+        ExceptionMapper(resourceProvider = get())
+    }
 }

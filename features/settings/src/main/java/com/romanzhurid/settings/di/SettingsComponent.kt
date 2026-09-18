@@ -1,14 +1,17 @@
 package com.romanzhurid.settings.di
 
-import com.romanzhurid.settings.presentation.SettingsViewModelFactory
-import dagger.Component
+import com.romanzhurid.navigation.host.FeatureScope
+import com.romanzhurid.settings.presentation.SettingsViewModel
+import org.koin.core.module.dsl.viewModelOf
+import org.koin.core.qualifier.named
+import org.koin.dsl.module
 
-@Component(dependencies = [SettingsComponentDependencies::class])
-interface SettingsComponent {
-    val settingsViewModelFactory: SettingsViewModelFactory
+object SettingsFeatureScope : FeatureScope {
+    override val qualifier = named<SettingsFeatureScope>()
+}
 
-    @Component.Factory
-    interface Factory {
-        fun create(dependencies: SettingsComponentDependencies): SettingsComponent
+val settingsModule = module {
+    scope<SettingsFeatureScope> {
+        viewModelOf(::SettingsViewModel)
     }
 }

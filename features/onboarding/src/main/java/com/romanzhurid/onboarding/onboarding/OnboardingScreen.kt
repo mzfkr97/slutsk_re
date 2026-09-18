@@ -1,5 +1,7 @@
 package com.romanzhurid.onboarding.onboarding
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,12 +33,12 @@ import androidx.compose.ui.unit.dp
 import com.romanzhurid.brandbook.R
 import com.romanzhurid.brandbook.components.button.AppBaseButton
 import com.romanzhurid.brandbook.theme.AppTheme
+import com.romanzhurid.common.ext.launchLocationPermission
 import com.romanzhurid.common.uistate.CollectEventEffect
 import com.romanzhurid.common.uistate.collectUiState
 import com.romanzhurid.navigation.AppRoute
 import com.romanzhurid.onboarding.model.IntroPage
 import com.romanzhurid.onboarding.onboarding.OnboardingViewModel.Event
-import com.romanzhurid.onboarding.onboarding.OnboardingViewModel.UiState
 import kotlinx.coroutines.launch
 
 @Composable
@@ -44,88 +46,89 @@ internal fun OnboardingScreen(
     viewModel: OnboardingViewModel,
     onFinished: (AppRoute) -> Unit,
 ) {
-
     val uiState by viewModel.collectUiState()
-
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions(),
+        onResult = {
+            viewModel.onFinishIntro()
+        }
+    )
     viewModel.CollectEventEffect { event ->
         when (event) {
             is Event.OnClearAndPush -> {
                 onFinished(event.destination)
+            }
+            is Event.RequestPermissions -> {
+                permissionLauncher.launchLocationPermission()
             }
         }
     }
 
     OnboardingScreenContent(
         uiState = uiState,
-        onFinishIntro = viewModel::onFinishIntro,
+        onFinishIntro = viewModel::requestPermissions,
     )
 }
 
 @Composable
 private fun OnboardingScreenContent(
-    uiState: UiState,
+    uiState: OnboardingViewModel.UiState,
     onFinishIntro: () -> Unit,
 ) {
     val pagerState = rememberPagerState { uiState.pages.size }
     val scope = rememberCoroutineScope()
 
-    Scaffold(
-        topBar = {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(AppTheme.dimensions.medium),
-                contentAlignment = Alignment.CenterEnd
-            ) {
-                if (pagerState.currentPage < uiState.pages.size - 1) {
-                    TextButton(onClick = onFinishIntro) {
-                        Text(
-                            text = stringResource(R.string.onboarding__skip),
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    }
+    Scaffold(topBar = {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(AppTheme.dimensions.medium),
+            contentAlignment = Alignment.CenterEnd
+        ) {
+            if (pagerState.currentPage < uiState.pages.size - 1) {
+                TextButton(onClick = onFinishIntro) {
+                    Text(
+                        text = stringResource(R.string.onboarding__skip),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.primary
+                    )
                 }
             }
-        },
-        bottomBar = {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(AppTheme.dimensions.medium),
-                verticalArrangement = Arrangement.spacedBy(AppTheme.dimensions.small),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                PagerIndicator(
-                    count = uiState.pages.size,
-                    currentPage = pagerState.currentPage
-                )
-
-                Spacer(modifier = Modifier.height(AppTheme.dimensions.medium))
-
-                AppBaseButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = if (pagerState.currentPage == uiState.pages.size - 1) {
-                        stringResource(R.string.onboarding__get_started)
-                    } else {
-                        stringResource(R.string.onboarding__next)
-                    },
-                    onClick = {
-                        if (pagerState.currentPage < uiState.pages.size - 1) {
-                            scope.launch {
-                                pagerState.animateScrollToPage(pagerState.currentPage + 1)
-                            }
-                        } else {
-                            onFinishIntro()
-                        }
-                    }
-                )
-            }
         }
-    ) { padding ->
-        HorizontalPager(
-            state = pagerState,
+    }, bottomBar = {
+        Column(
             modifier = Modifier
+                .fillMaxWidth()
+                .padding(AppTheme.dimensions.medium),
+            verticalArrangement = Arrangement.spacedBy(AppTheme.dimensions.small),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            PagerIndicator(
+                count = uiState.pages.size, currentPage = pagerState.currentPage
+            )
+
+            Spacer(modifier = Modifier.height(AppTheme.dimensions.medium))
+
+            AppBaseButton(
+                modifier = Modifier.fillMaxWidth(),
+                text = if (pagerState.currentPage == uiState.pages.size - 1) {
+                    stringResource(R.string.onboarding__get_started)
+                } else {
+                    stringResource(R.string.onboarding__next)
+                },
+                onClick = {
+                    if (pagerState.currentPage < uiState.pages.size - 1) {
+                        scope.launch {
+                            pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                        }
+                    } else {
+                        onFinishIntro()
+                    }
+                })
+        }
+    }) { padding ->
+        HorizontalPager(
+            state = pagerState, modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
         ) { pageIndex ->
@@ -161,12 +164,9 @@ private fun IntroPageContent(page: IntroPage) {
         Spacer(modifier = Modifier.height(AppTheme.dimensions.large))
 
         Text(
-            text = stringResource(page.title),
-            style = MaterialTheme.typography.headlineMedium.copy(
-                fontWeight = FontWeight.Bold,
-                fontSize = AppTheme.localFontsSize.xxSmall
-            ),
-            textAlign = TextAlign.Center
+            text = stringResource(page.title), style = MaterialTheme.typography.headlineMedium.copy(
+                fontWeight = FontWeight.Bold, fontSize = AppTheme.localFontsSize.xxSmall
+            ), textAlign = TextAlign.Center
         )
 
         Spacer(modifier = Modifier.height(AppTheme.dimensions.small))
@@ -182,8 +182,7 @@ private fun IntroPageContent(page: IntroPage) {
 
 @Composable
 private fun PagerIndicator(
-    count: Int,
-    currentPage: Int
+    count: Int, currentPage: Int
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(AppTheme.dimensions.small),

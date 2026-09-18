@@ -1,18 +1,13 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.detekt.plugin)
 }
 
 android {
     namespace = "com.romanzhurid.re"
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
-    }
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.romanzhurid.re"
@@ -47,6 +42,7 @@ dependencies {
     implementation(project(":features:home"))
     implementation(project(":features:currencies"))
     implementation(project(":features:settings"))
+    implementation(project(":features:cinema"))
 
     implementation(project(":core:domain"))
     implementation(project(":core:data"))
@@ -65,8 +61,9 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.lifecycle.viewmodel.navigation3)
 
-    implementation(libs.dagger)
-    ksp(libs.dagger.compiler)
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
+    implementation(libs.koin.compose.viewmodel)
 
     implementation(libs.bundles.androidx.nav3)
 

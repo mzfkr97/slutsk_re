@@ -1,5 +1,6 @@
 package com.romanzhurid.brandbook.theme
 
+import android.app.Activity
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
@@ -7,19 +8,39 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.State
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 
 @Composable
 fun AppTheme(
     isSystemDarkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val targetColorScheme = when {
-        isSystemDarkTheme -> DarkColorScheme
-        else -> AppLightColorScheme
+    val colorScheme = animateColorScheme(
+        target = if (isSystemDarkTheme) {
+            DarkColorScheme
+        } else {
+            AppLightColorScheme
+        }
+    )
+
+    val view = LocalView.current
+
+    SideEffect {
+        val window = (view.context as Activity).window
+
+        window.statusBarColor = colorScheme.surface.toArgb()
+        window.navigationBarColor = colorScheme.surface.toArgb()
+
+        WindowCompat.getInsetsController(window, view).apply {
+            isAppearanceLightStatusBars = isSystemDarkTheme.not()
+            isAppearanceLightNavigationBars = isSystemDarkTheme.not()
+        }
     }
-    val colorScheme = animateColorScheme(targetColorScheme)
 
     MaterialTheme(
         colorScheme = colorScheme,
@@ -51,26 +72,26 @@ private fun animateColorScheme(target: ColorScheme): ColorScheme {
     }
 
     return target.copy(
-        primary = animateColor("primary") { it.primary }.value,
-        onPrimary = animateColor("onPrimary") { it.onPrimary }.value,
-        primaryContainer = animateColor("primaryContainer") { it.primaryContainer }.value,
-        onPrimaryContainer = animateColor("onPrimaryContainer") { it.onPrimaryContainer }.value,
+        primary = animateColor(target.primary.toString()) { it.primary }.value,
+        onPrimary = animateColor(target.onPrimary.toString()) { it.onPrimary }.value,
+        primaryContainer = animateColor(target.primaryContainer.toString()) { it.primaryContainer }.value,
+        onPrimaryContainer = animateColor(target.onPrimaryContainer.toString()) { it.onPrimaryContainer }.value,
 
-        secondary = animateColor("secondary") { it.secondary }.value,
-        onSecondary = animateColor("onSecondary") { it.onSecondary }.value,
+        secondary = animateColor(target.secondary.toString()) { it.secondary }.value,
+        onSecondary = animateColor(target.onSecondary.toString()) { it.onSecondary }.value,
 
-        tertiary = animateColor("tertiary") { it.tertiary }.value,
-        onTertiary = animateColor("onTertiary") { it.onTertiary }.value,
+        tertiary = animateColor(target.tertiary.toString()) { it.tertiary }.value,
+        onTertiary = animateColor(target.onTertiary.toString()) { it.onTertiary }.value,
 
-        background = animateColor("background") { it.background }.value,
-        onBackground = animateColor("onBackground") { it.onBackground }.value,
+        background = animateColor(target.background.toString()) { it.background }.value,
+        onBackground = animateColor(target.onBackground.toString()) { it.onBackground }.value,
 
-        surface = animateColor("surface") { it.surface }.value,
-        onSurface = animateColor("onSurface") { it.onSurface }.value,
+        surface = animateColor(target.surface.toString()) { it.surface }.value,
+        onSurface = animateColor(target.onSurface.toString()) { it.onSurface }.value,
 
-        error = animateColor("error") { it.error }.value,
-        onError = animateColor("onError") { it.onError }.value,
+        error = animateColor(target.error.toString()) { it.error }.value,
+        onError = animateColor(target.onError.toString()) { it.onError }.value,
 
-        outline = animateColor("outline") { it.outline }.value,
+        outline = animateColor(target.outline.toString()) { it.outline }.value,
     )
 }

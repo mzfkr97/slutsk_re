@@ -11,5 +11,7 @@ fun Application.configureRouting() {
         }
         
         busRoutes()
+        taxiRoutes()
+        deliveryFoodRoutes()
     }
 }

@@ -1,23 +1,36 @@
 package com.romanzhurid.data.di.module
 
-import android.content.Context
-import com.romanzhurid.data.local.dao.CurrencyDao
 import com.romanzhurid.data.local.database.AppDatabase
-import dagger.Module
-import dagger.Provides
-import javax.inject.Singleton
+import com.romanzhurid.data.local.mapper.CurrencyLocalMapper
+import com.romanzhurid.data.local.mapper.WeatherRemoteToLocalMapper
+import com.romanzhurid.data.remote.cinema.mapper.CinemaRemoteMapper
+import com.romanzhurid.data.remote.currencies.mapper.CurrencyRemoteMapper
+import org.koin.android.ext.koin.androidContext
+import org.koin.dsl.module
 
-@Module
-class DatabaseModule {
-
-    @Provides
-    @Singleton
-    fun provideAppDatabase(context: Context): AppDatabase {
-        return AppDatabase.getInstance(context)
+val databaseModule = module {
+    single {
+        AppDatabase.getInstance(androidContext())
     }
 
-    @Provides
-    fun provideCurrencyDao(database: AppDatabase): CurrencyDao {
-        return database.currencyDao()
+    factory {
+        get<AppDatabase>().currencyDao()
+    }
+
+    // Mappers
+    single {
+        CurrencyLocalMapper()
+    }
+
+    single {
+        CurrencyRemoteMapper()
+    }
+
+    single {
+        WeatherRemoteToLocalMapper()
+    }
+
+    single {
+        CinemaRemoteMapper()
     }
 }

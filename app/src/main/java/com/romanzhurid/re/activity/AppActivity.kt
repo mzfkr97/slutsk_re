@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -22,6 +21,7 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import com.romanzhurid.brandbook.components.errorbottomsheet.ErrorBottomSheet
 import com.romanzhurid.brandbook.components.progress.ProgressItem
 import com.romanzhurid.brandbook.theme.AppTheme
+import com.romanzhurid.cinema.navigation.CinemaFeatureHost
 import com.romanzhurid.common.ProgressState
 import com.romanzhurid.common.uistate.collectUiState
 import com.romanzhurid.onboarding.navigation.OnboardingFeatureHost
@@ -30,27 +30,21 @@ import com.romanzhurid.currencies.navigation.CurrencyFeatureHost
 import com.romanzhurid.settings.navigation.SettingsFeatureHost
 import com.romanzhurid.navigation.AppNavDisplay
 import com.romanzhurid.navigation.AppRoute
-import com.romanzhurid.navigation.Route
 import com.romanzhurid.navigation.composition.LocalNavigator
 import com.romanzhurid.navigation.navigator.NavigatorImpl
 import com.romanzhurid.navigation.navigator.isReady
 import com.romanzhurid.re.activity.MainActivityViewModel.*
-import com.romanzhurid.re.application.App
 import com.romanzhurid.re.ext.setSlideDownExitAnimation
-import javax.inject.Inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AppActivity : ComponentActivity() {
 
-    @Inject
-    lateinit var factory: MainActivityViewModelFactory
-    private val viewModel: MainActivityViewModel by viewModels { factory }
+    private val viewModel: MainActivityViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        (applicationContext as App).appComponent.inject(this)
-
-        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
 
+        val splashScreen = installSplashScreen()
         enableEdgeToEdge()
 
         setContent {
@@ -107,11 +101,12 @@ fun MainScreen(
     }
 
     val appEntryProvider = remember {
-        entryProvider<Route> {
-            entry<AppRoute.Onboarding> { OnboardingFeatureHost(it) }
-            entry<AppRoute.Home> { HomeFeatureHost(it) }
-            entry<AppRoute.Currencies> { CurrencyFeatureHost(it) }
-            entry<AppRoute.Settings> { SettingsFeatureHost(it) }
+        entryProvider {
+            entry<AppRoute.Onboarding>(content = ::OnboardingFeatureHost)
+            entry<AppRoute.Home>(content = ::HomeFeatureHost)
+            entry<AppRoute.Currencies>(content = ::CurrencyFeatureHost)
+            entry<AppRoute.Settings>(content = ::SettingsFeatureHost)
+            entry<AppRoute.Cinema>(content =::CinemaFeatureHost)
         }
     }
 

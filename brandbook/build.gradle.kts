@@ -1,18 +1,14 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.ksp)
+    
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.detekt.plugin)
 }
 
 android {
     namespace = "com.romanzhurid.brandbook"
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
-    }
+    compileSdk = 37
 
     defaultConfig {
         minSdk = 30
@@ -41,7 +37,8 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     implementation(libs.androidx.compose.material.icons.extended)
 
-    implementation(libs.dagger)
-    ksp(libs.dagger.compiler)
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
+    
     detektPlugins(libs.detekt.formatting)
 }

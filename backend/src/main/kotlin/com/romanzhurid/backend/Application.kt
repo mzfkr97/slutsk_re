@@ -13,7 +13,12 @@ import com.romanzhurid.backend.ext.printEndPoints
 fun main() {
     DatabaseFactory.init()
 
-    embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
+    embeddedServer(
+        Netty,
+        port = 8080,
+        host = "0.0.0.0",
+        module = Application::module
+    )
         .start(wait = true)
 }
 

@@ -2,16 +2,11 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.android.built.in1.kotlin)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.ksp)
 }
 
 android {
     namespace = "com.romanzhurid.common"
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
-    }
+    compileSdk = 37
 
     defaultConfig {
         minSdk = 30
@@ -49,12 +44,18 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material.icons.extended)
 
-    implementation(libs.dagger)
-    ksp(libs.dagger.compiler)
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
+    implementation(libs.koin.compose.viewmodel)
 
     implementation(libs.bundles.androidx.nav3)
     implementation(libs.kotlinx.serialization.json)
 
     implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+    implementation(libs.zoomable)
 }
