@@ -34,13 +34,13 @@ import com.romanzhurid.navigation.AppRoute
 import com.romanzhurid.navigation.composition.LocalNavigator
 import com.romanzhurid.navigation.navigator.NavigatorImpl
 import com.romanzhurid.navigation.navigator.isReady
-import com.romanzhurid.re.activity.MainActivityViewModel.*
+import com.romanzhurid.re.activity.AppActivityViewModel.*
 import com.romanzhurid.re.ext.setSlideDownExitAnimation
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AppActivity : ComponentActivity() {
 
-    private val viewModel: MainActivityViewModel by viewModel()
+    private val viewModel: AppActivityViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

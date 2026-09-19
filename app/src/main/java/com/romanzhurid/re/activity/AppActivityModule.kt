@@ -6,8 +6,8 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val mainActivityModule = module {
-    viewModel<MainActivityViewModel> {
-        MainActivityViewModel(
+    viewModel<AppActivityViewModel> {
+        AppActivityViewModel(
             appSettings = get(),
             progressFlow = get<ProgressObserverImpl>(),
             exceptionsFlow = get<ExceptionsObserverImpl>(),

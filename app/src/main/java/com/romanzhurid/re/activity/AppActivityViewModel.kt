@@ -3,7 +3,6 @@ package com.romanzhurid.re.activity
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.romanzhurid.brandbook.R
 import com.romanzhurid.brandbook.components.errorbottomsheet.ErrorState
 import com.romanzhurid.common.ExceptionsFlow
 import com.romanzhurid.common.ProgressFlow
@@ -14,12 +13,12 @@ import com.romanzhurid.common.uistate.UiStateDelegate
 import com.romanzhurid.common.uistate.UiStateDelegateImpl
 import com.romanzhurid.domain.AppSettings
 import com.romanzhurid.navigation.AppRoute
-import com.romanzhurid.re.activity.MainActivityViewModel.Event
-import com.romanzhurid.re.activity.MainActivityViewModel.UiState
+import com.romanzhurid.re.activity.AppActivityViewModel.Event
+import com.romanzhurid.re.activity.AppActivityViewModel.UiState
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
-class MainActivityViewModel(
+class AppActivityViewModel(
     private val appSettings: AppSettings,
     private val progressFlow: ProgressFlow,
     private val exceptionsFlow: ExceptionsFlow,
