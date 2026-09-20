@@ -11,7 +11,7 @@ import com.romanzhurid.common.uistate.UiStateDelegate
 import com.romanzhurid.common.uistate.UiStateDelegateImpl
 import com.romanzhurid.currencies.mapper.CurrencyUiMapper
 import com.romanzhurid.currencies.model.CurrencyItem
-import com.romanzhurid.currencies.model.CurrencyItem.CurrencyUi
+import com.romanzhurid.currencies.model.CurrencyItem.Currency
 import com.romanzhurid.currencies.ui.CurrenciesViewModel.UiState
 import com.romanzhurid.domain.currencies.interactor.CurrenciesInteractor
 import kotlinx.coroutines.flow.map
@@ -28,7 +28,7 @@ class CurrenciesViewModel(
     ProgressDelegate by progressDelegate {
 
     data class UiState(
-        val allCurrencies: List<CurrencyUi> = emptyList(),
+        val allCurrencies: List<Currency> = emptyList(),
         val currencies: List<CurrencyItem> = emptyList(),
         val searchQuery: String = EMPTY_STRING,
         val lastUpdateTimeMs: String = EMPTY_STRING,
@@ -54,7 +54,7 @@ class CurrenciesViewModel(
                     }
                 }
                 .collect { mapped ->
-                    val onlyCurrencies = mapped.filterIsInstance<CurrencyUi>()
+                    val onlyCurrencies = mapped.filterIsInstance<Currency>()
 
                     updateUiState {
                         it.copy(
@@ -106,7 +106,7 @@ class CurrenciesViewModel(
 
     private fun buildListWithHeaders(
         query: String,
-        all: List<CurrencyUi>
+        all: List<Currency>
     ): List<CurrencyItem> {
         val favorites = all.filter { it.isFavorite }
         val nonFavorites = all.filterNot { it.isFavorite }
@@ -123,15 +123,15 @@ class CurrenciesViewModel(
     }
 
     private fun sortByQuery(
-        list: List<CurrencyUi>,
+        list: List<Currency>,
         query: String
-    ): List<CurrencyUi> {
+    ): List<Currency> {
         if (query.isBlank()) return list
         return list.sortedWith(compareByDescending { rank(it, query) })
     }
 
     private fun rank(
-        item: CurrencyUi,
+        item: Currency,
         query: String
     ): Int {
         val q = query.lowercase()
