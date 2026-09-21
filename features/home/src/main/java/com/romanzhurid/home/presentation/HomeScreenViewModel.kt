@@ -119,7 +119,7 @@ class HomeScreenViewModel(
     // region BUS STATIONS
     private fun observeStations() {
         busEndPointInteractor
-            .observeFavorites()
+            .observeAll()
             .onEach { stations ->
                 val stations = stations.map(busStationsListUiMapper::map)
                 updateUiState { it.copy(stations = stations) }
