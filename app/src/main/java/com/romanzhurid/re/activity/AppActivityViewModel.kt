@@ -29,7 +29,6 @@ class AppActivityViewModel(
     ResourceProvider by res {
 
     data class UiState(
-        val backStack: List<AppRoute>? = null,
         val progressState: ProgressState = ProgressState.Hide,
         val errorState: ErrorState? = null,
         val isDarkTheme: Boolean = false
