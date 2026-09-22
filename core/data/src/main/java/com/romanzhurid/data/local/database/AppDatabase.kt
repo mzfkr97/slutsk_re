@@ -31,7 +31,6 @@ abstract class AppDatabase : RoomDatabase() {
 
     companion object {
         private const val PREPACKAGED_DB_NAME = "slutsk_app_database.db"
-        private const val DATABASE_NAME = "slutsk_db"
 
         @Volatile
         private var instance: AppDatabase? = null
@@ -41,7 +40,7 @@ abstract class AppDatabase : RoomDatabase() {
                 instance ?: Room.databaseBuilder(
                     context = context.applicationContext,
                     klass = AppDatabase::class.java,
-                    name = DATABASE_NAME
+                    name = PREPACKAGED_DB_NAME
                 )
                     .createFromAsset(PREPACKAGED_DB_NAME)
                     .fallbackToDestructiveMigration(dropAllTables = true)
