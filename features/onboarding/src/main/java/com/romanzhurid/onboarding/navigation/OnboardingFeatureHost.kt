@@ -18,8 +18,8 @@ fun OnboardingFeatureHost(route: AppRoute.Onboarding) {
         route = route,
         featureScope = OnboardingFeatureScope,
         initialStack = { listOf(OnboardingFeatureRoute.Onboarding) },
-        entryProviderFactory = { scope ->
-            entryProvider<OnboardingFeatureRoute> {
+        entryProviderFactory = { scope, navigator ->
+            entryProvider {
                 entry<OnboardingFeatureRoute.Onboarding> {
                     val viewModel = koinViewModel<OnboardingViewModel>(scope = scope)
                     OnboardingScreen(viewModel) { destination ->

@@ -26,14 +26,16 @@ fun BusFeatureHost(route: AppRoute.Bus) {
         initialStack = {
             listOf(initialRoute)
         },
-        entryProviderFactory = { scope ->
+        entryProviderFactory = { scope, navigator ->
             entryProvider {
                 entry<BusFeatureRoute.BusList> {
                     val viewModel = koinViewModel<BusListViewModel>(scope = scope)
                     BusListScreen(
                         viewModel = viewModel,
                         onNavigateToDetail = { busNumber ->
-                            navigator.navigate(BusFeatureRoute.BusDetail(busNumber))
+                            navigator.navigate(
+                                BusFeatureRoute.BusDetail(busNumber)
+                            )
                         }
                     )
                 }

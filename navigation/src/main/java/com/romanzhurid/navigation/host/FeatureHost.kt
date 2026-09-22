@@ -11,6 +11,7 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import com.romanzhurid.navigation.AppNavDisplay
 import com.romanzhurid.navigation.AppRoute
 import com.romanzhurid.navigation.composition.LocalBackHandler
+import com.romanzhurid.navigation.navigator.Navigator
 import com.romanzhurid.navigation.navigator.NavigatorImpl
 import org.koin.compose.getKoin
 import org.koin.core.scope.Scope
@@ -20,7 +21,7 @@ fun <Route : AppRoute, FR : Any> FeatureHost(
     route: Route,
     featureScope: FeatureScope,
     initialStack: () -> List<FR>,
-    entryProviderFactory: (Scope) -> (FR) -> NavEntry<FR>,
+    entryProviderFactory: (Scope, Navigator<FR>) -> (FR) -> NavEntry<FR>,
 ) {
     val parentBack = LocalBackHandler.current
     val koin = getKoin()
@@ -51,8 +52,8 @@ fun <Route : AppRoute, FR : Any> FeatureHost(
         }
     }
 
-    val entryProvider = remember(route, scope) {
-        entryProviderFactory(scope)
+    val entryProvider = remember(route, scope, navigator) {
+        entryProviderFactory(scope, navigator)
     }
 
     AppNavDisplay(
