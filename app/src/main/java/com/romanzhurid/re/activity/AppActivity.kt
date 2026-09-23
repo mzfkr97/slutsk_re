@@ -9,60 +9,55 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
-import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import com.romanzhurid.brandbook.components.errorbottomsheet.ErrorBottomSheet
 import com.romanzhurid.brandbook.components.progress.ProgressItem
 import com.romanzhurid.brandbook.theme.AppTheme
+import com.romanzhurid.bus.navigation.BusFeatureHost
 import com.romanzhurid.cinema.navigation.CinemaFeatureHost
 import com.romanzhurid.common.ProgressState
+import com.romanzhurid.common.uistate.CollectEventEffect
 import com.romanzhurid.common.uistate.collectUiState
-import com.romanzhurid.onboarding.navigation.OnboardingFeatureHost
-import com.romanzhurid.home.navigation.HomeFeatureHost
 import com.romanzhurid.currencies.navigation.CurrencyFeatureHost
-import com.romanzhurid.settings.navigation.SettingsFeatureHost
+import com.romanzhurid.home.navigation.HomeFeatureHost
 import com.romanzhurid.navigation.AppNavDisplay
 import com.romanzhurid.navigation.AppRoute
 import com.romanzhurid.navigation.composition.LocalNavigator
 import com.romanzhurid.navigation.navigator.NavigatorImpl
-import com.romanzhurid.navigation.navigator.isReady
-import com.romanzhurid.re.activity.MainActivityViewModel.*
+import com.romanzhurid.navigation.navigator.rememberNavigator
+import com.romanzhurid.onboarding.navigation.OnboardingFeatureHost
+import com.romanzhurid.re.activity.AppActivityViewModel.Event
+import com.romanzhurid.re.activity.AppActivityViewModel.UiState
 import com.romanzhurid.re.ext.setSlideDownExitAnimation
+import com.romanzhurid.settings.navigation.SettingsFeatureHost
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AppActivity : ComponentActivity() {
 
-    private val viewModel: MainActivityViewModel by viewModel()
+    private val viewModel: AppActivityViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
 
         val splashScreen = installSplashScreen()
+        super.onCreate(savedInstanceState)
+
         enableEdgeToEdge()
 
         setContent {
-            val navigator = remember {
-                NavigatorImpl<AppRoute>(initialStack = emptyList())
-            }
+            val navigator = rememberNavigator(viewModel.resolveBackStack())
 
             val uiState by viewModel.collectUiState()
 
-            splashScreen.setKeepOnScreenCondition {
-                navigator.isReady.not()
-            }
-
             splashScreen.setSlideDownExitAnimation()
 
-            LaunchedEffect(navigator) {
-                if (navigator.backStack.isEmpty()) {
-                    navigator.setStack(viewModel.resolveBackStack())
+            viewModel.CollectEventEffect { event ->
+                when (event) {
+                    is Event.Finish -> finish()
                 }
             }
 
@@ -94,37 +89,28 @@ fun MainScreen(
     uiState: UiState,
     resetErrorState: () -> Unit,
     activityBack: () -> Boolean,
-    navigator: NavigatorImpl<AppRoute>,
+    navigator: NavigatorImpl<NavKey>,
 ) {
-    val backStack by remember {
-        derivedStateOf { navigator.backStack.toList() }
-    }
-
     val appEntryProvider = remember {
-        entryProvider {
+        entryProvider<NavKey> {
             entry<AppRoute.Onboarding>(content = ::OnboardingFeatureHost)
             entry<AppRoute.Home>(content = ::HomeFeatureHost)
             entry<AppRoute.Currencies>(content = ::CurrencyFeatureHost)
             entry<AppRoute.Settings>(content = ::SettingsFeatureHost)
             entry<AppRoute.Cinema>(content =::CinemaFeatureHost)
+            entry<AppRoute.Bus>(content = ::BusFeatureHost)
         }
     }
 
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) { padding ->
-        if (backStack.isNotEmpty()) {
-            AppNavDisplay(
-                modifier = Modifier.padding(padding),
-                backStack = backStack,
-                entryProvider = appEntryProvider,
-                onBack = activityBack,
-                entryDecorators = listOf(
-                    rememberSaveableStateHolderNavEntryDecorator(),
-                    rememberViewModelStoreNavEntryDecorator()
-                )
-            )
-        }
+        AppNavDisplay(
+            modifier = Modifier.padding(padding),
+            backStack = navigator.backStack,
+            entryProvider = appEntryProvider,
+            onBack = activityBack
+        )
     }
 
     uiState.errorState?.let {

@@ -23,9 +23,9 @@ class CurrencyUiMapper(private val res: ResourceProvider) {
         }
     }
 
-    private fun map(currency: Currency): CurrencyItem.CurrencyUi {
+    private fun map(currency: Currency): CurrencyItem.Currency {
         return with(currency) {
-            CurrencyItem.CurrencyUi(
+            CurrencyItem.Currency(
                 id = id,
                 abbreviation = "$scale $abbreviation",
                 name = name,

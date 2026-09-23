@@ -17,7 +17,7 @@ fun CinemaFeatureHost(route: AppRoute.Cinema) {
         initialStack = {
             listOf(CinemaFeatureRoute.Cinema)
         },
-        entryProviderFactory = { scope ->
+        entryProviderFactory = { scope, navigator ->
             entryProvider {
                 entry<CinemaFeatureRoute.Cinema> {
                     val viewModel = koinViewModel<CinemaViewModel>(scope = scope)

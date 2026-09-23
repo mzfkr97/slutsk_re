@@ -4,7 +4,7 @@ import com.romanzhurid.data.remote.currencies.model.BankCurrencyRemote
 import com.romanzhurid.data.remote.currencies.model.CurrencyRemote
 import com.romanzhurid.domain.currencies.model.Currency
 
-class CurrencyRemoteMapper  constructor() {
+class CurrencyRemoteMapper {
     fun map(remote: CurrencyRemote): Currency = Currency(
         id = remote.curId,
         abbreviation = remote.abbreviation,

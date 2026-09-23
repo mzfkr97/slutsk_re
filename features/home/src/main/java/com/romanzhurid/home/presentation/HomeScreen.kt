@@ -10,6 +10,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -24,12 +25,18 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.DirectionsBus
+import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -38,11 +45,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import coil3.compose.AsyncImage
 import com.romanzhurid.brandbook.R
 import com.romanzhurid.brandbook.components.card.AppCard
+import com.romanzhurid.brandbook.components.card.AppClickableCard
+import com.romanzhurid.brandbook.components.card.SearchItem
 import com.romanzhurid.brandbook.components.errorbottomsheet.ErrorState.ErrorType
 import com.romanzhurid.brandbook.components.toolbar.AppToolbar
 import com.romanzhurid.brandbook.theme.AppTheme
@@ -53,6 +63,7 @@ import com.romanzhurid.common.uistate.CollectEventEffect
 import com.romanzhurid.common.uistate.collectUiState
 import com.romanzhurid.home.model.HomeBottomMenu
 import com.romanzhurid.home.model.HomeBottomMenuType
+import com.romanzhurid.home.model.StationUi
 import com.romanzhurid.home.model.WeatherState
 import com.romanzhurid.home.model.WeatherUi
 import com.romanzhurid.home.presentation.HomeScreenViewModel.Event
@@ -106,40 +117,63 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
 
     Scaffold(
         topBar = {
-            AppToolbar(
-                title = R.string.home__title,
-                actionIcon = Icons.Outlined.Settings,
-                showBackBtn = false,
-                onActionClick = {
-                    viewModel.onNavigate(HomeBottomMenuType.SETTINGS)
-                },
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.surface)
+            ) {
+                AppToolbar(
+                    title = R.string.home__title,
+                    actionIcon = Icons.Outlined.Settings,
+                    showBackBtn = false,
+                    onActionClick = {
+                        viewModel.onNavigate(HomeBottomMenuType.Settings)
+                    },
+                )
+
+            }
+
         }
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues),
-            contentPadding = PaddingValues(4.dp),
+            contentPadding = PaddingValues(
+                start = 16.dp,
+                end = 16.dp
+            ),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            item {
+                SearchItem(R.string.search__find_bus) {
+
+                }
+            }
 
             item {
                 HeaderCard(
                     uiState = uiState,
                     onWeatherErrorClicked = viewModel::onWeatherErrorClicked,
                     onCurrenciesClicked = {
-                        viewModel.onNavigate(HomeBottomMenuType.CURRENCIES)
+                        viewModel.onNavigate(HomeBottomMenuType.Currencies)
                     }
                 )
             }
+
             item {
-                StationsCard()
+                StationCard(
+                    stations = uiState.stations,
+                    modifier = Modifier.fillMaxWidth(),
+                    onRouteClicked = { stationId ->
+                        viewModel.onNavigate(HomeBottomMenuType.BusRoutes(stationId))
+                    }
+                )
             }
 
             items(
                 items = uiState.bottomMenu,
-                key = { it.menuType }
+                key = { it.menuType.hashCode() }
             ) { menu ->
                 BottomCard(
                     homeBottomMenu = menu,
@@ -158,28 +192,172 @@ private fun HeaderCard(
     onWeatherErrorClicked: (errorType: ErrorType) -> Unit,
     onCurrenciesClicked: () -> Unit
 ) {
-    Row(
+    Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(IntrinsicSize.Min)
-            .defaultMinSize(minHeight = 96.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        WeatherCard(
-            weatherState = uiState.weather,
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight(),
-            onWeatherErrorClicked = onWeatherErrorClicked
-        )
+            .fillMaxWidth(),
 
-        Currency(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight(),
-            uiState.currency,
-            onCurrenciesClicked
+        colors = CardDefaults.cardColors(
+            containerColor = AppTheme.colorScheme.surface
+
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 4.dp
         )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp)
+                .height(IntrinsicSize.Min)
+                .defaultMinSize(minHeight = 48.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            WeatherCard(
+                weatherState = uiState.weather,
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
+                onWeatherErrorClicked = onWeatherErrorClicked
+            )
+
+            Currency(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
+                currency = uiState.currency,
+                onCurrenciesClicked = onCurrenciesClicked
+            )
+        }
+    }
+
+}
+
+@Composable
+private fun StationCard(
+    stations: List<StationUi>,
+    modifier: Modifier = Modifier,
+    onRouteClicked: (Int?) -> Unit
+) {
+    AppCard(modifier = modifier) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            FlowRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                val favoriteStations = stations.filter { it.isFavorite }
+                val otherStations = stations.filterNot { it.isFavorite }
+                if (favoriteStations.isNotEmpty()) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Favorite,
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp),
+                            tint = AppTheme.colorScheme.tertiary
+                        )
+
+                        Text(
+                            text = "Избранные маршруты",
+                            style = AppTheme.typography.labelLarge,
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        favoriteStations.forEach { station ->
+                            BusChip(
+                                number = station.busNumber.toString(),
+                                onClick = {
+                                    onRouteClicked(station.busNumber)
+                                }
+                            )
+                        }
+                    }
+
+                    if (otherStations.isNotEmpty()) {
+                        HorizontalDivider(
+                            modifier = Modifier.padding(vertical = 4.dp)
+                        )
+                    }
+                }
+
+                if (otherStations.isNotEmpty()) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.DirectionsBus,
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp),
+                            tint = AppTheme.colorScheme.primary
+                        )
+
+                        Text(
+                            text = "Все маршруты",
+                            style = AppTheme.typography.labelLarge,
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        otherStations.forEach { station ->
+                            BusChip(
+                                number = station.busNumber.toString(),
+                                onClick = {
+                                    onRouteClicked(station.busNumber)
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+
+            TextButton(
+                onClick = {
+                    onRouteClicked(null)
+                },
+                contentPadding = PaddingValues(horizontal = 4.dp)
+            ) {
+                Text("Подробнее")
+            }
+        }
+    }
+}
+
+@Composable
+private fun BusChip(
+    number: String,
+    onClick: () -> Unit
+) {
+    AppClickableCard(
+        onClick = onClick,
+    ) {
+        Box(
+            modifier = Modifier
+                .defaultMinSize(minWidth = 64.dp)
+                .height(48.dp)
+                .padding(horizontal = 18.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = number,
+                fontWeight = FontWeight.Bold
+            )
+        }
     }
 }
 
@@ -223,34 +401,24 @@ fun WeatherError(weatherError: WeatherState.Error, onWeatherErrorClicked: () -> 
 
 @Composable
 fun WeatherContent(ui: WeatherUi) {
-    Row {
-        Column {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = ui.temperature,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = AppTheme.colorScheme.primary
-                )
-                AsyncImage(
-                    model = ui.iconCode,
-                    contentDescription = null,
-                    modifier = Modifier.size(36.dp),
-                )
-            }
-
+    Column {
+        Row {
             Text(
-                text = "${ui.cityName}\n${ui.description}",
-                style = MaterialTheme.typography.bodySmall
-            )
-
-            Spacer(modifier = Modifier.height(2.dp))
-
-            Text(
-                text = ui.currentDate,
-                style = MaterialTheme.typography.bodySmall,
+                text = ui.temperature,
+                style = MaterialTheme.typography.titleMedium,
                 color = AppTheme.colorScheme.primary
             )
+            AsyncImage(
+                model = ui.iconCode,
+                contentDescription = null,
+                modifier = Modifier.size(36.dp),
+            )
         }
+
+        Text(
+            text = "${ui.cityName}\n${ui.description}",
+            style = MaterialTheme.typography.bodySmall
+        )
     }
 }
 // endregion
@@ -282,17 +450,6 @@ private fun Currency(
     }
 }
 // endregion
-
-@Composable
-private fun StationsCard() {
-    AppCard(
-        borderColor = AppTheme.colorScheme.primary,
-    ) {
-        Button(onClick = {}) {
-            Text(text = "StationsCard")
-        }
-    }
-}
 
 @Composable
 private fun BottomCard(

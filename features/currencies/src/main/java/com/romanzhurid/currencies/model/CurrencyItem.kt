@@ -2,11 +2,13 @@ package com.romanzhurid.currencies.model
 
 import androidx.compose.runtime.Immutable
 
+@Immutable
 sealed interface CurrencyItem {
     @Immutable
     data class Header(val title: String) : CurrencyItem
+
     @Immutable
-    data class CurrencyUi(
+    data class Currency(
         val id: Int,
         val abbreviation: String,
         val name: String,

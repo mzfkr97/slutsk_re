@@ -9,6 +9,7 @@ import com.romanzhurid.cinema.mapper.CalendarToUiMapper
 import com.romanzhurid.cinema.mapper.CinemaToUiMapper
 import com.romanzhurid.cinema.model.CalendarUi
 import com.romanzhurid.cinema.model.CinemaUiItem
+import com.romanzhurid.cinema.ui.CinemaViewModel.Event
 import com.romanzhurid.cinema.ui.CinemaViewModel.ViewState
 import com.romanzhurid.common.DispatcherProvider
 import com.romanzhurid.common.NetworkStateProvider
@@ -33,7 +34,7 @@ class CinemaViewModel(
     private val progressDelegate: ProgressDelegate,
     networkStateProvider: NetworkStateProvider,
 ) : ViewModel(),
-    UiStateDelegate<ViewState, Unit> by UiStateDelegateImpl(ViewState()),
+    UiStateDelegate<ViewState, Event> by UiStateDelegateImpl(ViewState()),
     ProgressDelegate by progressDelegate {
 
     companion object {
@@ -48,6 +49,10 @@ class CinemaViewModel(
         val calendarDates: List<CalendarUi> = emptyList(),
         val errorMessage: String = EMPTY_STRING,
     )
+
+    sealed interface Event {
+        data object GoBack : Event
+    }
 
     private val formatStartPeriod by lazy(LazyThreadSafetyMode.NONE) {
         SimpleDateFormat(DAY_START_PERIOD, Locale.getDefault())
@@ -87,7 +92,9 @@ class CinemaViewModel(
 
     private fun loadCalendar() {
         viewModelScope.launch(exceptionHandler) {
-            showProgress()
+            showProgress {
+                sendEvent(Event.GoBack)
+            }
             val calendarUiList = getDate().map(calendarToUiMapper::map)
 
             val dayNumber = calendarUiList

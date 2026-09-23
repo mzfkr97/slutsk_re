@@ -37,7 +37,7 @@ import com.romanzhurid.brandbook.ext.highlightText
 import com.romanzhurid.brandbook.theme.AppTheme
 import com.romanzhurid.common.uistate.collectUiState
 import com.romanzhurid.currencies.model.CurrencyItem
-import com.romanzhurid.currencies.model.CurrencyItem.CurrencyUi
+import com.romanzhurid.currencies.model.CurrencyItem.Currency
 import com.romanzhurid.navigation.composition.LocalBackHandler
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -82,13 +82,13 @@ internal fun CurrenciesScreen(viewModel: CurrenciesViewModel) {
                         key = { item ->
                             when (item) {
                                 is CurrencyItem.Header -> "header_${item.title}"
-                                is CurrencyUi -> "currency_${item.id}"
+                                is Currency -> "currency_${item.id}"
                             }
                         },
                         contentType = { item ->
                             when (item) {
                                 is CurrencyItem.Header -> "header"
-                                is CurrencyUi -> "currency"
+                                is Currency -> "currency"
                             }
                         },
                     ) { item ->
@@ -96,7 +96,7 @@ internal fun CurrenciesScreen(viewModel: CurrenciesViewModel) {
                             is CurrencyItem.Header -> {
                                 SectionHeader(item.title)
                             }
-                            is CurrencyUi -> {
+                            is Currency -> {
                                 CurrencyCard(
                                     modifier = Modifier
                                         .padding(
@@ -130,7 +130,7 @@ internal fun CurrenciesScreen(viewModel: CurrenciesViewModel) {
 @Composable
 private fun CurrencyCard(
     modifier: Modifier,
-    currency: CurrencyUi,
+    currency: Currency,
     query: String,
     onToggleFavorite: () -> Unit
 ) {

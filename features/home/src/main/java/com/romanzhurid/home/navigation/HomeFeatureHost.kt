@@ -17,8 +17,8 @@ fun HomeFeatureHost(route: AppRoute.Home) {
         initialStack = {
             listOf(HomeFeatureRoute.Home)
         },
-        entryProviderFactory = { scope ->
-            entryProvider<HomeFeatureRoute> {
+        entryProviderFactory = { scope, navigator ->
+            entryProvider {
                 entry<HomeFeatureRoute.Home> {
                     val viewModel = koinViewModel<HomeScreenViewModel>(scope = scope)
                     HomeScreen(viewModel)
