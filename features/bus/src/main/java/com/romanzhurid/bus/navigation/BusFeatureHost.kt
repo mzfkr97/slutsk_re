@@ -34,7 +34,7 @@ fun BusFeatureHost(route: AppRoute.Bus) {
                         viewModel = viewModel,
                         onNavigateToDetail = { busNumber ->
                             navigator.navigate(
-                                BusFeatureRoute.BusDetail(busNumber)
+                                route = BusFeatureRoute.BusDetail(busNumber)
                             )
                         }
                     )

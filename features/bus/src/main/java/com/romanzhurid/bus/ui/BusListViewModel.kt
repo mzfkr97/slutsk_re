@@ -2,6 +2,7 @@ package com.romanzhurid.bus.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.romanzhurid.brandbook.R
 import com.romanzhurid.brandbook.ext.EMPTY_STRING
 import com.romanzhurid.bus.mapper.BusUiMapper
 import com.romanzhurid.bus.model.BusListItem
@@ -13,13 +14,17 @@ import com.romanzhurid.common.progressdelegate.ProgressDelegate
 import com.romanzhurid.common.uistate.UiStateDelegate
 import com.romanzhurid.common.uistate.UiStateDelegateImpl
 import com.romanzhurid.domain.bus.interactor.BusEndPointInteractor
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.time.Duration.Companion.milliseconds
 
 class BusListViewModel(
     private val busEndPointInteractor: BusEndPointInteractor,
@@ -27,12 +32,21 @@ class BusListViewModel(
     private val dispatcherProvider: DispatcherProvider,
     progressDelegate: ProgressDelegate,
 ) : ViewModel(),
-    UiStateDelegate<UiState, Event> by UiStateDelegateImpl(UiState()),
+    UiStateDelegate<UiState, Event> by UiStateDelegateImpl(
+        UiState(
+            busState = BusState.Success(emptyList())
+        )
+    ),
     ProgressDelegate by progressDelegate {
+
+    sealed interface BusState {
+        data class Success(val buses: List<BusListItem>) : BusState
+        data class Error(val message: Int) : BusState
+    }
 
     data class UiState(
         val allBuses: List<BusUi> = emptyList(),
-        val buses: List<BusListItem> = emptyList(),
+        val busState: BusState,
         val searchQuery: String = EMPTY_STRING,
     )
 
@@ -46,24 +60,27 @@ class BusListViewModel(
         observeBuses()
     }
 
+    @OptIn(FlowPreview::class)
     private fun observeBuses() {
         busEndPointInteractor
             .observeAll()
-            .map { buses ->
-                withContext(dispatcherProvider.background()) {
-                    busUiMapper.map(buses)
-                }
-            }
+            .map(busUiMapper::map)
+            .flowOn(dispatcherProvider.background())
             .onEach { buses ->
                 val onlyBuses = buses.filterIsInstance<BusUi>()
                 updateUiState {
                     it.copy(
                         allBuses = onlyBuses,
-                        buses = buses
+                        busState = BusState.Success(buses)
                     )
                 }
             }
             .catch { error ->
+                updateUiState {
+                    it.copy(
+                        busState = BusState.Error(R.string.error__default_massage)
+                    )
+                }
                 exceptionHandler.handleException(EmptyCoroutineContext, error)
             }
             .launchIn(viewModelScope)
@@ -91,9 +108,11 @@ class BusListViewModel(
         updateUiState {
             it.copy(
                 searchQuery = query,
-                buses = filterByQuery(
-                    all = it.allBuses,
-                    query = query
+                busState = BusState.Success(
+                    buses = filterByQuery(
+                        all = it.allBuses,
+                        query = query
+                    )
                 )
             )
         }
@@ -108,8 +127,8 @@ class BusListViewModel(
         val q = query.lowercase()
         return all.filter { bus ->
             bus.busNumber.toString().contains(q) ||
-                bus.startStation?.lowercase()?.contains(q) == true ||
-                bus.endStation?.lowercase()?.contains(q) == true
+                    bus.startStation?.lowercase()?.contains(q) == true ||
+                    bus.endStation?.lowercase()?.contains(q) == true
         }
     }
 }

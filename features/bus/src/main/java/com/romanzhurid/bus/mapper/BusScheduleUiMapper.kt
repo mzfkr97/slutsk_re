@@ -5,11 +5,7 @@ import com.romanzhurid.domain.bus.model.BusSchedule
 
 class BusScheduleUiMapper {
 
-    fun map(list: List<BusSchedule>): List<BusScheduleUi> {
-        return list.map(::map)
-    }
-
-    private fun map(schedule: BusSchedule): BusScheduleUi {
+    fun map(schedule: BusSchedule): BusScheduleUi {
         return with(schedule) {
             BusScheduleUi(
                 id = id,

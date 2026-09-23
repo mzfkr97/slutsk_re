@@ -1,6 +1,5 @@
 package com.romanzhurid.bus.ui
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,20 +8,21 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.romanzhurid.brandbook.R
 import com.romanzhurid.brandbook.components.button.FavoriteButton
-import com.romanzhurid.brandbook.components.card.AppCard
+import com.romanzhurid.brandbook.components.card.AppClickableCard
 import com.romanzhurid.brandbook.components.card.NoContent
 import com.romanzhurid.brandbook.components.text.SectionHeader
 import com.romanzhurid.brandbook.components.toolbar.AppToolbarWithSearch
@@ -67,49 +67,50 @@ internal fun BusListScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            val listState = rememberLazyListState()
-            if (uiState.buses.isEmpty()) {
-                NoContent(R.string.common__no_items)
-            } else {
-                LazyColumn(
-                    state = listState,
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(vertical = AppTheme.dimensions.small),
-                ) {
-                    items(
-                        items = uiState.buses,
-                        key = { item ->
+            val listState = rememberSaveable(
+                saver = LazyListState.Saver
+            ) {
+                LazyListState()
+            }
+            when (val state = uiState.busState) {
+                is BusListViewModel.BusState.Error -> {
+                    NoContent(state.message)
+                }
+                is BusListViewModel.BusState.Success -> {
+                    LazyColumn(
+                        state = listState,
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(vertical = AppTheme.dimensions.small),
+                    ) {
+                        items(
+                            items = state.buses,
+                            key = { item ->
+                                when (item) {
+                                    is BusListItem.Header -> "header_${item.title}"
+                                    is BusUi -> "bus_${item.id}"
+                                }
+                            },
+                            contentType = { item ->
+                                when (item) {
+                                    is BusListItem.Header -> "header"
+                                    is BusUi -> "bus"
+                                }
+                            },
+                        ) { item ->
                             when (item) {
-                                is BusListItem.Header -> "header_${item.title}"
-                                is BusUi -> "bus_${item.id}"
-                            }
-                        },
-                        contentType = { item ->
-                            when (item) {
-                                is BusListItem.Header -> "header"
-                                is BusUi -> "bus"
-                            }
-                        },
-                    ) { item ->
-                        when (item) {
-                            is BusListItem.Header -> {
-                                SectionHeader(item.title)
-                            }
-                            is BusUi -> {
-                                BusCard(
-                                    modifier = Modifier
-                                        .padding(
-                                            horizontal = AppTheme.dimensions.small,
-                                            vertical = AppTheme.dimensions.xxMicro
-                                        )
-                                        .animateItem(),
-                                    bus = item,
-                                    query = uiState.searchQuery,
-                                    onClick = { viewModel.onBusClicked(item.busNumber) },
-                                    onToggleFavorite = {
-                                        viewModel.onToggleFavorite(item.id, item.isFavorite)
-                                    }
-                                )
+                                is BusListItem.Header -> {
+                                    SectionHeader(item.title)
+                                }
+                                is BusUi -> {
+                                    BusCard(
+                                        bus = item,
+                                        query = uiState.searchQuery,
+                                        onClick = { viewModel.onBusClicked(item.busNumber) },
+                                        onToggleFavorite = {
+                                            viewModel.onToggleFavorite(item.id, item.isFavorite)
+                                        }
+                                    )
+                                }
                             }
                         }
                     }
@@ -121,14 +122,18 @@ internal fun BusListScreen(
 
 @Composable
 private fun BusCard(
-    modifier: Modifier,
     bus: BusUi,
     query: String,
     onClick: () -> Unit,
     onToggleFavorite: () -> Unit
 ) {
-    AppCard(
-        modifier = modifier.clickable(onClick = onClick)
+    AppClickableCard(
+        onClick = onClick,
+        modifier = Modifier
+            .padding(
+                horizontal = AppTheme.dimensions.small,
+                vertical = AppTheme.dimensions.xxMicro
+            )
     ) {
         Row(
             modifier = Modifier

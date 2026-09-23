@@ -3,13 +3,9 @@ package com.romanzhurid.navigation.host
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
-import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import com.romanzhurid.navigation.AppNavDisplay
 import com.romanzhurid.navigation.AppRoute
 import com.romanzhurid.navigation.composition.LocalBackHandler
