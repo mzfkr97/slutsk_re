@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import com.romanzhurid.data.local.entity.CurrencyEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -29,4 +30,14 @@ interface CurrencyDao {
 
     @Query("DELETE FROM currencies")
     suspend fun deleteAllCurrencies()
+
+    @Transaction
+    suspend fun replaceCurrencies(currencies: List<CurrencyEntity>) {
+        val favoriteIds = getFavoriteIds().toSet()
+        val updatedCurrencies = currencies.map { currency ->
+            currency.copy(isFavorite = currency.id in favoriteIds)
+        }
+        deleteAllCurrencies()
+        insertCurrencies(updatedCurrencies)
+    }
 }

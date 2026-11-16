@@ -17,22 +17,31 @@ class SettingsViewModel(
 ) : ViewModel(),
     UiStateDelegate<UiState, Unit> by UiStateDelegateImpl(
         UiState(
-            themeMode = appSettings.themeMode
+            themeMode = appSettings.themeMode,
+            currencyId = appSettings.currencyId
         )
     ),
     ProgressDelegate by progressDelegate {
 
     data class UiState(
-        val themeMode: ThemeMode
+        val themeMode: ThemeMode,
+        val currencyId: Int
     )
 
     init {
         appSettings.themeModeFlow
             .onEach { mode -> updateUiState { it.copy(themeMode = mode) } }
             .launchIn(viewModelScope)
+        appSettings.currencyIdFlow
+            .onEach { id -> updateUiState { it.copy(currencyId = id) } }
+            .launchIn(viewModelScope)
     }
 
     fun onThemeChanged(mode: ThemeMode) {
         appSettings.themeMode = mode
+    }
+
+    fun onCurrencyChanged(id: Int) {
+        appSettings.currencyId = id
     }
 }

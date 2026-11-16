@@ -43,9 +43,13 @@ class AppSettingsImpl(private val preferences: SharedPreferences) : AppSettings 
     private val _themeModeFlow = MutableStateFlow(themeMode)
     override val themeModeFlow: StateFlow<ThemeMode> = _themeModeFlow.asStateFlow()
 
-    override val currencyId: Int by PreferencesDelegate(
-        preferences,
-        BuildConfig.PREF_CURRENCY_ID,
-        431
-    )
+    override var currencyId: Int
+        get() = preferences.getInt(BuildConfig.PREF_CURRENCY_ID, 431)
+        set(value) {
+            preferences.edit { putInt(BuildConfig.PREF_CURRENCY_ID, value) }
+            _currencyIdFlow.value = value
+        }
+
+    private val _currencyIdFlow = MutableStateFlow(currencyId)
+    override val currencyIdFlow: StateFlow<Int> = _currencyIdFlow.asStateFlow()
 }

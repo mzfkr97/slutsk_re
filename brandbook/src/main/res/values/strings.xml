@@ -91,6 +91,12 @@
     <string name="settings__theme_light">Светлая</string>
     <string name="settings__theme_dark">Тёмная</string>
     <string name="settings__theme_system">Как в системе</string>
+    <string name="settings__currency">Курс валюты на главном экране</string>
+    <string name="settings__currency_usd">Доллар США</string>
+    <string name="settings__currency_eur">Евро</string>
+    <string name="settings__currency_pln">Польский злотый</string>
+    <string name="settings__currency_rub">Российский рубль</string>
+    <string name="settings__currency_unknown">Неизвестная валюта (%1$d)</string>
 
     <!--Errors-->
     <string name="error_no_favorite_bus_station">Нет избранных маршрутов</string>

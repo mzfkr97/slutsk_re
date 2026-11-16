@@ -37,7 +37,6 @@ val repositoryModule = module {
             remoteMapper = get(),
             currencyDao = get(),
             localMapper = get(),
-            appSettings = get(),
         )
     }
     single<WeatherRepository> {

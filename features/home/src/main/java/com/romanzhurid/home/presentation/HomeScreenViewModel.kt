@@ -2,6 +2,7 @@ package com.romanzhurid.home.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import android.util.Log
 import com.romanzhurid.brandbook.R
 import com.romanzhurid.brandbook.components.errorbottomsheet.ErrorState.ErrorType
 import com.romanzhurid.brandbook.ext.EMPTY_STRING
@@ -12,6 +13,7 @@ import com.romanzhurid.common.permisison.PermissionHelper
 import com.romanzhurid.common.progressdelegate.ProgressDelegate
 import com.romanzhurid.common.uistate.UiStateDelegate
 import com.romanzhurid.common.uistate.UiStateDelegateImpl
+import com.romanzhurid.domain.AppSettings
 import com.romanzhurid.domain.bus.interactor.BusEndPointInteractor
 import com.romanzhurid.domain.currencies.interactor.CurrenciesInteractor
 import com.romanzhurid.domain.currencies.interactor.WeatherInteractor
@@ -27,8 +29,9 @@ import com.romanzhurid.home.presentation.HomeScreenViewModel.Event
 import com.romanzhurid.home.presentation.HomeScreenViewModel.UiState
 import com.romanzhurid.navigation.AppRoute
 import com.romanzhurid.navigation.AppRoute.*
-import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -43,6 +46,7 @@ class HomeScreenViewModel(
     private val dispatcherProvider: DispatcherProvider,
     private val permissionHelper: PermissionHelper,
     private val locationRepository: LocationRepository,
+    private val appSettings: AppSettings,
     private val currenciesInteractor: CurrenciesInteractor,
     private val busEndPointInteractor: BusEndPointInteractor,
     private val busStationsListUiMapper: BusStationsListUiMapper,
@@ -76,7 +80,7 @@ class HomeScreenViewModel(
 
     init {
         loadWeather()
-        loadCurrencies()
+        observeCurrency()
         observeStations()
     }
 
@@ -219,17 +223,26 @@ class HomeScreenViewModel(
     // endregion
 
     // region CURRENCIES
-    private fun loadCurrencies() {
-        viewModelScope.launch(CoroutineExceptionHandler { context, throwable ->
-            updateUiState {
-                it.copy(currency = res.getString(R.string.error__network_default_error))
-            }
-        }) {
-            val currency = withContext(dispatcherProvider.background()) {
-                currenciesInteractor.getCurrencyById()
-            }
-            updateUiState {
-                it.copy(currency = "${currency.abbreviation} ${currency.officialRate}")
+    private fun observeCurrency() {
+        viewModelScope.launch {
+            appSettings.currencyIdFlow.collectLatest { id ->
+                updateUiState { it.copy(currency = res.getString(R.string.currencies__loading)) }
+                try {
+                    val currency = withContext(dispatcherProvider.background()) {
+                        currenciesInteractor.getCurrencyById(id)
+                    }
+                    val amount = if (currency.scale == 1) "" else "${currency.scale} "
+                    updateUiState {
+                        it.copy(currency = "$amount${currency.abbreviation} ${currency.officialRate}")
+                    }
+                } catch (error: CancellationException) {
+                    throw error
+                } catch (error: Exception) {
+                    Log.w("HomeScreenViewModel", "Failed to load currency $id", error)
+                    updateUiState {
+                        it.copy(currency = res.getString(R.string.error__network_default_error))
+                    }
+                }
             }
         }
     }

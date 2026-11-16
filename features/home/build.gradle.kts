@@ -32,6 +32,10 @@ kotlin {
 }
 
 dependencies {
+    testImplementation(libs.junit)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.kotlinx.coroutines.test)
+
     implementation(project(":brandbook"))
     implementation(project(":features:common"))
     implementation(project(":navigation"))

@@ -7,5 +7,6 @@ interface AppSettings {
     var themeMode: ThemeMode
 
     val themeModeFlow: StateFlow<ThemeMode>
-    val currencyId: Int
+    var currencyId: Int
+    val currencyIdFlow: StateFlow<Int>
 }
