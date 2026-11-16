@@ -16,7 +16,6 @@ import com.romanzhurid.common.uistate.UiStateDelegateImpl
 import com.romanzhurid.domain.bus.interactor.BusEndPointInteractor
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -24,7 +23,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.EmptyCoroutineContext
-import kotlin.time.Duration.Companion.milliseconds
 
 class BusListViewModel(
     private val busEndPointInteractor: BusEndPointInteractor,
@@ -60,7 +58,6 @@ class BusListViewModel(
         observeBuses()
     }
 
-    @OptIn(FlowPreview::class)
     private fun observeBuses() {
         busEndPointInteractor
             .observeAll()
