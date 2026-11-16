@@ -26,7 +26,8 @@ fun AppCard(
         modifier = modifier,
         shape = RoundedCornerShape(AppTheme.dimensions.medium),
         colors = CardDefaults.cardColors(
-            containerColor = AppTheme.colorScheme.surface
+            containerColor = AppTheme.cardColor,
+            contentColor = AppTheme.colorScheme.onSurface
         ),
         elevation = CardDefaults.cardElevation(AppTheme.dimensions.xMicro),
         border = BorderStroke(
@@ -61,7 +62,8 @@ fun AppClickableCard(
         },
         shape = RoundedCornerShape(AppTheme.dimensions.medium),
         colors = CardDefaults.cardColors(
-            containerColor = AppTheme.colorScheme.surface
+            containerColor = AppTheme.cardColor,
+            contentColor = AppTheme.colorScheme.onSurface
         ),
         elevation = CardDefaults.cardElevation(AppTheme.dimensions.xMicro),
         border = BorderStroke(

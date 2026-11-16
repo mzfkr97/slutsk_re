@@ -20,7 +20,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.romanzhurid.brandbook.R
 import com.romanzhurid.brandbook.theme.AppTheme
 
 @Composable
@@ -49,7 +51,10 @@ fun FavoriteButton(
             } else {
                 Icons.Outlined.StarBorder
             },
-            contentDescription = null,
+            contentDescription = stringResource(
+                if (isFavorite) R.string.common__remove_from_favorites
+                else R.string.common__add_to_favorites
+            ),
             tint = if (isFavorite) {
                 AppTheme.colorScheme.tertiary
             } else {

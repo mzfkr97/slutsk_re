@@ -4,8 +4,8 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface AppSettings {
     var isFirstAppStart: Boolean
-    var isDarkTheme: Boolean
+    var themeMode: ThemeMode
 
-    val isDarkThemeFlow: StateFlow<Boolean>
+    val themeModeFlow: StateFlow<ThemeMode>
     val currencyId: Int
 }

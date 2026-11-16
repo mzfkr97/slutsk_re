@@ -1,11 +1,15 @@
 package com.romanzhurid.settings.presentation
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.romanzhurid.common.progressdelegate.ProgressDelegate
 import com.romanzhurid.common.uistate.UiStateDelegate
 import com.romanzhurid.common.uistate.UiStateDelegateImpl
 import com.romanzhurid.domain.AppSettings
+import com.romanzhurid.domain.ThemeMode
 import com.romanzhurid.settings.presentation.SettingsViewModel.UiState
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 class SettingsViewModel(
     private val appSettings: AppSettings,
@@ -13,17 +17,22 @@ class SettingsViewModel(
 ) : ViewModel(),
     UiStateDelegate<UiState, Unit> by UiStateDelegateImpl(
         UiState(
-            isDarkTheme = appSettings.isDarkTheme
+            themeMode = appSettings.themeMode
         )
     ),
     ProgressDelegate by progressDelegate {
 
     data class UiState(
-        val isDarkTheme: Boolean
+        val themeMode: ThemeMode
     )
 
-    fun onThemeChanged(isDark: Boolean) {
-        updateUiState { it.copy(isDarkTheme = isDark) }
-        appSettings.isDarkTheme = isDark
+    init {
+        appSettings.themeModeFlow
+            .onEach { mode -> updateUiState { it.copy(themeMode = mode) } }
+            .launchIn(viewModelScope)
+    }
+
+    fun onThemeChanged(mode: ThemeMode) {
+        appSettings.themeMode = mode
     }
 }

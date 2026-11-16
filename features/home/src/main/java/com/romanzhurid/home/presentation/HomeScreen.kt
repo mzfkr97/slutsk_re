@@ -4,6 +4,8 @@ import android.Manifest
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,12 +24,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowForward
 import androidx.compose.material.icons.outlined.DirectionsBus
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -41,18 +50,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import coil3.compose.AsyncImage
 import com.romanzhurid.brandbook.R
 import com.romanzhurid.brandbook.components.card.AppCard
 import com.romanzhurid.brandbook.components.card.AppClickableCard
-import com.romanzhurid.brandbook.components.card.SearchItem
 import com.romanzhurid.brandbook.components.errorbottomsheet.ErrorState.ErrorType
 import com.romanzhurid.brandbook.components.toolbar.AppToolbar
 import com.romanzhurid.brandbook.theme.AppTheme
@@ -120,7 +131,6 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.surface)
             ) {
                 AppToolbar(
                     title = R.string.home__title,
@@ -130,7 +140,6 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
                         viewModel.onNavigate(HomeBottomMenuType.Settings)
                     },
                 )
-
             }
 
         }
@@ -140,10 +149,11 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
                 .fillMaxSize()
                 .padding(paddingValues),
             contentPadding = PaddingValues(
-                start = 16.dp,
-                end = 16.dp
+                top = AppTheme.dimensions.small,
+                start = AppTheme.dimensions.small,
+                end = AppTheme.dimensions.small
             ),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(AppTheme.dimensions.small)
         ) {
 
             item {
@@ -195,20 +205,21 @@ private fun HeaderCard(
             .fillMaxWidth(),
 
         colors = CardDefaults.cardColors(
-            containerColor = AppTheme.colorScheme.surface
+            containerColor = AppTheme.cardColor,
+            contentColor = AppTheme.colorScheme.onSurface
 
         ),
         elevation = CardDefaults.cardElevation(
-            defaultElevation = 4.dp
+            defaultElevation = AppTheme.dimensions.xxMicro
         )
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp)
+                .padding(AppTheme.dimensions.xxSmall)
                 .height(IntrinsicSize.Min)
-                .defaultMinSize(minHeight = 48.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                .defaultMinSize(minHeight = AppTheme.dimensions.buttonHeight),
+            horizontalArrangement = Arrangement.spacedBy(AppTheme.dimensions.small)
         ) {
             WeatherCard(
                 weatherState = uiState.weather,
@@ -227,7 +238,6 @@ private fun HeaderCard(
             )
         }
     }
-
 }
 
 @Composable
@@ -238,106 +248,185 @@ private fun StationCard(
 ) {
     AppCard(modifier = modifier) {
         Column(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(AppTheme.dimensions.small)
         ) {
-            FlowRow(
+            Column(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(AppTheme.dimensions.xxMicro)
             ) {
                 val favoriteStations = stations.filter { it.isFavorite }
                 val otherStations = stations.filterNot { it.isFavorite }
                 if (favoriteStations.isNotEmpty()) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        horizontalArrangement = Arrangement.spacedBy(AppTheme.dimensions.xxMicro)
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.Favorite,
                             contentDescription = null,
-                            modifier = Modifier.size(20.dp),
+                            modifier = Modifier.size(AppTheme.dimensions.xxMedium),
                             tint = AppTheme.colorScheme.tertiary
                         )
 
                         Text(
-                            text = "Избранные маршруты",
+                            text = stringResource(R.string.common__favorite_routes),
                             style = AppTheme.typography.labelLarge,
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(8.dp))
-
                     FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                        horizontalArrangement = Arrangement.spacedBy(AppTheme.dimensions.small),
+                        verticalArrangement = Arrangement.spacedBy(AppTheme.dimensions.small)
                     ) {
                         favoriteStations.forEach { station ->
-                            BusChip(
+                            BusChipCompact(
                                 number = station.busNumber.toString(),
                                 onClick = {
                                     onRouteClicked(station.busNumber)
                                 }
                             )
                         }
-                    }
-
-                    if (otherStations.isNotEmpty()) {
-                        HorizontalDivider(
-                            modifier = Modifier.padding(vertical = 4.dp)
-                        )
                     }
                 }
 
                 if (otherStations.isNotEmpty()) {
                     Row(
+                        modifier = modifier.padding(top = AppTheme.dimensions.small),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        horizontalArrangement = Arrangement.spacedBy(AppTheme.dimensions.small)
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.DirectionsBus,
                             contentDescription = null,
-                            modifier = Modifier.size(20.dp),
+                            modifier = Modifier.size(AppTheme.dimensions.xxMedium),
                             tint = AppTheme.colorScheme.primary
                         )
 
                         Text(
-                            text = "Все маршруты",
+                            text = stringResource(R.string.common__all_routes),
                             style = AppTheme.typography.labelLarge,
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    val itemsPerPage = 3
+                    val pages = otherStations.chunked(itemsPerPage)
+                    val pagerState = rememberPagerState { pages.size }
 
-                    FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        otherStations.forEach { station ->
-                            BusChip(
-                                number = station.busNumber.toString(),
-                                onClick = {
-                                    onRouteClicked(station.busNumber)
+                    HorizontalPager(
+                        state = pagerState,
+                        modifier = Modifier.fillMaxWidth(),
+                        contentPadding = PaddingValues(
+                            end = if (pages.size > 1) AppTheme.dimensions.large else 0.dp
+                        ),
+                        pageSpacing = AppTheme.dimensions.small
+                    ) { pageIndex ->
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(AppTheme.dimensions.small)
+                        ) {
+                            pages[pageIndex].forEach { station ->
+                                BusChipDetails(
+                                    number = station.busNumber.toString(),
+                                    routeName = station.routeName,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    onClick = {
+                                        onRouteClicked(station.busNumber)
+                                    }
+                                )
+                            }
+                            if (pages.size > 1) {
+                                repeat(itemsPerPage - pages[pageIndex].size) {
+                                    AppCard(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .alpha(0f)
+                                            .clearAndSetSemantics {}
+                                    ) {
+                                        BusChipDetailsContent(
+                                            number = pages[pageIndex].first().busNumber.toString(),
+                                            routeName = pages[pageIndex].first().routeName
+                                        )
+                                    }
                                 }
-                            )
+                            }
                         }
                     }
+
+                    RoutePagerIndicator(
+                        pageCount = pages.size,
+                        currentPage = pagerState.currentPage
+                    )
                 }
             }
 
             TextButton(
+                modifier = Modifier.align(Alignment.End),
                 onClick = {
                     onRouteClicked(null)
                 },
-                contentPadding = PaddingValues(horizontal = 4.dp)
+                shape = RoundedCornerShape(AppTheme.dimensions.xxSmall),
+                colors = ButtonDefaults.textButtonColors(
+                    containerColor = AppTheme.colorScheme.primaryContainer,
+                    contentColor = AppTheme.colorScheme.onPrimaryContainer
+                ),
+                contentPadding = PaddingValues(
+                    horizontal = AppTheme.dimensions.medium,
+                    vertical = AppTheme.dimensions.xxMicro
+                )
             ) {
-                Text("Подробнее")
+                Text(
+                    text = stringResource(R.string.common__show_all),
+                    style = AppTheme.typography.labelLarge
+                )
+                Spacer(modifier = Modifier.width(AppTheme.dimensions.small))
+                Icon(
+                    imageVector = Icons.AutoMirrored.Outlined.ArrowForward,
+                    contentDescription = null,
+                    modifier = Modifier.size(AppTheme.dimensions.xMedium)
+                )
             }
         }
     }
 }
 
 @Composable
-private fun BusChip(
+private fun RoutePagerIndicator(pageCount: Int, currentPage: Int) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = AppTheme.dimensions.small),
+        horizontalArrangement = Arrangement.spacedBy(
+            AppTheme.dimensions.small,
+            Alignment.CenterHorizontally
+        ),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        repeat(pageCount) { index ->
+            val isSelected = index == currentPage
+            val width by animateDpAsState(
+                targetValue = if (isSelected) AppTheme.dimensions.xxMedium else AppTheme.dimensions.small,
+                label = "routeIndicatorWidth"
+            )
+            val color by animateColorAsState(
+                targetValue = if (isSelected) {
+                    AppTheme.colorScheme.primary
+                } else {
+                    AppTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
+                },
+                label = "routeIndicatorColor"
+            )
+            Box(
+                modifier = Modifier
+                    .width(width)
+                    .height(AppTheme.dimensions.small)
+                    .background(color = color, shape = CircleShape)
+            )
+        }
+    }
+}
+
+@Composable
+private fun BusChipCompact(
     number: String,
     onClick: () -> Unit
 ) {
@@ -346,18 +435,75 @@ private fun BusChip(
     ) {
         Box(
             modifier = Modifier
-                .defaultMinSize(minWidth = 64.dp)
-                .height(48.dp)
-                .padding(horizontal = 18.dp),
+                .defaultMinSize(minWidth = AppTheme.dimensions.buttonHeightLarge)
+                .height(AppTheme.dimensions.buttonHeight)
+                .padding(horizontal = AppTheme.dimensions.small),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = number,
+                color = AppTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold
             )
         }
     }
 }
+
+@Composable
+private fun BusChipDetails(
+    number: String,
+    routeName: String,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    AppClickableCard(
+        onClick = onClick,
+        modifier = modifier
+    ) {
+        BusChipDetailsContent(number = number, routeName = routeName)
+    }
+}
+
+@Composable
+private fun BusChipDetailsContent(number: String, routeName: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(AppTheme.dimensions.small),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(AppTheme.dimensions.xxSmall)
+    ) {
+        Box(
+            modifier = Modifier
+                .defaultMinSize(
+                    minWidth = AppTheme.dimensions.buttonHeightSmall,
+                    minHeight = AppTheme.dimensions.buttonHeightSmall
+                )
+                .background(
+                    color = AppTheme.colorScheme.primaryContainer,
+                    shape = RoundedCornerShape(AppTheme.dimensions.xxSmall)
+                )
+                .padding(horizontal = AppTheme.dimensions.small),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = number,
+                color = AppTheme.colorScheme.onPrimaryContainer,
+                fontWeight = FontWeight.Bold,
+                style = AppTheme.typography.titleMedium
+            )
+        }
+        Text(
+            text = routeName,
+            style = AppTheme.typography.bodyMedium,
+            color = AppTheme.colorScheme.onSurface,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.weight(1f)
+        )
+    }
+}
+
 
 // region WEATHER
 @Composable
@@ -441,7 +587,7 @@ private fun Currency(
             modifier = Modifier.clickable {
                 onCurrenciesClicked.invoke()
             },
-            text = "Больше курсов",
+            text = stringResource(R.string.common__more_courses),
             style = MaterialTheme.typography.bodySmall,
             color = AppTheme.colorScheme.primary
         )
@@ -483,7 +629,7 @@ private fun BottomCard(
                 color = Color.White,
                 modifier = Modifier
                     .align(Alignment.BottomStart)
-                    .padding(16.dp)
+                    .padding(AppTheme.dimensions.medium)
             )
         }
     }

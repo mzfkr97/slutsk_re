@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.romanzhurid.brandbook.R
+import com.romanzhurid.brandbook.components.button.FavoriteButton
 import com.romanzhurid.brandbook.components.card.AppCard
 import com.romanzhurid.brandbook.components.card.NoContent
 import com.romanzhurid.brandbook.components.toolbar.AppToolbar
@@ -38,7 +39,15 @@ internal fun BusDetailScreen(viewModel: BusDetailViewModel) {
             AppToolbar(
                 title = R.string.bus__detail_title,
                 subtitle = "№${uiState.busNumber}",
-                onBack = { onBack.invoke() }
+                onBack = { onBack.invoke() },
+                actionContent = uiState.favorite?.let { favorite ->
+                    {
+                        FavoriteButton(
+                            isFavorite = favorite.isFavorite,
+                            onClick = viewModel::onToggleFavorite
+                        )
+                    }
+                }
             )
         }
     ) { paddingValues ->

@@ -12,6 +12,7 @@ import com.romanzhurid.common.mapper.ExceptionMapper
 import com.romanzhurid.common.uistate.UiStateDelegate
 import com.romanzhurid.common.uistate.UiStateDelegateImpl
 import com.romanzhurid.domain.AppSettings
+import com.romanzhurid.domain.ThemeMode
 import com.romanzhurid.navigation.AppRoute
 import com.romanzhurid.re.activity.AppActivityViewModel.Event
 import com.romanzhurid.re.activity.AppActivityViewModel.UiState
@@ -25,13 +26,13 @@ class AppActivityViewModel(
     private val exceptionMapper: ExceptionMapper,
     res: ResourceProvider,
 ) : ViewModel(),
-    UiStateDelegate<UiState, Event> by UiStateDelegateImpl(UiState()),
+    UiStateDelegate<UiState, Event> by UiStateDelegateImpl(UiState(themeMode = appSettings.themeMode)),
     ResourceProvider by res {
 
     data class UiState(
         val progressState: ProgressState = ProgressState.Hide,
         val errorState: ErrorState? = null,
-        val isDarkTheme: Boolean = false
+        val themeMode: ThemeMode
     )
 
     sealed interface Event {
@@ -45,9 +46,9 @@ class AppActivityViewModel(
     }
 
     private fun observeTheme() {
-        appSettings.isDarkThemeFlow
-            .onEach { isDark ->
-                updateUiState { it.copy(isDarkTheme = isDark) }
+        appSettings.themeModeFlow
+            .onEach { mode ->
+                updateUiState { it.copy(themeMode = mode) }
             }
             .launchIn(viewModelScope)
     }

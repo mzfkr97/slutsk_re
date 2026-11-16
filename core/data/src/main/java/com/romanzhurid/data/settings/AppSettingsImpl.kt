@@ -3,6 +3,7 @@ package com.romanzhurid.data.settings
 import android.content.SharedPreferences
 import com.romanzhurid.data.BuildConfig
 import com.romanzhurid.domain.AppSettings
+import com.romanzhurid.domain.ThemeMode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,15 +18,30 @@ class AppSettingsImpl(private val preferences: SharedPreferences) : AppSettings 
         true
     )
 
-    override var isDarkTheme: Boolean
-        get() = preferences.getBoolean(BuildConfig.PREF_IS_DARK_THEME, false)
+    override var themeMode: ThemeMode
+        get() {
+            val savedMode = preferences.getString(BuildConfig.PREF_THEME_MODE, null)
+            return when {
+                savedMode != null -> ThemeMode.valueOf(savedMode)
+                preferences.contains(BuildConfig.PREF_IS_DARK_THEME) ->
+                    if (preferences.getBoolean(BuildConfig.PREF_IS_DARK_THEME, false)) {
+                        ThemeMode.DARK
+                    } else {
+                        ThemeMode.LIGHT
+                    }
+                else -> ThemeMode.SYSTEM
+            }
+        }
         set(value) {
-            preferences.edit { putBoolean(BuildConfig.PREF_IS_DARK_THEME, value) }
-            _isDarkThemeFlow.value = value
+            preferences.edit {
+                putString(BuildConfig.PREF_THEME_MODE, value.name)
+                remove(BuildConfig.PREF_IS_DARK_THEME)
+            }
+            _themeModeFlow.value = value
         }
 
-    private val _isDarkThemeFlow = MutableStateFlow(isDarkTheme)
-    override val isDarkThemeFlow: StateFlow<Boolean> = _isDarkThemeFlow.asStateFlow()
+    private val _themeModeFlow = MutableStateFlow(themeMode)
+    override val themeModeFlow: StateFlow<ThemeMode> = _themeModeFlow.asStateFlow()
 
     override val currencyId: Int by PreferencesDelegate(
         preferences,

@@ -69,7 +69,7 @@ val AppLightColorScheme = lightColorScheme(
     surfaceContainerLow = Color(0xFFFAFAFA),
 )
 
-val DarkPrimary = Color(0xFF2E7AD6)
+val DarkPrimary = Color(0xFF83B6FA)
 val DarkOnPrimary = Color(0xFF001B3D)
 
 val DarkPrimaryContainer = Color(0xFF1D4E89)
@@ -89,6 +89,7 @@ val DarkOnBackground = Color(0xFFE3E3E3)
 
 val DarkSurface = Color(0xFF121316)
 val DarkOnSurface = Color(0xFFE3E3E3)
+val DarkCardSurface = Color(0xFF242A32)
 
 val DarkSurfaceVariant = Color(0xFF2A2A2A)
 val DarkOnSurfaceVariant = Color(0xFFB9B9B9)

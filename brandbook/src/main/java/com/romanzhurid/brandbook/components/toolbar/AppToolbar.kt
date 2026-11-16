@@ -47,6 +47,7 @@ fun AppToolbar(
     actionIcon: ImageVector? = null,
     onActionClick: (() -> Unit)? = null,
     onBack: (() -> Unit)? = null,
+    actionContent: (@Composable () -> Unit)? = null,
 ) {
     Box(
         modifier = Modifier
@@ -83,7 +84,11 @@ fun AppToolbar(
             }
         }
 
-        actionIcon?.let {
+        if (actionContent != null) {
+            Box(modifier = Modifier.align(Alignment.CenterEnd)) {
+                actionContent()
+            }
+        } else actionIcon?.let {
             IconButton(
                 onClick = { onActionClick?.invoke() },
                 modifier = Modifier.align(Alignment.CenterEnd)

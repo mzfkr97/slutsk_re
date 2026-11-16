@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -24,6 +25,7 @@ import com.romanzhurid.common.ProgressState
 import com.romanzhurid.common.uistate.CollectEventEffect
 import com.romanzhurid.common.uistate.collectUiState
 import com.romanzhurid.currencies.navigation.CurrencyFeatureHost
+import com.romanzhurid.domain.ThemeMode
 import com.romanzhurid.home.navigation.HomeFeatureHost
 import com.romanzhurid.navigation.AppNavDisplay
 import com.romanzhurid.navigation.AppRoute
@@ -64,7 +66,12 @@ class AppActivity : ComponentActivity() {
             CompositionLocalProvider(
                 LocalNavigator provides navigator
             ) {
-                AppTheme(isSystemDarkTheme = uiState.isDarkTheme) {
+                val isDarkTheme = when (uiState.themeMode) {
+                    ThemeMode.LIGHT -> false
+                    ThemeMode.DARK -> true
+                    ThemeMode.SYSTEM -> isSystemInDarkTheme()
+                }
+                AppTheme(isSystemDarkTheme = isDarkTheme) {
                     MainScreen(
                         uiState = uiState,
                         resetErrorState = viewModel::resetErrorState,

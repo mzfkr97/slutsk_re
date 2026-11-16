@@ -30,8 +30,15 @@
     <string name="common__cancel">Cancel</string>
     <string name="common__close">Close</string>
     <string name="common__retry">Retry</string>
+    <string name="common__more_details">Подробнее</string>
+    <string name="common__all_routes">Все маршруты</string>
+    <string name="common__favorite_routes">Избранные маршруты</string>
+    <string name="common__add_to_favorites">Добавить в избранное</string>
+    <string name="common__remove_from_favorites">Удалить из избранного</string>
+    <string name="common__show_all">Показать все</string>
     <string name="common__no_connection">No internet connection</string>
     <string name="common__no_items">No items</string>
+    <string name="common__more_courses">Больше курсов</string>
 
     <!-- Onboarding -->
     <string name="onboarding__welcome_title">Welcome to SlutskRe</string>
@@ -80,7 +87,10 @@
 
     <!-- Settings -->
     <string name="settings__screen_title">Настройки</string>
-    <string name="settings__dark_theme">Темная тема</string>
+    <string name="settings__theme">Тема оформления</string>
+    <string name="settings__theme_light">Светлая</string>
+    <string name="settings__theme_dark">Тёмная</string>
+    <string name="settings__theme_system">Как в системе</string>
 
     <!--Errors-->
     <string name="error_no_favorite_bus_station">Нет избранных маршрутов</string>
