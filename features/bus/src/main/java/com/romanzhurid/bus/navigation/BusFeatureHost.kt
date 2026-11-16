@@ -14,10 +14,7 @@ import org.koin.core.parameter.parametersOf
 
 @Composable
 fun BusFeatureHost(route: AppRoute.Bus) {
-    val busNumber = route.stationId
-    val initialRoute = busNumber?.let {
-        BusFeatureRoute.BusDetail(busNumber)
-    } ?: run {
+    val initialRoute = route.stationId?.let( BusFeatureRoute::BusDetail) ?: run {
         BusFeatureRoute.BusList
     }
     FeatureHost(

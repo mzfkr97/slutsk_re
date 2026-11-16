@@ -29,11 +29,6 @@ sealed interface AppRoute : NavKey {
     ) : AppRoute
 
     @Serializable
-    data class DeliveryFood(
-        override val instanceId: String = "settings",
-    ) : AppRoute
-
-    @Serializable
     data class Bus(
         val stationId: Int? = null,
         override val instanceId: String = "settings",

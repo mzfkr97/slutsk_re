@@ -145,11 +145,6 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
             ),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            item {
-                SearchItem(R.string.search__find_bus) {
-
-                }
-            }
 
             item {
                 HeaderCard(
@@ -160,7 +155,11 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
                     }
                 )
             }
-
+//            item {
+//                SearchItem(R.string.search__find_bus) {
+//
+//                }
+//            }
             item {
                 StationCard(
                     stations = uiState.stations,
@@ -170,7 +169,6 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
                     }
                 )
             }
-
             items(
                 items = uiState.bottomMenu,
                 key = { it.menuType.hashCode() }

@@ -6,7 +6,6 @@ sealed interface HomeBottomMenuType {
     data object Settings : HomeBottomMenuType
     data object Currencies : HomeBottomMenuType
     data object Cinema : HomeBottomMenuType
-    data object DeliveryFood : HomeBottomMenuType
     data class BusRoutes(val busNumber: Int? = null) : HomeBottomMenuType
 }
 
@@ -24,13 +23,6 @@ data class HomeBottomMenu(
                         titleResId = R.string.menu__cinema,
                         backgroundResId = R.drawable.img__main_cinema,
                         menuType = HomeBottomMenuType.Cinema
-                    )
-                )
-                add(
-                    HomeBottomMenu(
-                        titleResId = R.string.menu__delivery_food,
-                        backgroundResId = R.drawable.img__main_delivery,
-                        menuType = HomeBottomMenuType.DeliveryFood
                     )
                 )
             }

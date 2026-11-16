@@ -96,9 +96,6 @@ class HomeScreenViewModel(
                 HomeBottomMenuType.Currencies -> {
                     Currencies()
                 }
-                HomeBottomMenuType.DeliveryFood -> {
-                    DeliveryFood()
-                }
                 is HomeBottomMenuType.BusRoutes -> {
                     Bus(stationId = homeBottomMenuType.busNumber)
                 }
