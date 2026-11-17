@@ -6,12 +6,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -19,7 +22,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.romanzhurid.brandbook.R
 import com.romanzhurid.brandbook.components.button.FavoriteButton
 import com.romanzhurid.brandbook.components.card.AppClickableCard
@@ -34,6 +36,7 @@ import com.romanzhurid.bus.ui.BusListViewModel.Event
 import com.romanzhurid.common.uistate.CollectEventEffect
 import com.romanzhurid.common.uistate.collectUiState
 import com.romanzhurid.navigation.composition.LocalBackHandler
+import org.intellij.lang.annotations.JdkConstants
 
 @Composable
 internal fun BusListScreen(
@@ -130,36 +133,47 @@ private fun BusCard(
     AppClickableCard(
         onClick = onClick,
         modifier = Modifier
+            .fillMaxWidth()
             .padding(
                 horizontal = AppTheme.dimensions.small,
-                vertical = AppTheme.dimensions.xxMicro
             )
     ) {
         Row(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
+                .fillMaxWidth()
+                .padding(AppTheme.dimensions.small),
+            horizontalArrangement = Arrangement.spacedBy(AppTheme.dimensions.small),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column(modifier = Modifier.weight(1f)) {
+            Surface(
+                shape = RoundedCornerShape(AppTheme.dimensions.small),
+                color = MaterialTheme.colorScheme.primaryContainer
+            ) {
                 Text(
+                    modifier = Modifier.padding(
+                        horizontal = AppTheme.dimensions.small,
+                        vertical = AppTheme.dimensions.xxSmall
+                    ),
                     text = highlightText(
                         text = "№${bus.busNumber}",
-                        query = query
+                        query = query,
+                        spanColor = MaterialTheme.colorScheme.onPrimaryContainer
                     ),
-                    color = MaterialTheme.colorScheme.primary,
-                    style = AppTheme.typography.titleMedium
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    style = AppTheme.typography.bodyLarge
                 )
+            }
 
-                val route = listOfNotNull(bus.startStation, bus.endStation).joinToString(" — ")
+            val route = listOfNotNull(bus.startStation, bus.endStation).joinToString(" — ")
+            Box(modifier = Modifier.weight(1f)) {
                 if (route.isNotBlank()) {
                     Text(
                         text = highlightText(
                             text = route,
                             query = query
                         ),
-                        style = AppTheme.typography.labelMedium
+                        style = AppTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
             }

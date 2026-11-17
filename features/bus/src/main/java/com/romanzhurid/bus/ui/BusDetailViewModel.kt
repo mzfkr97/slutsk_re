@@ -12,6 +12,7 @@ import com.romanzhurid.common.uistate.UiStateDelegateImpl
 import com.romanzhurid.domain.bus.interactor.BusEndPointInteractor
 import com.romanzhurid.domain.bus.interactor.BusScheduleInteractor
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -81,13 +82,13 @@ class BusDetailViewModel(
     }
 
     private fun observeSchedules() {
-        busScheduleInteractor
-            .observeSchedulesByBusNumber(busNumber)
+        combine(
+            busScheduleInteractor.observeSchedulesByBusNumber(busNumber),
+            busScheduleInteractor.observeTimesByBusNumber(busNumber),
+        ) { schedules, times ->
+            schedules.map { busScheduleUiMapper.map(it, times) }
+        }
             .flowOn(dispatcherProvider.background())
-            .map { schedules ->
-                schedules.map(busScheduleUiMapper::map)
-
-            }
             .onEach { mapped ->
                 updateUiState {
                     it.copy(

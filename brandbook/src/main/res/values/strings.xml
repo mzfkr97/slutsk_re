@@ -60,6 +60,10 @@
     <string name="bus__screen_favorites_header">Избранное</string>
     <string name="bus__screen_all_header">Все маршруты</string>
     <string name="bus__detail_title">Расписание</string>
+    <string name="bus__workdays">Рабочие дни</string>
+    <string name="bus__all_days">Все дни</string>
+    <string name="bus__weekends">Выходные дни</string>
+    <string name="bus__no_departures">Нет данных о времени отправления</string>
 
     <!-- Home -->
     <string name="home__title">Home</string>

@@ -8,10 +8,10 @@ class BusEndPointLocalMapper {
         return with(entity) {
             BusEndPoint(
                 id = id,
-                busNumber = busNumber,
+                busNumber = busNumber ?: 0,
                 startStation = startStation,
                 endStation = endStation,
-                isFavorite = isFavorite
+                isFavorite = isFavorite ?: false
             )
         }
     }

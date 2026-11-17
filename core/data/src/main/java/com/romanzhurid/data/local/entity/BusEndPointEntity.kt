@@ -11,14 +11,14 @@ data class BusEndPointEntity(
     val id: Int = 0,
 
     @ColumnInfo(name = "bus_number")
-    val busNumber: Int,
+    val busNumber: Int? = null,
 
     @ColumnInfo(name = "start_station")
-    val startStation: String?,
+    val startStation: String? = null,
 
     @ColumnInfo(name = "end_station")
-    val endStation: String?,
+    val endStation: String? = null,
 
     @ColumnInfo(name = "is_favorite")
-    val isFavorite: Boolean = false,
+    val isFavorite: Boolean? = null,
 )

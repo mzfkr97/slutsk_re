@@ -32,6 +32,8 @@ kotlin {
 }
 
 dependencies {
+    testImplementation(libs.junit)
+
     implementation(project(":brandbook"))
     implementation(project(":features:common"))
     implementation(project(":navigation"))

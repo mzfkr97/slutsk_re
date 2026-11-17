@@ -6,31 +6,32 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.romanzhurid.data.local.dao.BusEndPointDao
 import com.romanzhurid.data.local.dao.BusScheduleDao
-import com.romanzhurid.data.local.dao.BusStationDao
+import com.romanzhurid.data.local.dao.BusTimeDao
 import com.romanzhurid.data.local.dao.CurrencyDao
 import com.romanzhurid.data.local.entity.BusEndPointEntity
 import com.romanzhurid.data.local.entity.BusScheduleEntity
-import com.romanzhurid.data.local.entity.BusStationEntity
+import com.romanzhurid.data.local.entity.BusTimeEntity
 import com.romanzhurid.data.local.entity.CurrencyEntity
 
 @Database(
     entities = [
         CurrencyEntity::class,
-        BusStationEntity::class,
         BusEndPointEntity::class,
         BusScheduleEntity::class,
+        BusTimeEntity::class,
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun currencyDao(): CurrencyDao
-    abstract fun busStationDao(): BusStationDao
+    //abstract fun busStationDao(): BusStationDao
     abstract fun busEndPointDao(): BusEndPointDao
     abstract fun busScheduleDao(): BusScheduleDao
+    abstract fun busTimeDao(): BusTimeDao
 
     companion object {
-        private const val PREPACKAGED_DB_NAME = "slutsk_app_database.db"
+        private const val PREPACKAGED_DB_NAME = "app_database.db"
 
         @Volatile
         private var instance: AppDatabase? = null

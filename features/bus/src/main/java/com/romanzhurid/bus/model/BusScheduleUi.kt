@@ -7,9 +7,14 @@ data class BusScheduleUi(
     val id: Int,
     val startStation: String,
     val endStation: String,
-    val workingDays: String,
-    val workTime: String,
-    val weekend: String,
-    val weekendTime: String,
+    val allDays: List<BusTimeUi>,
+    val workTimes: List<BusTimeUi>,
+    val weekendTimes: List<BusTimeUi>,
     val allStation: String,
+)
+
+@Immutable
+data class BusTimeUi(
+    val time: String,
+    val note: String?,
 )
