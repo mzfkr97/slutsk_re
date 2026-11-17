@@ -1,10 +1,12 @@
 package com.romanzhurid.bus.ui
 
+import android.widget.Space
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.romanzhurid.brandbook.R
 import com.romanzhurid.brandbook.components.button.FavoriteButton
@@ -26,6 +29,7 @@ import com.romanzhurid.brandbook.components.card.NoContent
 import com.romanzhurid.brandbook.components.toolbar.AppToolbar
 import com.romanzhurid.brandbook.theme.AppTheme
 import com.romanzhurid.bus.model.BusScheduleUi
+import com.romanzhurid.common.ext.AppSmallSpacer
 import com.romanzhurid.common.uistate.collectUiState
 import com.romanzhurid.navigation.composition.LocalBackHandler
 
@@ -102,10 +106,11 @@ private fun BusScheduleCard(schedule: BusScheduleUi) {
                 color = MaterialTheme.colorScheme.primary
             )
 
+            AppSmallSpacer()
+
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 6.dp),
+                    .fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(AppTheme.dimensions.xMicro)
             ) {
                 Row(
@@ -113,25 +118,27 @@ private fun BusScheduleCard(schedule: BusScheduleUi) {
                 ) {
                     Text(
                         text = schedule.workingDays,
-                        style = AppTheme.typography.labelMedium
+                        style = AppTheme.typography.titleMedium
                     )
                 }
+                AppSmallSpacer()
                 Text(
                     text = schedule.workTime,
                     style = AppTheme.typography.bodyMedium
                 )
 
+                AppSmallSpacer()
                 if (schedule.weekend.isNotBlank() && schedule.weekendTime.isNotBlank()) {
                     Row(
-                        modifier = Modifier.padding(top = 6.dp),
                         horizontalArrangement = Arrangement.spacedBy(AppTheme.dimensions.xMicro)
                     ) {
                         Text(
                             text = schedule.weekend,
-                            style = AppTheme.typography.labelMedium,
+                            style = AppTheme.typography.titleMedium,
                             color = AppTheme.colorScheme.error
                         )
                     }
+                    AppSmallSpacer()
                     Text(
                         text = schedule.weekendTime,
                         style = AppTheme.typography.bodyMedium,
@@ -140,9 +147,11 @@ private fun BusScheduleCard(schedule: BusScheduleUi) {
                 }
 
                 if (schedule.allStation.isNotBlank()) {
+                    AppSmallSpacer()
                     Text(
-                        modifier = Modifier.padding(top = 6.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         text = schedule.allStation,
+                        textAlign = TextAlign.Center,
                         style = AppTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )

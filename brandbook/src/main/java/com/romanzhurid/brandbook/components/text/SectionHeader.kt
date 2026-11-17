@@ -1,6 +1,5 @@
 package com.romanzhurid.brandbook.components.text
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,8 +16,8 @@ import com.romanzhurid.brandbook.theme.AppTheme
 @Composable
 fun SectionHeader(title: String) {
     Row(
-        modifier = Modifier.fillMaxWidth()
-            .background(color = AppTheme.colorScheme.onPrimary)
+        modifier = Modifier
+            .fillMaxWidth()
             .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
