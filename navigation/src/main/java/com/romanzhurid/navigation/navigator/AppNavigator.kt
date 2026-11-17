@@ -1,7 +1,5 @@
 package com.romanzhurid.navigation.navigator
 
-import androidx.compose.runtime.mutableStateListOf
-
 interface Navigator<R> {
     val backStack: List<R>
     fun navigate(route: R)
@@ -10,16 +8,9 @@ interface Navigator<R> {
     fun back(): Boolean
 }
 
-val Navigator<*>.isReady: Boolean
-    get() = backStack.isNotEmpty()
-
 class NavigatorImpl<R>(
-    initialStack: List<R>
+    private val _backStack: MutableList<R>
 ) : Navigator<R> {
-
-    private val _backStack = mutableStateListOf<R>().apply {
-        addAll(initialStack)
-    }
 
     private var lastNavigationTime = 0L
 

@@ -17,11 +17,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import com.romanzhurid.brandbook.R
-import com.romanzhurid.brandbook.components.checkbox.AppCheckBox
+import com.romanzhurid.brandbook.components.card.AppCard
 import com.romanzhurid.brandbook.components.toolbar.AppToolbar
 import com.romanzhurid.brandbook.theme.AppTheme
 import com.romanzhurid.common.uistate.collectUiState
+import com.romanzhurid.domain.ThemeMode
 
 @Composable
 fun SettingsScreen(
@@ -42,38 +44,87 @@ fun SettingsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(AppTheme.dimensions.small),
+                .padding(AppTheme.dimensions.medium),
         ) {
-            AppCheckBox(
-                title = R.string.settings__dark_theme,
-                checked = uiState.isDarkTheme,
-                onCheckedChange = viewModel::onThemeChanged
-            )
-
-            CurrencyDropdown()
+            AppCard(modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(AppTheme.dimensions.medium)) {
+                    ThemeDropdown(
+                        selected = uiState.themeMode,
+                        onSelected = viewModel::onThemeChanged,
+                        modifier = Modifier.padding(bottom = AppTheme.dimensions.medium)
+                    )
+                    CurrencyDropdown(
+                        selectedId = uiState.currencyId,
+                        onSelected = viewModel::onCurrencyChanged
+                    )
+                }
+            }
         }
     }
 }
 
-enum class Currency(val title: String, val value: Int) {
-    USD("Доллар США", 431),
-    EUR("Евро", 451),
-    ZL("Злотых", 452),
-    RUR("Российский рубль", 456)
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ThemeDropdown(
+    selected: ThemeMode,
+    onSelected: (ThemeMode) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    ExposedDropdownMenuBox(
+        modifier = modifier,
+        expanded = expanded,
+        onExpandedChange = { expanded = it }
+    ) {
+        OutlinedTextField(
+            modifier = Modifier
+                .menuAnchor()
+                .fillMaxWidth(),
+            value = stringResource(selected.titleRes),
+            onValueChange = {},
+            readOnly = true,
+            label = { Text(stringResource(R.string.settings__theme)) },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) }
+        )
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            ThemeMode.entries.forEach { mode ->
+                DropdownMenuItem(
+                    text = { Text(stringResource(mode.titleRes)) },
+                    onClick = {
+                        onSelected(mode)
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
+
+private val ThemeMode.titleRes: Int
+    get() = when (this) {
+        ThemeMode.LIGHT -> R.string.settings__theme_light
+        ThemeMode.DARK -> R.string.settings__theme_dark
+        ThemeMode.SYSTEM -> R.string.settings__theme_system
+    }
+
+private enum class Currency(val titleRes: Int, val id: Int) {
+    USD(R.string.settings__currency_usd, 431),
+    EUR(R.string.settings__currency_eur, 451),
+    PLN(R.string.settings__currency_pln, 452),
+    RUB(R.string.settings__currency_rub, 456)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CurrencyDropdown() {
-    val items = Currency.entries.map { it.title }
-
+private fun CurrencyDropdown(selectedId: Int, onSelected: (Int) -> Unit) {
     var expanded by remember {
         mutableStateOf(false)
     }
-
-    var selected by remember {
-        mutableStateOf(items.first())
-    }
+    val selected = Currency.entries.firstOrNull { it.id == selectedId }
 
     ExposedDropdownMenuBox(
         expanded = expanded,
@@ -85,11 +136,12 @@ fun CurrencyDropdown() {
             modifier = Modifier
                 .menuAnchor()
                 .fillMaxWidth(),
-            value = selected,
+            value = selected?.let { stringResource(it.titleRes) }
+                ?: stringResource(R.string.settings__currency_unknown, selectedId),
             onValueChange = {},
             readOnly = true,
             label = {
-                Text("Курсы валют на главном экране")
+                Text(stringResource(R.string.settings__currency))
             },
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(
@@ -104,13 +156,13 @@ fun CurrencyDropdown() {
                 expanded = false
             }
         ) {
-            Currency.entries.forEach { period ->
+            Currency.entries.forEach { currency ->
                 DropdownMenuItem(
                     text = {
-                        Text(period.title)
+                        Text(stringResource(currency.titleRes))
                     },
                     onClick = {
-                        selected = period.title
+                        onSelected(currency.id)
                         expanded = false
                     }
                 )

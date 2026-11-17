@@ -4,7 +4,6 @@ import com.romanzhurid.data.local.dao.CurrencyDao
 import com.romanzhurid.data.local.mapper.CurrencyLocalMapper
 import com.romanzhurid.data.remote.currencies.CurrencyApi
 import com.romanzhurid.data.remote.currencies.mapper.CurrencyRemoteMapper
-import com.romanzhurid.domain.AppSettings
 import com.romanzhurid.domain.currencies.model.Currency
 import com.romanzhurid.domain.currencies.repository.CurrencyRepository
 import kotlinx.coroutines.flow.Flow
@@ -14,8 +13,7 @@ class CurrencyRepositoryImpl(
     private val api: CurrencyApi,
     private val remoteMapper: CurrencyRemoteMapper,
     private val currencyDao: CurrencyDao,
-    private val localMapper: CurrencyLocalMapper,
-    private val appSettings: AppSettings
+    private val localMapper: CurrencyLocalMapper
 ) : CurrencyRepository {
 
     override suspend fun getAllCurrencies(): List<Currency> {
@@ -26,8 +24,8 @@ class CurrencyRepositoryImpl(
         currencyDao.toggleFavorite(id)
     }
 
-    override suspend fun getCurrencyById(): Currency {
-        return remoteMapper.map(api.getCurrencyById(appSettings.currencyId))
+    override suspend fun getCurrencyById(id: Int): Currency {
+        return remoteMapper.map(api.getCurrencyById(id))
     }
 
     override fun observeAllCurrencies(): Flow<List<Currency>> {
@@ -42,16 +40,13 @@ class CurrencyRepositoryImpl(
 
     override suspend fun refreshCurrencies() {
         val remoteData = api.getAllCurrency().map(remoteMapper::map)
-        val favorites = currencyDao.getFavoriteIds()
-
         val entities = remoteData.map { currency ->
             localMapper.mapToEntity(
                 currency = currency,
-                isFavorite = currency.id in favorites
+                isFavorite = false
             )
         }
 
-        currencyDao.deleteAllCurrencies()
-        currencyDao.insertCurrencies(entities)
+        currencyDao.replaceCurrencies(entities)
     }
 }

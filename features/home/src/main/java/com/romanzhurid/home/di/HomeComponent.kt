@@ -4,6 +4,7 @@ import com.romanzhurid.common.ExceptionsObserverImpl
 import com.romanzhurid.common.ExceptionsEmitter
 import com.romanzhurid.common.ProgressObserverImpl
 import com.romanzhurid.common.ProgressEmitter
+import com.romanzhurid.home.mapper.BusStationsListUiMapper
 import com.romanzhurid.home.mapper.WeatherUiMapper
 import com.romanzhurid.home.presentation.HomeScreenViewModel
 import com.romanzhurid.navigation.host.FeatureScope
@@ -23,6 +24,7 @@ val homeModule = module {
         scopedOf(::ProgressObserverImpl)
         scopedOf(::ExceptionsObserverImpl)
         scopedOf(::WeatherUiMapper)
+        scopedOf(::BusStationsListUiMapper)
         viewModelOf(::HomeScreenViewModel)
     }
 }

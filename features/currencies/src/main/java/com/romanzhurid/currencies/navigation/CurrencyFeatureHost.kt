@@ -18,7 +18,7 @@ fun CurrencyFeatureHost(route: AppRoute.Currencies) {
         initialStack = {
             listOf(CurrencyFeatureRoute.Currencies)
         },
-        entryProviderFactory = { scope ->
+        entryProviderFactory = { scope, navigator ->
             entryProvider {
                 entry<CurrencyFeatureRoute.Currencies> {
                     val viewModel = koinViewModel<CurrenciesViewModel>(scope = scope)

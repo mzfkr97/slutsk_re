@@ -3,9 +3,13 @@ package com.romanzhurid.brandbook.theme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.staticCompositionLocalOf
+
+internal val LocalCardColor = staticCompositionLocalOf { CardSurface }
 
 object AppTheme {
     val colorScheme @Composable get() = MaterialTheme.colorScheme
+    val cardColor @Composable get() = LocalCardColor.current
     val typography @Composable get() = MaterialTheme.typography
     val shapes @Composable get() = MaterialTheme.shapes
     val dimensions @Composable get() = LocalDimensions.current

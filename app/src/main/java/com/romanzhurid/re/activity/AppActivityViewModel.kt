@@ -1,0 +1,98 @@
+package com.romanzhurid.re.activity
+
+import android.util.Log
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.romanzhurid.brandbook.components.errorbottomsheet.ErrorState
+import com.romanzhurid.common.ExceptionsFlow
+import com.romanzhurid.common.ProgressFlow
+import com.romanzhurid.common.ProgressState
+import com.romanzhurid.common.ResourceProvider
+import com.romanzhurid.common.mapper.ExceptionMapper
+import com.romanzhurid.common.uistate.UiStateDelegate
+import com.romanzhurid.common.uistate.UiStateDelegateImpl
+import com.romanzhurid.domain.AppSettings
+import com.romanzhurid.domain.ThemeMode
+import com.romanzhurid.navigation.AppRoute
+import com.romanzhurid.re.activity.AppActivityViewModel.Event
+import com.romanzhurid.re.activity.AppActivityViewModel.UiState
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+
+class AppActivityViewModel(
+    private val appSettings: AppSettings,
+    private val progressFlow: ProgressFlow,
+    private val exceptionsFlow: ExceptionsFlow,
+    private val exceptionMapper: ExceptionMapper,
+    res: ResourceProvider,
+) : ViewModel(),
+    UiStateDelegate<UiState, Event> by UiStateDelegateImpl(UiState(themeMode = appSettings.themeMode)),
+    ResourceProvider by res {
+
+    data class UiState(
+        val progressState: ProgressState = ProgressState.Hide,
+        val errorState: ErrorState? = null,
+        val themeMode: ThemeMode
+    )
+
+    sealed interface Event {
+        data object Finish : Event
+    }
+
+    init {
+        observeProgress()
+        observeExceptions()
+        observeTheme()
+    }
+
+    private fun observeTheme() {
+        appSettings.themeModeFlow
+            .onEach { mode ->
+                updateUiState { it.copy(themeMode = mode) }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    fun finish() {
+        viewModelScope.sendEvent(Event.Finish)
+    }
+
+    fun resolveBackStack(): List<AppRoute> {
+        return if (appSettings.isFirstAppStart) {
+            listOf(AppRoute.Onboarding())
+        } else {
+            listOf(AppRoute.Home())
+        }
+    }
+
+    private fun observeProgress() {
+        progressFlow
+            .subscribe()
+            .onEach { state ->
+                updateUiState { it.copy(progressState = state) }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    private fun observeExceptions() {
+        exceptionsFlow
+            .subscribe()
+            .onEach(::handleException)
+            .launchIn(viewModelScope)
+    }
+
+    private fun handleException(error: Throwable) {
+        Log.d("TAG", "handleException: $error")
+        updateUiState {
+            it.copy(errorState = exceptionMapper.map(error))
+        }
+    }
+
+    fun resetErrorState() {
+        updateUiState {
+            it.copy(
+                errorState = null
+            )
+        }
+    }
+}

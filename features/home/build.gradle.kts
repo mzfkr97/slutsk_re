@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.android.built.in1.kotlin)
     alias(libs.plugins.kotlin.compose)
-    
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -32,6 +32,10 @@ kotlin {
 }
 
 dependencies {
+    testImplementation(libs.junit)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.kotlinx.coroutines.test)
+
     implementation(project(":brandbook"))
     implementation(project(":features:common"))
     implementation(project(":navigation"))

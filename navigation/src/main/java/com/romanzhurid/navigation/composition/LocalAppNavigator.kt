@@ -1,10 +1,9 @@
 package com.romanzhurid.navigation.composition
 
 import androidx.compose.runtime.staticCompositionLocalOf
-import com.romanzhurid.navigation.AppRoute
+import androidx.navigation3.runtime.NavKey
 import com.romanzhurid.navigation.navigator.Navigator
 
-val LocalNavigator = staticCompositionLocalOf<Navigator<AppRoute>> {
+val LocalNavigator = staticCompositionLocalOf<Navigator<NavKey>> {
     error("Navigator not provided")
 }
-

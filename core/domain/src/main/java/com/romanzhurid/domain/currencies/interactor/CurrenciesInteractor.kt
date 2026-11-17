@@ -15,8 +15,8 @@ class CurrenciesInteractor(
         repository.toggleFavorite(id)
     }
 
-    suspend fun getCurrencyById(): Currency {
-        return repository.getCurrencyById()
+    suspend fun getCurrencyById(id: Int): Currency {
+        return repository.getCurrencyById(id)
     }
 
     fun observeAllCurrencies(): Flow<List<Currency>> {

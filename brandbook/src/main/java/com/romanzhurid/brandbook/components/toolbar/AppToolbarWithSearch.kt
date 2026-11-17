@@ -25,9 +25,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.romanzhurid.brandbook.R
 import com.romanzhurid.brandbook.ext.EMPTY_STRING
 import com.romanzhurid.brandbook.theme.AppTheme
 
@@ -65,7 +69,7 @@ fun AppToolbarWithSearch(
                 onClick = onBack, modifier = Modifier.align(Alignment.CenterStart)
             ) {
                 Icon(
-                    imageVector = Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Back"
+                    imageVector = Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = stringResource(R.string.common__back)
                 )
             }
         }
@@ -75,6 +79,7 @@ fun AppToolbarWithSearch(
 
                 modifier = Modifier
                     .fillMaxWidth()
+                    .focusRequester(focusRequester)
                     .border(
                         width = 1.dp,
                         color = AppTheme.colorScheme.outline.copy(alpha = 0.3f),
@@ -83,7 +88,7 @@ fun AppToolbarWithSearch(
 
                 placeholder = {
                     Text(
-                        text = "Search", color = AppTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                        text = stringResource(R.string.common__search), color = AppTheme.colorScheme.onSurfaceVariant
                     )
                 }, singleLine = true, shape = RoundedCornerShape(12.dp), leadingIcon = {
                     Icon(
@@ -97,7 +102,7 @@ fun AppToolbarWithSearch(
                             keyboardController?.hide()
                         }) {
                         Icon(
-                            imageVector = Icons.Default.Close, contentDescription = null
+                            imageVector = Icons.Default.Close, contentDescription = stringResource(R.string.common__close)
                         )
                     }
                 }, colors = TextFieldDefaults.colors(
@@ -119,6 +124,9 @@ fun AppToolbarWithSearch(
                 text = title,
                 style = AppTheme.typography.titleLarge,
                 modifier = Modifier.align(Alignment.Center)
+                    .padding(horizontal = AppTheme.dimensions.buttonHeight),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
 
@@ -127,7 +135,7 @@ fun AppToolbarWithSearch(
                 onClick = { isSearchActive = true }, modifier = Modifier.align(Alignment.CenterEnd)
             ) {
                 Icon(
-                    imageVector = Icons.Default.Search, contentDescription = "Search"
+                    imageVector = Icons.Default.Search, contentDescription = stringResource(R.string.common__search)
                 )
             }
         }

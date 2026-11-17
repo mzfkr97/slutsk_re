@@ -2,31 +2,41 @@ package com.romanzhurid.home.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import android.util.Log
 import com.romanzhurid.brandbook.R
 import com.romanzhurid.brandbook.components.errorbottomsheet.ErrorState.ErrorType
 import com.romanzhurid.brandbook.ext.EMPTY_STRING
 import com.romanzhurid.common.DispatcherProvider
-import com.romanzhurid.common.ExceptionsEmitter
 import com.romanzhurid.common.ResourceProvider
 import com.romanzhurid.common.mapper.ExceptionMapper
 import com.romanzhurid.common.permisison.PermissionHelper
 import com.romanzhurid.common.progressdelegate.ProgressDelegate
 import com.romanzhurid.common.uistate.UiStateDelegate
 import com.romanzhurid.common.uistate.UiStateDelegateImpl
+import com.romanzhurid.domain.AppSettings
+import com.romanzhurid.domain.bus.interactor.BusEndPointInteractor
 import com.romanzhurid.domain.currencies.interactor.CurrenciesInteractor
 import com.romanzhurid.domain.currencies.interactor.WeatherInteractor
 import com.romanzhurid.domain.exception.NoLocationPermissionException
 import com.romanzhurid.domain.location.LocationRepository
+import com.romanzhurid.home.mapper.BusStationsListUiMapper
 import com.romanzhurid.home.mapper.WeatherUiMapper
+import com.romanzhurid.home.model.StationUi
 import com.romanzhurid.home.model.HomeBottomMenu
 import com.romanzhurid.home.model.HomeBottomMenuType
 import com.romanzhurid.home.model.WeatherState
 import com.romanzhurid.home.presentation.HomeScreenViewModel.Event
 import com.romanzhurid.home.presentation.HomeScreenViewModel.UiState
 import com.romanzhurid.navigation.AppRoute
-import kotlinx.coroutines.CoroutineExceptionHandler
+import com.romanzhurid.navigation.AppRoute.*
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 class HomeScreenViewModel(
     progressDelegate: ProgressDelegate,
@@ -36,7 +46,10 @@ class HomeScreenViewModel(
     private val dispatcherProvider: DispatcherProvider,
     private val permissionHelper: PermissionHelper,
     private val locationRepository: LocationRepository,
+    private val appSettings: AppSettings,
     private val currenciesInteractor: CurrenciesInteractor,
+    private val busEndPointInteractor: BusEndPointInteractor,
+    private val busStationsListUiMapper: BusStationsListUiMapper,
     private val res: ResourceProvider
 ) :
     ViewModel(),
@@ -49,7 +62,8 @@ class HomeScreenViewModel(
         val isLoading: Boolean = false,
         val weather: WeatherState = WeatherState.Loading,
         val currency: String = EMPTY_STRING,
-        val bottomMenu: List<HomeBottomMenu>
+        val bottomMenu: List<HomeBottomMenu>,
+        val stations: List<StationUi> = emptyList(),
     )
 
     sealed interface Event {
@@ -66,7 +80,8 @@ class HomeScreenViewModel(
 
     init {
         loadWeather()
-        loadCurrencies()
+        observeCurrency()
+        observeStations()
     }
 
     fun onNavigate(homeBottomMenuType: HomeBottomMenuType) {
@@ -76,17 +91,17 @@ class HomeScreenViewModel(
 
         viewModelScope.launch {
             val route = when(homeBottomMenuType) {
-                HomeBottomMenuType.SETTINGS -> {
-                    AppRoute.Settings()
+                HomeBottomMenuType.Settings -> {
+                    Settings()
                 }
-                HomeBottomMenuType.CINEMA -> {
-                    AppRoute.Cinema()
+                HomeBottomMenuType.Cinema -> {
+                    Cinema()
                 }
-                HomeBottomMenuType.CURRENCIES -> {
-                    AppRoute.Currencies()
+                HomeBottomMenuType.Currencies -> {
+                    Currencies()
                 }
-                HomeBottomMenuType.DELIVERY_FOOD -> {
-                    AppRoute.DeliveryFood()
+                is HomeBottomMenuType.BusRoutes -> {
+                    Bus(stationId = homeBottomMenuType.busNumber)
                 }
             }
             sendEvent(Event.NavigateTo(route))
@@ -100,6 +115,20 @@ class HomeScreenViewModel(
             ErrorType.LOCATION_UNAVAILABLE -> loadWeather()
             else -> Unit
         }
+    }
+
+    // region BUS STATIONS
+    private fun observeStations() {
+        busEndPointInteractor
+            .observeAll()
+            .onEach { stations ->
+                val stations = stations.map(busStationsListUiMapper::map)
+                updateUiState { it.copy(stations = stations) }
+            }
+            .catch { exception ->
+                exceptionHandler.handleException(EmptyCoroutineContext, exception)
+            }
+            .launchIn(viewModelScope)
     }
 
     fun onReturnedFromSettings() {
@@ -194,17 +223,26 @@ class HomeScreenViewModel(
     // endregion
 
     // region CURRENCIES
-    private fun loadCurrencies() {
-        viewModelScope.launch(CoroutineExceptionHandler { context, throwable ->
-            updateUiState {
-                it.copy(currency = res.getString(R.string.error__network_default_error))
-            }
-        }) {
-            val currency = withContext(dispatcherProvider.background()) {
-                currenciesInteractor.getCurrencyById()
-            }
-            updateUiState {
-                it.copy(currency = "${currency.abbreviation} ${currency.officialRate}")
+    private fun observeCurrency() {
+        viewModelScope.launch {
+            appSettings.currencyIdFlow.collectLatest { id ->
+                updateUiState { it.copy(currency = res.getString(R.string.currencies__loading)) }
+                try {
+                    val currency = withContext(dispatcherProvider.background()) {
+                        currenciesInteractor.getCurrencyById(id)
+                    }
+                    val amount = if (currency.scale == 1) "" else "${currency.scale} "
+                    updateUiState {
+                        it.copy(currency = "$amount${currency.abbreviation} ${currency.officialRate}")
+                    }
+                } catch (error: CancellationException) {
+                    throw error
+                } catch (error: Exception) {
+                    Log.w("HomeScreenViewModel", "Failed to load currency $id", error)
+                    updateUiState {
+                        it.copy(currency = res.getString(R.string.error__network_default_error))
+                    }
+                }
             }
         }
     }

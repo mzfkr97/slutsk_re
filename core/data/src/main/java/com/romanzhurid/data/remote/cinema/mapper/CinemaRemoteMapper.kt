@@ -3,7 +3,7 @@ package com.romanzhurid.data.remote.cinema.mapper
 import com.romanzhurid.data.remote.cinema.model.CinemaRemote
 import com.romanzhurid.domain.cinema.Cinema
 
-class CinemaRemoteMapper  constructor() {
+class CinemaRemoteMapper {
 
     fun map(data: CinemaRemote) =
         with(data) {

@@ -1,6 +1,7 @@
 package com.romanzhurid.re.di
 
 import com.romanzhurid.cinema.di.cinemaModule
+import com.romanzhurid.bus.di.busModule
 import com.romanzhurid.common.di.commonFeatureModule
 import com.romanzhurid.common.di.commonToolsModule
 import com.romanzhurid.common.di.permissionModule
@@ -24,5 +25,6 @@ val appModule = module {
         currenciesModule,
         settingsModule,
         cinemaModule,
+        busModule,
     )
 }

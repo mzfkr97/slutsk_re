@@ -45,6 +45,7 @@ import com.romanzhurid.brandbook.components.text.SectionHeader
 import com.romanzhurid.brandbook.components.toolbar.AppToolbar
 import com.romanzhurid.brandbook.theme.AppTheme
 import com.romanzhurid.cinema.model.CinemaUiItem
+import com.romanzhurid.common.uistate.CollectEventEffect
 import com.romanzhurid.common.uistate.collectUiState
 import com.romanzhurid.common.viewer.ImageViewer
 import com.romanzhurid.navigation.composition.LocalBackHandler
@@ -54,6 +55,13 @@ fun CinemaScreen(viewModel: CinemaViewModel) {
     val onBack = LocalBackHandler.current
     val uiState by viewModel.collectUiState()
 
+    viewModel.CollectEventEffect() { event ->
+        when (event) {
+            is CinemaViewModel.Event.GoBack -> {
+                onBack.invoke()
+            }
+        }
+    }
     Scaffold(
         topBar = {
             AppToolbar(

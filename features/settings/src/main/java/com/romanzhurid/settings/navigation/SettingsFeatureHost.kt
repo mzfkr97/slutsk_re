@@ -20,8 +20,8 @@ fun SettingsFeatureHost(route: AppRoute.Settings) {
         initialStack = {
             listOf(SettingsFeatureRoute.Settings)
         },
-        entryProviderFactory = { scope ->
-            entryProvider<SettingsFeatureRoute> {
+        entryProviderFactory = { scope, appNavigator ->
+            entryProvider {
                 entry<SettingsFeatureRoute.Settings> {
                     val viewModel = koinViewModel<SettingsViewModel>(scope = scope)
                     SettingsScreen(viewModel) {
