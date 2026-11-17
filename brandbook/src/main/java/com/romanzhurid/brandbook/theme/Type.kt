@@ -55,15 +55,15 @@ val AppTypography = Typography(
         fontFamily = AppFontFamily,
         fontSize = 22.sp,
         lineHeight = 28.sp,
-        fontWeight = FontWeight.Medium,
-        letterSpacing = 0.15.sp
+        fontWeight = FontWeight.Bold,
+        letterSpacing = 0.sp
     ),
     titleMedium = TextStyle(
         fontFamily = AppFontFamily,
         fontSize = 18.sp,
         lineHeight = 24.sp,
-        fontWeight = FontWeight.Medium,
-        letterSpacing = 0.15.sp
+        fontWeight = FontWeight.SemiBold,
+        letterSpacing = 0.sp
     ),
     labelLarge = TextStyle(
         fontFamily = AppFontFamily,

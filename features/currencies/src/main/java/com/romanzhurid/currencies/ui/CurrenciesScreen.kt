@@ -1,13 +1,12 @@
 package com.romanzhurid.currencies.ui
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -75,7 +74,7 @@ internal fun CurrenciesScreen(viewModel: CurrenciesViewModel) {
                 LazyColumn(
                     state = listState,
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(vertical = AppTheme.dimensions.small),
+                    contentPadding = PaddingValues(bottom = AppTheme.dimensions.xxxMedium),
                 ) {
                     items(
                         items = uiState.currencies,
@@ -100,7 +99,7 @@ internal fun CurrenciesScreen(viewModel: CurrenciesViewModel) {
                                 CurrencyCard(
                                     modifier = Modifier
                                         .padding(
-                                            horizontal = AppTheme.dimensions.small,
+                                            horizontal = AppTheme.dimensions.medium,
                                             vertical = AppTheme.dimensions.xxMicro
                                         )
                                         .animateItem(),
@@ -135,54 +134,47 @@ private fun CurrencyCard(
     onToggleFavorite: () -> Unit
 ) {
 
-    AppCard(modifier) {
-        Column {
-            Row(
-                Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.primary)
-                    .padding(8.dp)
-            ) {
+    AppCard(modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    start = AppTheme.dimensions.medium,
+                    top = AppTheme.dimensions.xxSmall,
+                    bottom = AppTheme.dimensions.xxSmall,
+                    end = AppTheme.dimensions.small
+                ),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = highlightText(
                         text = currency.name,
                         query = query
                     ),
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    style = AppTheme.typography.titleMedium
+                    style = AppTheme.typography.titleMedium,
+                    color = AppTheme.colorScheme.onSurface
                 )
-            }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(start = 8.dp, end = 8.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
                 Text(
                     text = highlightText(
                         text = currency.abbreviation,
                         query = query
                     ),
                     style = AppTheme.typography.labelMedium,
+                    color = AppTheme.colorScheme.onSurfaceVariant
                 )
-
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = currency.officialRate,
-                        style = AppTheme.typography.labelLarge,
-                        fontWeight = FontWeight.SemiBold,
-                    )
-
-                    Spacer(modifier = Modifier.width(4.dp))
-
-                    FavoriteButton(
-                        isFavorite = currency.isFavorite,
-                        onClick = onToggleFavorite
-                    )
-                }
             }
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = currency.officialRate,
+                style = AppTheme.typography.titleMedium,
+                color = AppTheme.colorScheme.primary,
+                fontWeight = FontWeight.SemiBold,
+            )
+            FavoriteButton(
+                isFavorite = currency.isFavorite,
+                onClick = onToggleFavorite
+            )
         }
     }
 }

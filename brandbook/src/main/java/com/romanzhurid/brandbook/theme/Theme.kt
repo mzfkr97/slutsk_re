@@ -31,7 +31,7 @@ fun AppTheme(
         }
     )
     val cardColor by animateColorAsState(
-        targetValue = if (isSystemDarkTheme) DarkCardSurface else Surface,
+        targetValue = if (isSystemDarkTheme) DarkCardSurface else CardSurface,
         animationSpec = tween(durationMillis = 500),
         label = "cardColor"
     )

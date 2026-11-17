@@ -37,10 +37,7 @@ import androidx.compose.material.icons.outlined.DirectionsBus
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -51,6 +48,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -134,7 +132,9 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
             ) {
                 AppToolbar(
                     title = R.string.home__title,
+                    subtitle = stringResource(R.string.home__subtitle),
                     actionIcon = Icons.Outlined.Settings,
+                    actionContentDescription = stringResource(R.string.settings__screen_title),
                     showBackBtn = false,
                     onActionClick = {
                         viewModel.onNavigate(HomeBottomMenuType.Settings)
@@ -150,10 +150,11 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
                 .padding(paddingValues),
             contentPadding = PaddingValues(
                 top = AppTheme.dimensions.small,
-                start = AppTheme.dimensions.small,
-                end = AppTheme.dimensions.small
+                start = AppTheme.dimensions.medium,
+                end = AppTheme.dimensions.medium,
+                bottom = AppTheme.dimensions.xxxMedium
             ),
-            verticalArrangement = Arrangement.spacedBy(AppTheme.dimensions.small)
+            verticalArrangement = Arrangement.spacedBy(AppTheme.dimensions.medium)
         ) {
 
             item {
@@ -165,11 +166,6 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
                     }
                 )
             }
-//            item {
-//                SearchItem(R.string.search__find_bus) {
-//
-//                }
-//            }
             item {
                 StationCard(
                     stations = uiState.stations,
@@ -200,35 +196,37 @@ private fun HeaderCard(
     onWeatherErrorClicked: (errorType: ErrorType) -> Unit,
     onCurrenciesClicked: () -> Unit
 ) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth(),
-
-        colors = CardDefaults.cardColors(
-            containerColor = AppTheme.cardColor,
-            contentColor = AppTheme.colorScheme.onSurface
-
-        ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = AppTheme.dimensions.xxMicro
-        )
-    ) {
+    AppCard(modifier = Modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(AppTheme.dimensions.xxSmall)
+                .padding(AppTheme.dimensions.medium)
                 .height(IntrinsicSize.Min)
                 .defaultMinSize(minHeight = AppTheme.dimensions.buttonHeight),
-            horizontalArrangement = Arrangement.spacedBy(AppTheme.dimensions.small)
+            horizontalArrangement = Arrangement.spacedBy(AppTheme.dimensions.medium)
         ) {
-            WeatherCard(
-                weatherState = uiState.weather,
+            Column(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxHeight(),
-                onWeatherErrorClicked = onWeatherErrorClicked
+                verticalArrangement = Arrangement.spacedBy(AppTheme.dimensions.small)
+            ) {
+                Text(
+                    text = stringResource(R.string.home__weather),
+                    style = AppTheme.typography.labelMedium,
+                    color = AppTheme.colorScheme.onSurfaceVariant
+                )
+                WeatherCard(
+                    weatherState = uiState.weather,
+                    onWeatherErrorClicked = onWeatherErrorClicked
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .width(1.dp)
+                    .fillMaxHeight()
+                    .background(AppTheme.colorScheme.outlineVariant)
             )
-
             Currency(
                 modifier = Modifier
                     .weight(1f)
@@ -248,11 +246,11 @@ private fun StationCard(
 ) {
     AppCard(modifier = modifier) {
         Column(
-            modifier = Modifier.padding(AppTheme.dimensions.small)
+            modifier = Modifier.padding(AppTheme.dimensions.medium)
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(AppTheme.dimensions.xxMicro)
+                verticalArrangement = Arrangement.spacedBy(AppTheme.dimensions.small)
             ) {
                 val favoriteStations = stations.filter { it.isFavorite }
                 val otherStations = stations.filterNot { it.isFavorite }
@@ -270,7 +268,7 @@ private fun StationCard(
 
                         Text(
                             text = stringResource(R.string.common__favorite_routes),
-                            style = AppTheme.typography.labelLarge,
+                            style = AppTheme.typography.titleMedium,
                         )
                     }
 
@@ -291,7 +289,9 @@ private fun StationCard(
 
                 if (otherStations.isNotEmpty()) {
                     Row(
-                        modifier = modifier.padding(top = AppTheme.dimensions.small),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = AppTheme.dimensions.small),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(AppTheme.dimensions.small)
                     ) {
@@ -304,7 +304,7 @@ private fun StationCard(
 
                         Text(
                             text = stringResource(R.string.common__all_routes),
-                            style = AppTheme.typography.labelLarge,
+                            style = AppTheme.typography.titleMedium,
                         )
                     }
 
@@ -546,11 +546,12 @@ fun WeatherError(weatherError: WeatherState.Error, onWeatherErrorClicked: () -> 
 @Composable
 fun WeatherContent(ui: WeatherUi) {
     Column {
-        Row {
+        Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
                 text = ui.temperature,
-                style = MaterialTheme.typography.titleMedium,
-                color = AppTheme.colorScheme.primary
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                color = AppTheme.colorScheme.onSurface
             )
             AsyncImage(
                 model = ui.iconCode,
@@ -561,7 +562,8 @@ fun WeatherContent(ui: WeatherUi) {
 
         Text(
             text = "${ui.cityName}\n${ui.description}",
-            style = MaterialTheme.typography.bodySmall
+            style = MaterialTheme.typography.bodySmall,
+            color = AppTheme.colorScheme.onSurfaceVariant
         )
     }
 }
@@ -575,20 +577,22 @@ private fun Currency(
     onCurrenciesClicked: () -> Unit
 ) {
     Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.End
+        modifier = modifier.clickable(onClick = onCurrenciesClicked),
+        verticalArrangement = Arrangement.spacedBy(AppTheme.dimensions.small)
     ) {
         Text(
-            text = currency,
-            style = MaterialTheme.typography.bodySmall,
-            color = AppTheme.colorScheme.primary
+            text = stringResource(R.string.home__currency),
+            style = AppTheme.typography.labelMedium,
+            color = AppTheme.colorScheme.onSurfaceVariant
         )
         Text(
-            modifier = Modifier.clickable {
-                onCurrenciesClicked.invoke()
-            },
+            text = currency,
+            style = MaterialTheme.typography.titleMedium,
+            color = AppTheme.colorScheme.onSurface
+        )
+        Text(
             text = stringResource(R.string.common__more_courses),
-            style = MaterialTheme.typography.bodySmall,
+            style = MaterialTheme.typography.labelMedium,
             color = AppTheme.colorScheme.primary
         )
     }
@@ -600,13 +604,11 @@ private fun BottomCard(
     homeBottomMenu: HomeBottomMenu,
     onBottomMenuClicked: (HomeBottomMenuType) -> Unit
 ) {
-    AppCard(
+    AppClickableCard(
+        onClick = { onBottomMenuClicked(homeBottomMenu.menuType) },
         modifier = Modifier
             .fillMaxWidth()
-            .height(96.dp)
-            .clickable(onClick = {
-                onBottomMenuClicked(homeBottomMenu.menuType)
-            })
+            .height(140.dp)
     ) {
         Box(
             modifier = Modifier.fillMaxSize()
@@ -621,12 +623,20 @@ private fun BottomCard(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.4f))
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Black.copy(alpha = 0.08f),
+                                Color.Black.copy(alpha = 0.75f)
+                            )
+                        )
+                    )
             )
 
             Text(
                 text = stringResource(homeBottomMenu.titleResId),
                 color = Color.White,
+                style = AppTheme.typography.titleLarge,
                 modifier = Modifier
                     .align(Alignment.BottomStart)
                     .padding(AppTheme.dimensions.medium)

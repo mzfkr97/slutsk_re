@@ -29,6 +29,8 @@
     <string name="common__continue">Continue</string>
     <string name="common__cancel">Cancel</string>
     <string name="common__close">Close</string>
+    <string name="common__back">Назад</string>
+    <string name="common__search">Поиск</string>
     <string name="common__retry">Retry</string>
     <string name="common__more_details">Подробнее</string>
     <string name="common__all_routes">Все маршруты</string>
@@ -66,7 +68,10 @@
     <string name="bus__no_departures">Нет данных о времени отправления</string>
 
     <!-- Home -->
-    <string name="home__title">Home</string>
+    <string name="home__title">Слуцк</string>
+    <string name="home__subtitle">Всё важное рядом</string>
+    <string name="home__weather">Погода</string>
+    <string name="home__currency">Курсы валют</string>
     <string name="menu__cinema">Кинотеатр</string>
     <string name="menu__delivery_food">Доставка еды</string>
     <!-- Screen titles -->

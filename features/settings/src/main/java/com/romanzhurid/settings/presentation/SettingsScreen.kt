@@ -19,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.romanzhurid.brandbook.R
+import com.romanzhurid.brandbook.components.card.AppCard
 import com.romanzhurid.brandbook.components.toolbar.AppToolbar
 import com.romanzhurid.brandbook.theme.AppTheme
 import com.romanzhurid.common.uistate.collectUiState
@@ -43,18 +44,21 @@ fun SettingsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(AppTheme.dimensions.small),
+                .padding(AppTheme.dimensions.medium),
         ) {
-            ThemeDropdown(
-                selected = uiState.themeMode,
-                onSelected = viewModel::onThemeChanged,
-                modifier = Modifier.padding(bottom = AppTheme.dimensions.small)
-            )
-
-            CurrencyDropdown(
-                selectedId = uiState.currencyId,
-                onSelected = viewModel::onCurrencyChanged
-            )
+            AppCard(modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(AppTheme.dimensions.medium)) {
+                    ThemeDropdown(
+                        selected = uiState.themeMode,
+                        onSelected = viewModel::onThemeChanged,
+                        modifier = Modifier.padding(bottom = AppTheme.dimensions.medium)
+                    )
+                    CurrencyDropdown(
+                        selectedId = uiState.currencyId,
+                        onSelected = viewModel::onCurrencyChanged
+                    )
+                }
+            }
         }
     }
 }

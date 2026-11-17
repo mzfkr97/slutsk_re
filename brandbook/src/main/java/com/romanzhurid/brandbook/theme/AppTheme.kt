@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
 
-internal val LocalCardColor = staticCompositionLocalOf { Surface }
+internal val LocalCardColor = staticCompositionLocalOf { CardSurface }
 
 object AppTheme {
     val colorScheme @Composable get() = MaterialTheme.colorScheme

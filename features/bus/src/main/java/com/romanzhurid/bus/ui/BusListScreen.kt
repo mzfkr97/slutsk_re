@@ -83,7 +83,8 @@ internal fun BusListScreen(
                     LazyColumn(
                         state = listState,
                         modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(vertical = AppTheme.dimensions.small),
+                        contentPadding = PaddingValues(bottom = AppTheme.dimensions.xxxMedium),
+                        verticalArrangement = Arrangement.spacedBy(AppTheme.dimensions.small)
                     ) {
                         items(
                             items = state.buses,
@@ -135,13 +136,13 @@ private fun BusCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(
-                horizontal = AppTheme.dimensions.small,
+                horizontal = AppTheme.dimensions.medium,
             )
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(AppTheme.dimensions.small),
+                .padding(AppTheme.dimensions.xxSmall),
             horizontalArrangement = Arrangement.spacedBy(AppTheme.dimensions.small),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -160,7 +161,7 @@ private fun BusCard(
                         spanColor = MaterialTheme.colorScheme.onPrimaryContainer
                     ),
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
-                    style = AppTheme.typography.bodyLarge
+                    style = AppTheme.typography.titleMedium
                 )
             }
 

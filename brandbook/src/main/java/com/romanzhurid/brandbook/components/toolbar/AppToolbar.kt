@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.romanzhurid.brandbook.R
 import com.romanzhurid.brandbook.theme.AppTheme
@@ -48,6 +49,7 @@ fun AppToolbar(
     onActionClick: (() -> Unit)? = null,
     onBack: (() -> Unit)? = null,
     actionContent: (@Composable () -> Unit)? = null,
+    actionContentDescription: String? = null,
 ) {
     Box(
         modifier = Modifier
@@ -63,23 +65,30 @@ fun AppToolbar(
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                    contentDescription = "Back"
+                    contentDescription = stringResource(R.string.common__back)
                 )
             }
         }
 
         Column(
-            modifier = Modifier.align(Alignment.Center),
+            modifier = Modifier
+                .align(Alignment.Center)
+                .padding(horizontal = AppTheme.dimensions.buttonHeight),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 text = stringResource(title),
-                style = AppTheme.typography.titleLarge
+                style = AppTheme.typography.titleLarge,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
             subtitle?.let {
                 Text(
                     text = it,
-                    style = AppTheme.typography.labelSmall
+                    style = AppTheme.typography.labelSmall,
+                    color = AppTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         }
@@ -95,7 +104,7 @@ fun AppToolbar(
             ) {
                 Icon(
                     imageVector = actionIcon,
-                    contentDescription = null
+                    contentDescription = actionContentDescription
                 )
             }
         }

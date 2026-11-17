@@ -19,7 +19,7 @@ import com.romanzhurid.brandbook.theme.AppTheme
 @Composable
 fun AppCard(
     modifier: Modifier = Modifier,
-    borderColor: Color = AppTheme.colorScheme.outline,
+    borderColor: Color = AppTheme.colorScheme.outlineVariant,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Card(
@@ -29,7 +29,7 @@ fun AppCard(
             containerColor = AppTheme.cardColor,
             contentColor = AppTheme.colorScheme.onSurface
         ),
-        elevation = CardDefaults.cardElevation(AppTheme.dimensions.xMicro),
+        elevation = CardDefaults.cardElevation(AppTheme.dimensions.none),
         border = BorderStroke(
             width = AppTheme.dimensions.micro,
             color = borderColor
@@ -65,10 +65,10 @@ fun AppClickableCard(
             containerColor = AppTheme.cardColor,
             contentColor = AppTheme.colorScheme.onSurface
         ),
-        elevation = CardDefaults.cardElevation(AppTheme.dimensions.xMicro),
+        elevation = CardDefaults.cardElevation(AppTheme.dimensions.none),
         border = BorderStroke(
             width = AppTheme.dimensions.micro,
-            color = AppTheme.colorScheme.outline
+            color = AppTheme.colorScheme.outlineVariant
         )
     ) {
         content()
